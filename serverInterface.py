@@ -2,9 +2,35 @@ from tkinter import *
 import tkinter.scrolledtext
 import socket 
 import sys
+import os
 import time
 from _thread import *
 import threading 
+import MySQLdb
+
+
+#database config
+config = {
+    'host': '192.168.122.208',
+    'port': 3306,
+    'user': 'db_user',
+    'password': 'Qwerty.12',
+    'database': 'test_db'
+}
+db_user = config.get('user')
+db_pwd  = config.get('password')
+db_host = config.get('host')
+db_port = config.get('port')
+db_name = config.get('database')
+
+#mariadb_connection = MySQLdb.connect(user=db_user, password=db_pwd, db=db_name , host=db_host)
+
+#cursor = mariadb_connection.cursor()
+#cursor.execute("SELECT ID, rawPackt FROM packet ")
+#for ID in cursor:
+#    print("rawPacket: {}").format(ID)
+
+
 root = Tk()
 
 #non ridimensionabile
@@ -34,21 +60,41 @@ def tick():
     orologio.after(250, tick)
 tick()
 
+#controlla se in linea
+def aliveCheck():
+    
+    response = os.system("ping -c 1 8.8.8.8")
+    if response == 0:
+        lineCheckLabel = Label (root, text ="") #let's reset the label, it gets strange sometimes =\
+        lineCheckLabel.grid(row=1, column = 0)
+        lineCheckLabel = Label (root, text ="Is my line alive: YES", fg="green")
+        lineCheckLabel.grid(row=1, column = 0)
+    else:
+        lineCheckLabel = Label (root, text ="Is my line alive: NO, down since " + time.strftime('%H:%M:%S'), fg="red")  
+        lineCheckLabel.grid(row=1, column = 0)  
+    lineCheckLabel.after(30000, aliveCheck) #30 secondi, porterei anche a un minuto. Poi vediamo.
+aliveCheck()
+
+
 print_lock = threading.Lock() 
 # thread fuction 
-def threaded(c): 
+def threaded(c,ip,tcpPort): 
 	while True: 
 
 		# data received from client 
 		data = c.recv(64) 
 		if not data: 
+			txt.insert(INSERT, "No data, bye\n")
 			print('No data, bye') 
 			
 			# lock released on exit 
 			print_lock.release() 
 			break
+		txt.insert(INSERT, "received: " + str(data)+"\n")
+		insertPacketInDB(  data, tcpPort ,ip )
 		print ('received "%s"' % data)
-        
+		lastReceivedPacket.config(text= "Last packed arrived at: "+ time.strftime('%H:%M:%S') )
+
         # reverse the given string from client 
 		data = data[::-1] 
 
@@ -60,6 +106,7 @@ def threaded(c):
 
 
 def Main(): 
+    
 	host = "192.168.17.206" 
 
 	# reverse a port on your computer 
@@ -73,7 +120,7 @@ def Main():
 
 	# put the socket into listening mode 
 	s.listen(5) 
-	txt.insert(INSERT, "socket is listening")
+	txt.insert(INSERT, "socket is listening\n")
 	print("socket is listening") 
 
 	# a forever loop until client wants to exit 
@@ -84,11 +131,20 @@ def Main():
 
 		# lock acquired by client 
 		print_lock.acquire() 
+		txt.insert(INSERT, "Connected to :" + str(addr[0] ) + ':' +  str(addr[1]) + "\n")
 		print('Connected to :', addr[0], ':', addr[1]) 
 
 		# Start a new thread and return its identifier 
-		start_new_thread(threaded, (c,)) 
+		start_new_thread(threaded, (c,str(addr[0]),str(addr[1]),)) 
 	s.close() 
+
+def insertPacketInDB(packetReceived, port, ip):
+    mariadb_connection = MySQLdb.connect(user=db_user, password=db_pwd, db=db_name , host=db_host)
+    cursor = mariadb_connection.cursor()
+    cursor.execute("""INSERT IGNORE INTO packet (rawPackt , ipAddress , port) VALUES (%s,%s,%s)""", (packetReceived,ip,port,))
+    mariadb_connection.commit()
+    mariadb_connection.close()
+
 
 
 if __name__ == '__main__': 
