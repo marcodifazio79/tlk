@@ -33,7 +33,7 @@ db_name = config.get('database')
 
 root = Tk()
 
-#non ridimensionabile
+#fixed window dimension becouse i say so.
 root.resizable(0, 0)
 
 #dimensione fissa
@@ -54,13 +54,13 @@ txt.grid(row=3, column=0, columnspan=2, sticky=W+E+N+S , padx=5, pady=5)
 
 #txt.insert(INSERT, "When Im with you baby I go out of my head And I just cant get enough And I just cant get enough All the things you do to me And everything you said I just cant get enough I just cant get enough")
 
-#aggiorna l'orologio
+#let's the clock runnn
 def tick():
     orologio.config(text=time.strftime('%H:%M:%S'))
     orologio.after(250, tick)
 tick()
 
-#controlla se in linea
+#let's check the line!
 def aliveCheck():
     
     response = os.system("ping -c 1 8.8.8.8")
@@ -72,7 +72,7 @@ def aliveCheck():
     else:
         lineCheckLabel = Label (root, text ="Is my line alive: NO, down since " + time.strftime('%H:%M:%S'), fg="red")  
         lineCheckLabel.grid(row=1, column = 0)  
-    lineCheckLabel.after(30000, aliveCheck) #30 secondi, porterei anche a un minuto. Poi vediamo.
+    lineCheckLabel.after(30000, aliveCheck) #30 seconds, let's see if it's enough
 aliveCheck()
 
 
