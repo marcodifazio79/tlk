@@ -13,21 +13,18 @@ def threaded(c):
 
 		# data received from client 
 		#print ('test')
-		data = c.recv(1024) 
+		data = c.recv(8) 
 		if not data: 
 			print('No data, bye') 
 			
 			# lock released on exit 
 			print_lock.release() 
 			break
-		print ('received "%s"' % data)
+		print ('received "%s"' % data)        
         
-        # reverse the given string from client 
-		print('insert command: ')
-		cm = input()
-		data = bytearray('#psw123456'+cm,'utf-8') #data[::-1] 
-		# send back reversed string to client 
-		c.send(data) 
+		data = '#PU1' 
+		
+		c.send(data.encode()) 
 
 	# connection closed 
 	c.close() 
