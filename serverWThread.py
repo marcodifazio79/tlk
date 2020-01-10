@@ -12,8 +12,8 @@ def threaded(c):
 	while True: 
 
 		# data received from client 
-		print ('test')
-		data = c.recv(64) 
+		#print ('test')
+		data = c.recv(1024) 
 		if not data: 
 			print('No data, bye') 
 			
@@ -23,8 +23,9 @@ def threaded(c):
 		print ('received "%s"' % data)
         
         # reverse the given string from client 
-		data = bytearray('#psw123456#atc+csq','utf-8') #data[::-1] 
-
+		print('insert command: ')
+		cm = input()
+		data = bytearray('#psw123456'+cm,'utf-8') #data[::-1] 
 		# send back reversed string to client 
 		c.send(data) 
 
