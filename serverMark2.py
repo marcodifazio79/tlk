@@ -54,7 +54,7 @@ def Main():
 
 		# Start a new thread and return its identifier 
 		start_new_thread(threaded, (c,)) 
-        while True:
+		while True:
 		    data = input("cmd for server: ") 
 		    c.send(data.encode())
 	s.close() 
