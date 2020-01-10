@@ -39,9 +39,10 @@ def Main():
 	print("socket binded to port", port) 
 
 	# put the socket into listening mode 
-	s.listen(5) 
+	s.listen(500) 
 	print("socket is listening") 
 
+try:
 	# a forever loop until client wants to exit 
 	while True: 
 
@@ -55,9 +56,14 @@ def Main():
 		# Start a new thread and return its identifier 
 		start_new_thread(threaded, (c,)) 
 		while True:
+
 		    data = input("cmd for server: ") 
 		    c.send(data.encode())
 	s.close() 
+except:
+    s.close()
+finally:
+    Main()
 
 
 if __name__ == '__main__': 
