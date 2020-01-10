@@ -42,7 +42,6 @@ def Main():
 	s.listen(500) 
 	print("socket is listening") 
 
-try:
 	# a forever loop until client wants to exit 
 	while True: 
 
@@ -60,10 +59,6 @@ try:
 		    data = input("cmd for server: ") 
 		    c.send(data.encode())
 	s.close() 
-except:
-    s.close()
-finally:
-    Main()
 
 
 if __name__ == '__main__': 
