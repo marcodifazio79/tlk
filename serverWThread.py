@@ -23,7 +23,7 @@ def threaded(c):
 		print ('received "%s"' % data)
         
         # reverse the given string from client 
-		data = '#psw123456#atc+csq'#data[::-1] 
+		data = bytearray('#psw123456#atc+csq','utf-8') #data[::-1] 
 
 		# send back reversed string to client 
 		c.send(data) 
@@ -34,7 +34,7 @@ def threaded(c):
 
 def Main(): 
 	host = "10.10.10.71" 
-
+	
 	# reverse a port on your computer 
 	# in our case it is 10000 but it 
 	# can be anything 
