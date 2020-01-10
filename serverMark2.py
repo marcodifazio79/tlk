@@ -13,12 +13,12 @@ def threaded(c):
 
 		# data received from client 
 		#print ('test')
-		data = c.recv(8) 
+		data = c.recv(1024) 
 		if not data: 
 			print('No data, bye') 
 			
 			# lock released on exit 
-			print_lock.release() 
+			#print_lock.release() 
 			break
 		print ('received "%s"' % data)        
          
@@ -49,7 +49,7 @@ def Main():
 		c, addr = s.accept() 
 
 		# lock acquired by client 
-		print_lock.acquire() 
+		#print_lock.acquire() 
 		print('Connected to :', addr[0], ':', addr[1]) 
 
 		# Start a new thread and return its identifier 
