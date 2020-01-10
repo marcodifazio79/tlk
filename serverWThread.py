@@ -12,6 +12,7 @@ def threaded(c):
 	while True: 
 
 		# data received from client 
+		print ('test')
 		data = c.recv(64) 
 		if not data: 
 			print('No data, bye') 
@@ -22,7 +23,7 @@ def threaded(c):
 		print ('received "%s"' % data)
         
         # reverse the given string from client 
-		data = data[::-1] 
+		data = '#psw123456#atc+csq'#data[::-1] 
 
 		# send back reversed string to client 
 		c.send(data) 
@@ -32,12 +33,12 @@ def threaded(c):
 
 
 def Main(): 
-	host = "" 
+	host = "10.10.10.71" 
 
 	# reverse a port on your computer 
 	# in our case it is 10000 but it 
 	# can be anything 
-	port = 10000
+	port = 9000
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 	s.bind((host, port)) 
 	print("socket binded to port", port) 
