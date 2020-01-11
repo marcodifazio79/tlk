@@ -14,18 +14,24 @@ void  socketThread(int  clientSocket)
    char client_message[2000];
    char buffer[1024];
    int newSocket = clientSocket;
-   recv(newSocket , client_message , 2000 , 0);
-   // Send message to the client socket 
-   char *message = malloc(sizeof(client_message)+20);
-   strcpy(message,"Hello Client : ");
-   strcat(message,client_message);
-   strcat(message,"\n");
-   strcpy(buffer,message);
-   free(message);
-   pthread_mutex_unlock(&lock);
-   sleep(1);
+   while (1)
+   {
+        recv(newSocket , client_message , 2000 , 0);
+        printf("Data received: %s\n",client_message);
+        // Send message to the client socket 
+        char *message = malloc(sizeof(client_message)+20);
+        strcpy(message,"Hello Client : ");
+        strcat(message,client_message);
+        strcat(message,"\n");
+        strcpy(buffer,message);
+        free(message);
+        //pthread_mutex_unlock(&lock);
+        sleep(1);
+   }
+   
+   
    //send(newSocket,buffer,13,0);
-   send(newSocket,"#PU1",4,0);
+   //send(newSocket,"#PU1",4,0);
    printf("Exit socketThread \n");
    close(newSocket);
   }
