@@ -7,7 +7,7 @@
 #include <fcntl.h> // for open
 #include <unistd.h> // for close
 #include <sys/types.h>
-
+#include <pthread.h>
 void  socketThread(int  clientSocket)
 {
    char client_message[2000];
