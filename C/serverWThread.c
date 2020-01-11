@@ -7,6 +7,7 @@
 #include <fcntl.h> // for open
 #include <unistd.h> // for close
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <pthread.h>
 void  socketThread(int  clientSocket)
 {
@@ -24,7 +25,7 @@ void  socketThread(int  clientSocket)
    pthread_mutex_unlock(&lock);
    sleep(1);
    //send(newSocket,buffer,13,0);
-   send(newSocket,"#PU1",4,0)
+   send(newSocket,"#PU1",4,0);
    printf("Exit socketThread \n");
    close(newSocket);
   }
@@ -63,7 +64,8 @@ int main(){
         {
             /*---- Accept call creates a new socket for the incoming connection ----*/
             addr_size = sizeof serverStorage;
-            newSocket = (serverSocket, (struct sockaddr *) &serverStorage, &addr_size);
+            newSocket = accept(serverSocket, (struct sockaddr *) &serverStorage, &addr_size);
+            
             int pid_c = 0;
         if ((pid_c = fork())==0)
             {
