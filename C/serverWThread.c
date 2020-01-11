@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<time.h>
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<string.h>
@@ -11,10 +12,17 @@
 #include <pthread.h>
 void  socketThread(int  clientSocket)
 {
+    int newSocket = clientSocket;       
     while(1){
-        int newSocket = clientSocket;
+        char client_message[2000];
         recv(newSocket , client_message , 2000 , 0);
-        printf("Data received: %s\n",client_message);
+
+        time_t mytime = time(NULL);
+        char * time_str = ctime(&mytime);
+        time_str[strlen(time_str)-1] = '\0';
+        //printf("Current Time : %s\n", time_str);
+
+        printf("%s: Data received: %s\n",time_str,client_message);
         // Send message to the client socket 
         //pthread_mutex_unlock(&lock);
         sleep(1);
