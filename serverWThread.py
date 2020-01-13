@@ -21,9 +21,7 @@ def threaded(c):
 			print_lock.release() 
 			break
 		print ('received "%s"' % data)        
-        
-		data = '#PU1' 
-		
+        data = '#PU1' 
 		c.send(data.encode()) 
 
 	# connection closed 

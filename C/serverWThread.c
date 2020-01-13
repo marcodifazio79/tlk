@@ -37,13 +37,13 @@
 void  socketThread(int  clientSocket)
 {
     int newSocket = clientSocket;       
-    int recvResult = 0
+    int recvResult = 0;
     while(1){
         char client_message[2000];
         recvResult = recv(newSocket , client_message , 2000 , 0);
         if(recvResult == 0)
         {
-            printf("Disconnected from client")
+            printf("Disconnected from client");
             break;
         }
         time_t mytime = time(NULL);
