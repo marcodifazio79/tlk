@@ -54,7 +54,7 @@ void  socketThread(int  clientSocket)
 {
     int newSocket = clientSocket;       
     int recvResult = 0, sendResult = 0;
-    int *commandLenght = 15;
+    int commandLenght = 15;
     while(1){
         char client_message[2000];
         recvResult = recv(newSocket , client_message , 2000 , 0);
@@ -72,7 +72,7 @@ void  socketThread(int  clientSocket)
         //pthread_mutex_unlock(&lock);
         sleep(1);
         //send(newSocket,buffer,13,0);
-        sendResult = sendall(newSocket,"#PSW123456#PU1",15);
+        sendResult = sendall(newSocket,"#PSW123456#PU1",&commandLenght);
         //send(newSocket,"#PSW123456#PU1",14,0);
         
     }
