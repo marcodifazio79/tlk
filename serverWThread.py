@@ -13,7 +13,7 @@ def threaded(c):
 
 		# data received from client 
 		#print ('test')
-		data = c.recv(8) 
+		data = c.recv(1024) 
 		if not data: 
 			print('No data, bye') 
 			

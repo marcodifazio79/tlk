@@ -1,33 +1,61 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include<string.h>
-#include <arpa/inet.h>
-#include <fcntl.h> // for open
-#include <unistd.h> // for close
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <pthread.h>
+
+
+
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+
+#elif __linux__
+    
+    #include<sys/socket.h>
+    #include<netinet/in.h>
+    #include<string.h>
+    #include <arpa/inet.h>
+    #include <fcntl.h> 
+    #include <unistd.h> 
+    #include <sys/types.h>
+    #include <sys/wait.h>
+    #include <pthread.h>
+   
+#elif __unix__ // all unices not caught above
+    // Unix
+#elif defined(_POSIX_VERSION)
+    // POSIX
+#else
+#   error "Unknown compiler"
+#endif
+
+
 void  socketThread(int  clientSocket)
 {
     int newSocket = clientSocket;       
+    int recvResult = 0
     while(1){
         char client_message[2000];
-        recv(newSocket , client_message , 2000 , 0);
-
+        recvResult = recv(newSocket , client_message , 2000 , 0);
+        if(recvResult == 0)
+        {
+            printf("Disconnected from client")
+            break;
+        }
         time_t mytime = time(NULL);
         char * time_str = ctime(&mytime);
         time_str[strlen(time_str)-1] = '\0';
         //printf("Current Time : %s\n", time_str);
-
         printf("%s: Data received: %s\n",time_str,client_message);
         // Send message to the client socket 
         //pthread_mutex_unlock(&lock);
         sleep(1);
         //send(newSocket,buffer,13,0);
-        send(newSocket,"#PSW123456#PU1",14,0);
+        //send(newSocket,"#PSW123456#PU1",14,0);
         
     }
     printf("Exit socketThread \n");
