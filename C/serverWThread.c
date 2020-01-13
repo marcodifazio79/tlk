@@ -50,17 +50,17 @@ int sendall(int s, char *buf, int *len)
     return n==-1?-1:0; // return -1 on failure, 0 on success
 }
 
-void  socketThread(int  clientSocket)
+void socketThread(int  clientSocket)
 {
     int newSocket = clientSocket;       
     int recvResult = 0, sendResult = 0;
-    int commandLenght = 15;
+    int commandLenght = 14;
     while(1){
         char client_message[2000];
         recvResult = recv(newSocket , client_message , 2000 , 0);
         if(recvResult == 0)
         {
-            printf("Disconnected from client");
+            printf("Disconnected from client\n");
             break;
         }
         time_t mytime = time(NULL);
@@ -70,7 +70,7 @@ void  socketThread(int  clientSocket)
         printf("%s: Data received: %s\n",time_str,client_message);
         // Send message to the client socket 
         //pthread_mutex_unlock(&lock);
-        sleep(1);
+        //sleep(1);
         //send(newSocket,buffer,13,0);
         sendResult = sendall(newSocket,"#PSW123456#PU1",&commandLenght);
         //printf("sendResult = %d", sendResult);
@@ -112,7 +112,7 @@ int main(){
         printf("Listening\n");
   else
         printf("Error\n");
-    pthread_t tid[60];
+    //pthread_t tid[60];
     int i = 0;
     while(1)
         {
@@ -132,10 +132,10 @@ int main(){
         else
             {
             pid[i++] = pid_c;
-            if( i >= 49)
+            if( i >= 499)
             {
                 i = 0;
-                while(i < 50)
+                while(i < 500)
                     waitpid(pid[i++], NULL, 0);
                 i = 0;
             }
