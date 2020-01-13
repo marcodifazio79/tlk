@@ -8,6 +8,7 @@
 #include<string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 #define SERVER_PORT  9000
 
 #define TRUE             1
@@ -254,7 +255,7 @@ int main (int argc, char *argv[])
                   /**********************************************/
                   len = rc;
                   printf("  %d bytes received\n", len);
-
+                  printf("Data received: %s\n",buffer);
                   /**********************************************/
                   /* Echo the data back to the client           */
                   /**********************************************/
