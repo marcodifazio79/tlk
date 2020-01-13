@@ -37,14 +37,14 @@ int sendall(int s, char *buf, int *len)
     int total = 0;        // how many bytes we've sent 
     int bytesleft = *len; // how many we have left to send
     int n;
-
+    printf("i get so far!");
     while(total < *len) {
         n = send(s, buf+total, bytesleft, 0);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;
     }
-
+    printf("i get so far! x2");
     *len = total; // return number actually sent here
 
     return n==-1?-1:0; // return -1 on failure, 0 on success
@@ -73,7 +73,7 @@ void  socketThread(int  clientSocket)
         sleep(1);
         //send(newSocket,buffer,13,0);
         sendResult = sendall(newSocket,"#PSW123456#PU1",&commandLenght);
-        printf("sendResult = %d", sendResult);
+        //printf("sendResult = %d", sendResult);
         
         
         //send(newSocket,"#PSW123456#PU1",14,0);
@@ -86,9 +86,9 @@ void  socketThread(int  clientSocket)
 
 int main(){
   int serverSocket, newSocket;
-  struct sockaddr_in serverAddr, peerAddr;
+  struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
-  socklen_t addr_size, peerSocketLenght;
+  socklen_t addr_size;
   pid_t pid[50];
 
   //Create the socket. 
@@ -120,9 +120,9 @@ int main(){
             addr_size = sizeof serverStorage;
             newSocket = accept(serverSocket, (struct sockaddr *) &serverStorage, &addr_size);
             
-            getpeername(newSocket, (struct sockaddr*)&peerAddr, &peerSocketLenght);
-            printf("Peer IP address: %s\n", inet_ntoa(peerAddr.sin_addr));
-            printf("Peer port      : %d\n", ntohs(peerAddr.sin_port));
+            getpeername(newSocket, (struct sockaddr*)&serverAddr, &addr_size);
+            printf("connected modem IP address: %s\n", inet_ntoa(serverAddr.sin_addr));
+            //printf("Peer port      : %d\n", ntohs(serverAddr.sin_port));
 
             int pid_c = 0;
         if ((pid_c = fork())==0)
