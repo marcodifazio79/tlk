@@ -54,6 +54,7 @@ void  socketThread(int  clientSocket)
 {
     int newSocket = clientSocket;       
     int recvResult = 0, sendResult = 0;
+    int *commandLenght = 15;
     while(1){
         char client_message[2000];
         recvResult = recv(newSocket , client_message , 2000 , 0);
