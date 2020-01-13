@@ -6,12 +6,14 @@
 #include <netinet/in.h>
 #include <errno.h>
 #include<string.h>
+#include <fcntl.h>
+#include <unistd.h>
 #define SERVER_PORT  9000
 
 #define TRUE             1
 #define FALSE            0
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
    int    i, len, rc, on = 1;
    int    listen_sd, max_sd, new_sd;
@@ -63,10 +65,13 @@ main (int argc, char *argv[])
    /*************************************************************/
    memset(&addr, 0, sizeof(addr));
    addr.sin_family      = AF_INET;
-   memcpy(&addr.sin_addr, &inaddr_any, sizeof(inaddr_any));
-   addr.sin6_port        = htons(SERVER_PORT);
-   rc = bind(listen_sd,
-             (struct sockaddr *)&addr, sizeof(addr));
+   
+   //Set IP address to localhost 
+   addr.sin_addr.s_addr = inet_addr("10.10.10.71");
+
+   addr.sin_port        = htons(SERVER_PORT);
+   rc = bind(listen_sd, (struct sockaddr *)&addr, sizeof(addr));
+
    if (rc < 0)
    {
       perror("bind() failed");
