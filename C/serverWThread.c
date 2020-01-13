@@ -74,11 +74,10 @@ void socketThread(int  clientSocket)
         //pthread_mutex_unlock(&lock);
         //sleep(1);
         //send(newSocket,buffer,13,0);
-        printf("i get so far! x 1\n");
+        printf("i get so far! x1\n");
         sendResult = sendall(newSocket,"#PSW123456#PU1",&commandLenght);
         printf("i get so far! x3\n");
-    
-        //printf("sendResult = %d", sendResult);
+        printf("sendResult = %d", sendResult);
         
         
         //send(newSocket,"#PSW123456#PU1",14,0);
