@@ -5,8 +5,8 @@
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <errno.h>
-
-#define SERVER_PORT  12345
+#include<string.h>
+#define SERVER_PORT  9000
 
 #define TRUE             1
 #define FALSE            0
@@ -18,7 +18,7 @@ main (int argc, char *argv[])
    int    desc_ready, end_server = FALSE;
    int    close_conn;
    char   buffer[80];
-   struct sockaddr_in6 addr;
+   struct sockaddr_in addr;
    struct timeval      timeout;
    fd_set              master_set, working_set;
 
