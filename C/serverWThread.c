@@ -34,9 +34,11 @@
 #endif
 int sendall(int s, char *buf, int *len)
 {
+    printf("i get so far! x2\n");
     int total = 0;        // how many bytes we've sent 
     int bytesleft = *len; // how many we have left to send
     int n;
+    sleep(2);
     while(total < *len) {
         n = send(s, buf+total, bytesleft, 0);
         if (n == -1) { break; }
@@ -50,7 +52,7 @@ int sendall(int s, char *buf, int *len)
 
 void socketThread(int  clientSocket)
 {
-    printf("i get so far! x2");
+    
     
     int newSocket = clientSocket;       
     int recvResult = 0, sendResult = 0;
@@ -72,9 +74,9 @@ void socketThread(int  clientSocket)
         //pthread_mutex_unlock(&lock);
         //sleep(1);
         //send(newSocket,buffer,13,0);
-        printf("i get so far! x 1");
+        printf("i get so far! x 1\n");
         sendResult = sendall(newSocket,"#PSW123456#PU1",&commandLenght);
-        printf("i get so far! x3");
+        printf("i get so far! x3\n");
     
         //printf("sendResult = %d", sendResult);
         
