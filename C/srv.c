@@ -186,8 +186,8 @@ int main(void)
 
                     } else {
                         // We got some good data from a client
-
-                        for(int j = 0; j < fd_count; j++) {
+                        printf("Data received: %s\n",buf);
+                        /*for(int j = 0; j < fd_count; j++) {
                             // Send to everyone!
                             int dest_fd = pfds[j].fd;
 
@@ -197,7 +197,7 @@ int main(void)
                                     perror("send");
                                 }
                             }
-                        }
+                        }*/
                     }
                 } // END handle data from client
             } // END got ready-to-read from poll()
