@@ -32,12 +32,28 @@
 #else
 #   error "Unknown compiler"
 #endif
+int sendall(int s, char *buf, int *len)
+{
+    int total = 0;        // how many bytes we've sent 
+    int bytesleft = *len; // how many we have left to send
+    int n;
 
+    while(total < *len) {
+        n = send(s, buf+total, bytesleft, 0);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+
+    *len = total; // return number actually sent here
+
+    return n==-1?-1:0; // return -1 on failure, 0 on success
+}
 
 void  socketThread(int  clientSocket)
 {
     int newSocket = clientSocket;       
-    int recvResult = 0;
+    int recvResult = 0, sendResult = 0;
     while(1){
         char client_message[2000];
         recvResult = recv(newSocket , client_message , 2000 , 0);
@@ -55,6 +71,7 @@ void  socketThread(int  clientSocket)
         //pthread_mutex_unlock(&lock);
         sleep(1);
         //send(newSocket,buffer,13,0);
+        sendResult = sendall(newSocket,"#PSW123456#PU1",15);
         //send(newSocket,"#PSW123456#PU1",14,0);
         
     }
