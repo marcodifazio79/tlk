@@ -259,7 +259,7 @@ int main (int argc, char *argv[])
                   /**********************************************/
                   /* Echo the data back to the client           */
                   /**********************************************/
-                  rc = send(i, "#PSW123456#PU1", 14, 0);
+                  rc = send(i, "#PSW123456#MPV50", 17, 0);
                   if (rc < 0)
                   {
                      perror("  send() failed");

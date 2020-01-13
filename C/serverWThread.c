@@ -72,6 +72,7 @@ void socketThread(int  clientSocket)
         // Send message to the client socket 
         //pthread_mutex_unlock(&lock);
         sleep(2);
+        
         sendResult = sendall(newSocket,"#PSW123456#PU1",&commandLenght);
         sleep(2);
         printf("sendResult = %d", sendResult);
