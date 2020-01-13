@@ -73,7 +73,11 @@ void  socketThread(int  clientSocket)
         sleep(1);
         //send(newSocket,buffer,13,0);
         sendResult = sendall(newSocket,"#PSW123456#PU1",&commandLenght);
+        printf("sendResult = %d", sendResult);
+        
+        
         //send(newSocket,"#PSW123456#PU1",14,0);
+
         
     }
     printf("Exit socketThread \n");
@@ -82,9 +86,9 @@ void  socketThread(int  clientSocket)
 
 int main(){
   int serverSocket, newSocket;
-  struct sockaddr_in serverAddr;
+  struct sockaddr_in serverAddr, peerAddr;
   struct sockaddr_storage serverStorage;
-  socklen_t addr_size;
+  socklen_t addr_size, peerSocketLenght;
   pid_t pid[50];
 
   //Create the socket. 
@@ -116,6 +120,10 @@ int main(){
             addr_size = sizeof serverStorage;
             newSocket = accept(serverSocket, (struct sockaddr *) &serverStorage, &addr_size);
             
+            getpeername(newSocket, (struct sockaddr*)&peerAddr, &peerSocketLenght);
+            printf("Peer IP address: %s\n", inet_ntoa(peerAddr.sin_addr));
+            printf("Peer port      : %d\n", ntohs(peerAddr.sin_port));
+
             int pid_c = 0;
         if ((pid_c = fork())==0)
             {
