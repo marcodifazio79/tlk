@@ -297,7 +297,7 @@ int main (int argc, char *argv[])
           time_str[strlen(time_str)-1] = '\0';
 
           len = rc;
-          printf("  %s: %d bytes received\n", len);
+          printf("  %s: %d bytes received\n",time_str, len);
           printf("  data received: %s\n",buffer);
           /*****************************************************/
           /* Send the command to the client                  */
