@@ -15,7 +15,7 @@ https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_71/rzab6/poll.htm
 #include <fcntl.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-
+#include<time.h>
 #define SERVER_PORT  9000
 
 #define TRUE             1
@@ -224,7 +224,12 @@ int main (int argc, char *argv[])
           /* Add the new incoming connection to the            */
           /* pollfd structure                                  */
           /*****************************************************/
-          printf("  New incoming connection - %d\n", new_sd);
+
+          time_t mytime = time(NULL);
+          char * time_str = ctime(&mytime);
+          time_str[strlen(time_str)-1] = '\0';
+
+          printf("  %s: New incoming connection - %d\n", time_str,new_sd);
           fds[nfds].fd = new_sd;
           fds[nfds].events = POLLIN;
           nfds++;
@@ -283,8 +288,13 @@ int main (int argc, char *argv[])
           /*****************************************************/
           /* Data was received                                 */
           /*****************************************************/
+
+          mytime = time(NULL);
+          time_str = ctime(&mytime);
+          time_str[strlen(time_str)-1] = '\0';
+
           len = rc;
-          printf("  %d bytes received\n", len);
+          printf("  %s: %d bytes received\n", len);
           printf("  data received: %s\n",buffer);
           /*****************************************************/
           /* Send the command to the client                  */
