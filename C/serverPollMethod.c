@@ -50,6 +50,9 @@ int main (int argc, char *argv[])
   int    timeout;
   struct pollfd fds[200];
   int    nfds = 1, current_size = 0, i, j;
+  time_t mytime = time(NULL);
+  char * time_str = ctime(&mytime);
+
 
   /*************************************************************/
   /* Create an AF_INET stream socket to receive incoming      */
@@ -225,8 +228,8 @@ int main (int argc, char *argv[])
           /* pollfd structure                                  */
           /*****************************************************/
 
-          time_t mytime = time(NULL);
-          char * time_str = ctime(&mytime);
+          mytime = time(NULL);
+          time_str = ctime(&mytime);
           time_str[strlen(time_str)-1] = '\0';
 
           printf("  %s: New incoming connection - %d\n", time_str,new_sd);
