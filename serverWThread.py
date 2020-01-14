@@ -4,6 +4,7 @@ import socket
 # import thread module 
 from _thread import *
 import threading 
+from datetime import datetime
 
 print_lock = threading.Lock() 
 
@@ -20,9 +21,10 @@ def threaded(c):
 			# lock released on exit 
 			print_lock.release() 
 			break
-		print ('received "%s"' % data)        
-		data = '#PU1' 
-		c.send(data.encode()) 
+		dateTimeObj = datetime.now()
+		print (dateTimeObj.hour, ':', dateTimeObj.minute, ':', dateTimeObj.second ,'received "%s"' % data)        
+		#data = '#PU1' 
+		#c.send(data.encode()) 
 
 	# connection closed 
 	c.close() 
