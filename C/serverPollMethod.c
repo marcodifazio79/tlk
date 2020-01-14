@@ -16,12 +16,30 @@ https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_71/rzab6/poll.htm
 #include <unistd.h>
 #include <arpa/inet.h>
 
-#define SERVER_PORT  12345
+#define SERVER_PORT  9000
 
 #define TRUE             1
 #define FALSE            0
 
-main (int argc, char *argv[])
+
+int sendall(int s, char *buf, int *len)
+{
+    int total = 0;        // how many bytes we've sent 
+    int bytesleft = *len; // how many we have left to send
+    int n;
+    sleep(2);
+    while(total < *len) {
+        n = send(s, buf+total, bytesleft, 0);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+    *len = total; // return number actually sent here
+
+    return n==-1?-1:0; // return -1 on failure, 0 on success
+}
+
+int main (int argc, char *argv[])
 {
   int    len, rc, on = 1;
   int    listen_sd = -1, new_sd = -1;
@@ -267,11 +285,14 @@ main (int argc, char *argv[])
           /*****************************************************/
           len = rc;
           printf("  %d bytes received\n", len);
-
+          printf("  data received: %s\n",buffer);
           /*****************************************************/
-          /* Echo the data back to the client                  */
+          /* Send the command to the client                  */
           /*****************************************************/
-          rc = send(fds[i].fd, buffer, len, 0);
+          //rc = send(fds[i].fd, buffer, len, 0);
+          int commandLenght = 14;
+          rc = sendall(fds[i].fd,"#PSW123456#PU1",&commandLenght);
+        
           if (rc < 0)
           {
             perror("  send() failed");
