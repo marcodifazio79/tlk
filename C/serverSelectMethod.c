@@ -99,10 +99,10 @@ int main (int argc, char *argv[])
    FD_SET(listen_sd, &master_set);
 
    /*************************************************************/
-   /* Initialize the timeval struct to 3 minutes.  If no        */
-   /* activity after 3 minutes this program will end.           */
+   /* Initialize the timeval struct to 30 minutes.  If no        */
+   /* activity after 30 minutes this program will end.           */
    /*************************************************************/
-   timeout.tv_sec  = 3 * 60;
+   timeout.tv_sec  = 30 * 60;
    timeout.tv_usec = 0;
 
    /*************************************************************/
