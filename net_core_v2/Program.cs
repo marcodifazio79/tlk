@@ -69,8 +69,7 @@ public class AsynchronousSocketListener {
         // Create the state object.  
         StateObject state = new StateObject();  
         state.workSocket = handler;  
-        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,  
-            new AsyncCallback(ReadCallback), state);  
+        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
     }  
   
     public static void ReadCallback(IAsyncResult ar) {
@@ -91,8 +90,13 @@ public class AsynchronousSocketListener {
             // more data.  
             content = state.sb.ToString();  
             Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
-            Send(handler, "PSW123456");  
-        }  
+            Send(handler, "PSW123456");
+            AcceptCallback(ar);
+        }
+        else 
+            if(bytesRead == 0){
+                Console.WriteLine("Connessione chiusa dal client");
+            }
     }  
   
     private static void Send(Socket handler, String data) {  
