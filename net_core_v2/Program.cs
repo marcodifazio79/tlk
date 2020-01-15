@@ -80,20 +80,30 @@ public class AsynchronousSocketListener {
         Socket handler = state.workSocket;  
         
         // Read data from the client socket.   
-        int bytesRead = handler.EndReceive(ar);  
-        if (bytesRead > 0) {  
-            // There  might be more data, so store the data received so far.  
-            state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
-    
-            content = state.sb.ToString();  
-            Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
-            Send(handler, "PSW123456");
-            
-        }
-        else 
-            if(bytesRead == 0){
-                Console.WriteLine("Connessione chiusa dal client");
+        try{
+            int bytesRead = handler.EndReceive(ar);
+        
+            if (bytesRead > 0) {  
+                // There  might be more data, so store the data received so far.  
+                state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
+        
+                content = state.sb.ToString();  
+                Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
+                Send(handler, "PSW123456");
+                
             }
+            else 
+                if(bytesRead == 0){
+                    Console.WriteLine("Connessione chiusa dal client");
+                }
+        }
+        catch(System.Net.Sockets.SocketException a){
+            Console.WriteLine(a.ToString()); 
+        }
+        catch(Exception e){
+            Console.WriteLine(e.ToString());  
+        }
+
     }  
   
     private static void Send(Socket handler, String data) {  
