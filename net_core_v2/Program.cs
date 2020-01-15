@@ -29,8 +29,7 @@ public class AsynchronousSocketListener {
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9000);  
   
         // Create a TCP/IP socket.  
-        Socket listener = new Socket(ipAddress.AddressFamily,  
-            SocketType.Stream, ProtocolType.Tcp );  
+        Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
   
         // Bind the socket to the local endpoint and listen for incoming connections.  
         try {  
@@ -42,7 +41,7 @@ public class AsynchronousSocketListener {
                 allDone.Reset();  
   
                 // Start an asynchronous socket to listen for connections.  
-                Console.WriteLine("Waiting for a connection...");  
+                Console.WriteLine("Waiting for a new connection...");  
                 listener.BeginAccept(new AsyncCallback(AcceptCallback), listener );  
   
                 // Wait until a connection is made before continuing.  
@@ -85,13 +84,11 @@ public class AsynchronousSocketListener {
         if (bytesRead > 0) {  
             // There  might be more data, so store the data received so far.  
             state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
-  
-            // Check for end-of-file tag. If it is not there, read   
-            // more data.  
+    
             content = state.sb.ToString();  
             Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
             Send(handler, "PSW123456");
-            AcceptCallback(ar);
+            
         }
         else 
             if(bytesRead == 0){
@@ -116,14 +113,22 @@ public class AsynchronousSocketListener {
             int bytesSent = handler.EndSend(ar);  
             Console.WriteLine("Sent {0} bytes to client.", bytesSent);  
   
-            handler.Shutdown(SocketShutdown.Both);  
-            handler.Close();  
+            //handler.Shutdown(SocketShutdown.Both);  
+            //handler.Close();  
+            //invece di chiudere il socket, lo rimetto in ricezione..
+            StateObject state = new StateObject();  
+            state.workSocket = handler;  
+            handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
   
         } catch (Exception e) {  
             Console.WriteLine(e.ToString());  
         }  
     }  
   
+
+    
+
+
     public static int Main(String[] args) {  
         StartListening();  
         return 0;  
