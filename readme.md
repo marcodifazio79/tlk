@@ -1,4 +1,4 @@
-#Telemetria Kiddie
+# Telemetria Kiddie
 
 La cartella col codice di riferimento attuale del server è net_core_v2.
 Da terminale, cd nella cartella net_core_v2 e 
@@ -8,7 +8,7 @@ L'output è l'eseguibile /net_core_v2/bin/Debug/netcoreapp3.1/ubuntu.18.04-x64/t
 
 
 
-##For older rev: 
+## For older rev: 
 for reference:
 
 https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
