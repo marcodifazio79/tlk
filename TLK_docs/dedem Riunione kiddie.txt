@@ -1,0 +1,24 @@
+14/11/2019
+
+riunione telemetria kiddie
+
+195.94.187.153/portum
+
+modem rossi - concentratore
+neri moduli gsm standalone
+
+intabellare i dati che al momento sono un unica riga =/
+
+anomalie differenza ce/mhd (codice macchine/codice modem)
+anomalie pacchetti malformati (?)
+
+
+comandi: gestire timeout sul comando inserito?
+
+
+
+08/01/2020
+
+DAMO UN OCCHIATA A PORTUM.
+
+

@@ -1,0 +1,10 @@
+#ATC+QIOPEN="TCP","10.10.10.71","9000"
+
+
+#ATC+QISEND=3 "0x080x1A0x1B"
+
+#ATC+QISEND
+> 1234567890abcdefghijklmnopqrstuvwxyz<0x1A> 
+
+
+#ATC+QISEND>test<ctrl+z>
