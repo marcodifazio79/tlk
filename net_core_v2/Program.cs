@@ -80,10 +80,9 @@ public class AsynchronousSocketListener {
         // from the asynchronous state object.  
         StateObject state = (StateObject) ar.AsyncState;  
         Socket handler = state.workSocket;  
-  
+        
         // Read data from the client socket.   
         int bytesRead = handler.EndReceive(ar);  
-        //Console.WriteLine("bytesRead: {0}", bytesRead.ToString());
         if (bytesRead > 0) {  
             // There  might be more data, so store the data received so far.  
             state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
@@ -92,6 +91,7 @@ public class AsynchronousSocketListener {
             // more data.  
             content = state.sb.ToString();  
             Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
+            Send(handler, "PSW123456");  
         }  
     }  
   
@@ -100,8 +100,7 @@ public class AsynchronousSocketListener {
         byte[] byteData = Encoding.ASCII.GetBytes(data);  
   
         // Begin sending the data to the remote device.  
-        handler.BeginSend(byteData, 0, byteData.Length, 0,  
-            new AsyncCallback(SendCallback), handler);  
+        handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);  
     }  
   
     private static void SendCallback(IAsyncResult ar) {  
