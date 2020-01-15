@@ -1,0 +1,11 @@
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\bin\Debug\netcoreapp3.1\net_core.exe
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\bin\Debug\netcoreapp3.1\net_core.deps.json
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\bin\Debug\netcoreapp3.1\net_core.runtimeconfig.json
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\bin\Debug\netcoreapp3.1\net_core.runtimeconfig.dev.json
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\bin\Debug\netcoreapp3.1\net_core.dll
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\bin\Debug\netcoreapp3.1\net_core.pdb
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\obj\Debug\netcoreapp3.1\net_core.csprojAssemblyReference.cache
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\obj\Debug\netcoreapp3.1\net_core.AssemblyInfoInputs.cache
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\obj\Debug\netcoreapp3.1\net_core.AssemblyInfo.cs
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\obj\Debug\netcoreapp3.1\net_core.dll
+D:\Users\fdifazio\Source\Repos\tlk_python\net_core\obj\Debug\netcoreapp3.1\net_core.pdb

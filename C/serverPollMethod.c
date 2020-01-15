@@ -3,8 +3,21 @@
 /*
 https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_71/rzab6/poll.htm
 */
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+
+#elif __linux__
+
 #include <sys/ioctl.h>
 #include <sys/poll.h>
 #include <sys/socket.h>
@@ -15,7 +28,21 @@ https://www.ibm.com/support/knowledgecenter/en/ssw_ibm_i_71/rzab6/poll.htm
 #include <fcntl.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include<time.h>
+
+   
+#elif __unix__ // all unices not caught above
+    // Unix
+#elif defined(_POSIX_VERSION)
+    // POSIX
+#else
+#   error "Unknown compiler"
+#endif
+
+
+
+
+
+
 #define SERVER_PORT  9000
 
 #define TRUE             1
