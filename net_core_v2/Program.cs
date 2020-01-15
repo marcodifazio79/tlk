@@ -26,7 +26,7 @@ public class AsynchronousSocketListener {
     public static void StartListening() {  
         // Establish the local endpoint for the socket.  
         IPAddress ipAddress = IPAddress.Parse("10.10.10.71"); 
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);  
+        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9000);  
   
         // Create a TCP/IP socket.  
         Socket listener = new Socket(ipAddress.AddressFamily,  
