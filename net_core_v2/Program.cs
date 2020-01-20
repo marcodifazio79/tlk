@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;  
 using System.Text;  
 using System.Threading;  
-  
+using System.Collections.Generic;
 // State object for reading client data asynchronously  
 public class StateObject {  
     // Client  socket.  
@@ -15,11 +15,11 @@ public class StateObject {
 // Received data string.  
     public StringBuilder sb = new StringBuilder();    
 }  
-  
+
 public class AsynchronousSocketListener {  
     // Thread signal.  
     public static ManualResetEvent allDone = new ManualResetEvent(false);  
-  
+    public static Dictionary<string, Thread> threadDictionary = new Dictionary<string, Thread>();
     public AsynchronousSocketListener() {  
     }  
   
@@ -82,14 +82,21 @@ public class AsynchronousSocketListener {
         // Read data from the client socket.   
         try{
             int bytesRead = handler.EndReceive(ar);
-        
+            if(threadDictionary.Count > 0)
+            {
+                threadDictionary["sendingThread"].Abort();
+                Console.WriteLine("Killing -send- thread, recv in progress");
+            }
             if (bytesRead > 0) {  
                 // There  might be more data, so store the data received so far.  
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
         
                 content = state.sb.ToString();  
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
-                Send(handler, "PSW123456");
+                
+                Thread t = new Thread(()=>Send (handler, "PSW123456"));
+                threadDictionary.Add("sendingThread", t);
+                t.Start();
                 
             }
             else 
@@ -105,8 +112,10 @@ public class AsynchronousSocketListener {
         }
 
     }  
-  
-    private static void Send(Socket handler, String data) {  
+    
+    public static void Send(Socket handler, String data) {  
+        
+        data = data + Console.ReadLine();
         // Convert the string data to byte data using ASCII encoding.  
         byte[] byteData = Encoding.ASCII.GetBytes(data);  
   
@@ -136,7 +145,7 @@ public class AsynchronousSocketListener {
     }  
   
 
-    
+
 
 
     public static int Main(String[] args) {  
