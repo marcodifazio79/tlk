@@ -115,6 +115,7 @@ public class AsynchronousSocketListener {
             isAlive = false;
         }finally {
             if(isAlive)
+                handler.Listen(100);
                 handler.BeginAccept(new AsyncCallback(AcceptCallback), handler ); 
             
         }
