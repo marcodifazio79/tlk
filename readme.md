@@ -22,6 +22,9 @@ Password e invio. <br/>
 
 
 ### TO DO:
+Database connection -> implementere l'output sul db: WIP.
+Vedi https://www.nuget.org/packages/MySql.Data.EntityFrameworkCore/ .
+
 
 
 ## For older rev: 

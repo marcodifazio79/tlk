@@ -103,6 +103,8 @@ public class AsynchronousSocketListener {
             else 
                 if(bytesRead == 0){
                     Console.WriteLine("Connessione chiusa dal client");
+                    handler.Shutdown(SocketShutdown.Both);  
+                    handler.Close(); 
                     isAlive = false;
                 }
         }
@@ -170,10 +172,35 @@ public class AsynchronousSocketListener {
     }  
   
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////DATABASE STUFF///////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static void connectionToDB()
+    {  
+        MySql.Data.MySqlClient.MySqlConnection conn;
+        string myConnectionString;
+        myConnectionString = "server=10.10.10.71;uid=bot_user;" +  "pwd=Qwert@#!99;database=test";
+
+    try
+    {
+        conn = new MySql.Data.MySqlClient.MySqlConnection();
+        conn.ConnectionString = myConnectionString;
+        conn.Open();
+        Console.WriteLine("DB connection OK!");
+
+    }
+    catch (MySql.Data.MySqlClient.MySqlException ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+    }  
 
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static int Main(String[] args) {  
+        connectionToDB();
         StartListening();  
         return 0;  
     }  
