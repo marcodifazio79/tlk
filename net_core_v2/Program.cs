@@ -144,7 +144,8 @@ public class AsynchronousSocketListener {
             Console.WriteLine(e.ToString());  
         } finally {
             
-            
+            Thread t = new Thread(()=>Send (handler, "#PSW123456"));
+            t.Start();
                 
         }  
     }  
