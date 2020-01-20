@@ -193,6 +193,9 @@ public class AsynchronousSocketListener {
     catch (MySql.Data.MySqlClient.MySqlException ex)
     {
         Console.WriteLine(ex.Message);
+    }catch(Exception e)
+        {
+        Console.WriteLine(e.Message);
     }
     }  
 
