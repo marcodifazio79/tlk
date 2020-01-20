@@ -180,7 +180,7 @@ public class AsynchronousSocketListener {
     {  
         MySql.Data.MySqlClient.MySqlConnection conn;
         string myConnectionString;
-        myConnectionString = "server=10.10.10.71;uid=bot_user;" +  "pwd=Qwert@#!99;database=test";
+        myConnectionString = "Server=10.10.10.71;Database=test;Uid=bot_user;Pwd=Qwert@#!99;";
 
     try
     {
