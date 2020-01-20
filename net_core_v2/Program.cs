@@ -90,7 +90,7 @@ public class AsynchronousSocketListener {
                 content = state.sb.ToString();  
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
                 
-                Thread t = new Thread(()=>Send (handler, "PSW123456"));
+                Thread t = new Thread(()=>Send (handler, "#PSW123456"));
                 t.Start();
                 
             }
@@ -114,9 +114,13 @@ public class AsynchronousSocketListener {
         data = data + Console.ReadLine();
         // Convert the string data to byte data using ASCII encoding.  
         byte[] byteData = Encoding.ASCII.GetBytes(data);  
-  
+
+        try{  
         // Begin sending the data to the remote device.  
-        handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);  
+            handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);  
+        }catch(Exception e) {  
+            Console.WriteLine("Begin send error: \n" + e.ToString());  
+        }
     }  
   
     private static void SendCallback(IAsyncResult ar) {  
@@ -140,8 +144,7 @@ public class AsynchronousSocketListener {
             Console.WriteLine(e.ToString());  
         } finally {
             
-            Thread t = new Thread(()=>Send (handler, "PSW123456"));
-            t.Start();
+            
                 
         }  
     }  
