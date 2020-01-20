@@ -19,7 +19,7 @@ public class StateObject {
 public class AsynchronousSocketListener {  
     // Thread signal.  
     public static ManualResetEvent allDone = new ManualResetEvent(false);  
-    public static ManualResetEvent connectionLock = new ManualResetEvent(false);  
+   
     
     public AsynchronousSocketListener() {  
     }  
@@ -63,22 +63,18 @@ public class AsynchronousSocketListener {
         // Signal the main thread to continue.  
         allDone.Set();  
 
-        //inizialize "recv" lock
-        while(true){ 
-            connectionLock.Reset();
-
-            // Get the socket that handles the client request.  
-            Socket listener = (Socket) ar.AsyncState;  
-            Socket handler = listener.EndAccept(ar);  
+       
+        // Get the socket that handles the client request.  
+        Socket listener = (Socket) ar.AsyncState;  
+        Socket handler = listener.EndAccept(ar);  
     
-            // Create the state object.  
-            StateObject state = new StateObject();  
-            state.workSocket = handler;  
-            handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
+        // Create the state object.  
+        StateObject state = new StateObject();  
+        state.workSocket = handler;  
+        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
 
-            //waiting for data to arrive (or error) to continue
-            connectionLock.WaitOne();
-        }
+       
+        
     }  
   
     public static void ReadCallback(IAsyncResult ar) {
@@ -88,7 +84,7 @@ public class AsynchronousSocketListener {
         // from the asynchronous state object.  
         StateObject state = (StateObject) ar.AsyncState;  
         Socket handler = state.workSocket;  
-        
+        bool isAlive = true;
         // Read data from the client socket.   
         try{
             int bytesRead = handler.EndReceive(ar);
@@ -100,30 +96,35 @@ public class AsynchronousSocketListener {
                 content = state.sb.ToString();  
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
                 
-                Thread t = new Thread(()=>Send (handler, "#PSW123456"));
+                Thread t = new Thread(()=>Send (handler, "#PSW123456#PU1"));
                 t.Start();
                 
             }
             else 
                 if(bytesRead == 0){
                     Console.WriteLine("Connessione chiusa dal client");
+                    isAlive = false;
                 }
         }
         catch(System.Net.Sockets.SocketException a){
             Console.WriteLine(a.ToString()); 
+            isAlive = false;
         }
         catch(Exception e){
             Console.WriteLine(e.ToString());  
+            isAlive = false;
         }finally {
-            connectionLock.Set();
+            if(isAlive)
+                handler.BeginAccept(new AsyncCallback(AcceptCallback), handler ); 
+            
         }
 
     }  
     
     public static void Send(Socket handler, String data) {  
         
-        Console.WriteLine("Waiting for user command: ");
-        data = data + Console.ReadLine();
+        //Console.WriteLine("Waiting for user command: ");
+        //data = data + Console.ReadLine();
         // Convert the string data to byte data using ASCII encoding.  
         byte[] byteData = Encoding.ASCII.GetBytes(data);  
 
