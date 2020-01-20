@@ -115,8 +115,13 @@ public class AsynchronousSocketListener {
             isAlive = false;
         }finally {
             if(isAlive)
-                handler.Listen(100);
-                handler.BeginAccept(new AsyncCallback(AcceptCallback), handler ); 
+            {
+                // Create the state object.  
+                StateObject stateN = new StateObject();  
+                stateN.workSocket = handler;  
+                handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN);  
+            }
+
             
         }
 
