@@ -19,6 +19,7 @@ public class StateObject {
 public class AsynchronousSocketListener {  
     // Thread signal.  
     public static ManualResetEvent allDone = new ManualResetEvent(false);  
+    public static ManualResetEvent connectionLock = new ManualResetEvent(false);  
     
     public AsynchronousSocketListener() {  
     }  
@@ -58,17 +59,26 @@ public class AsynchronousSocketListener {
     }  
   
     public static void AcceptCallback(IAsyncResult ar) {  
+
         // Signal the main thread to continue.  
         allDone.Set();  
-  
-        // Get the socket that handles the client request.  
-        Socket listener = (Socket) ar.AsyncState;  
-        Socket handler = listener.EndAccept(ar);  
-  
-        // Create the state object.  
-        StateObject state = new StateObject();  
-        state.workSocket = handler;  
-        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
+
+        //inizialize "recv" lock
+        while(true){ 
+            connectionLock.Reset();
+
+            // Get the socket that handles the client request.  
+            Socket listener = (Socket) ar.AsyncState;  
+            Socket handler = listener.EndAccept(ar);  
+    
+            // Create the state object.  
+            StateObject state = new StateObject();  
+            state.workSocket = handler;  
+            handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
+
+            //waiting for data to arrive (or error) to continue
+            connectionLock.WaitOne();
+        }
     }  
   
     public static void ReadCallback(IAsyncResult ar) {
@@ -104,6 +114,8 @@ public class AsynchronousSocketListener {
         }
         catch(Exception e){
             Console.WriteLine(e.ToString());  
+        }finally {
+            connectionLock.Set();
         }
 
     }  
