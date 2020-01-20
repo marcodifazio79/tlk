@@ -19,7 +19,7 @@ public class StateObject {
 public class AsynchronousSocketListener {  
     // Thread signal.  
     public static ManualResetEvent allDone = new ManualResetEvent(false);  
-    public static Dictionary<string, Thread> threadDictionary = new Dictionary<string, Thread>();
+    
     public AsynchronousSocketListener() {  
     }  
   
@@ -82,11 +82,7 @@ public class AsynchronousSocketListener {
         // Read data from the client socket.   
         try{
             int bytesRead = handler.EndReceive(ar);
-            if(threadDictionary.Count > 0)
-            {
-                threadDictionary["sendingThread"].Abort();
-                Console.WriteLine("Killing -send- thread, recv in progress");
-            }
+            
             if (bytesRead > 0) {  
                 // There  might be more data, so store the data received so far.  
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
@@ -95,7 +91,6 @@ public class AsynchronousSocketListener {
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
                 
                 Thread t = new Thread(()=>Send (handler, "PSW123456"));
-                threadDictionary.Add("sendingThread", t);
                 t.Start();
                 
             }
@@ -115,6 +110,7 @@ public class AsynchronousSocketListener {
     
     public static void Send(Socket handler, String data) {  
         
+        Console.WriteLine("Waiting for user command: ");
         data = data + Console.ReadLine();
         // Convert the string data to byte data using ASCII encoding.  
         byte[] byteData = Encoding.ASCII.GetBytes(data);  
@@ -124,9 +120,10 @@ public class AsynchronousSocketListener {
     }  
   
     private static void SendCallback(IAsyncResult ar) {  
+        // Retrieve the socket from the state object.  
+        Socket handler = (Socket) ar.AsyncState;  
         try {  
-            // Retrieve the socket from the state object.  
-            Socket handler = (Socket) ar.AsyncState;  
+            
   
             // Complete sending the data to the remote device.  
             int bytesSent = handler.EndSend(ar);  
@@ -141,6 +138,11 @@ public class AsynchronousSocketListener {
   
         } catch (Exception e) {  
             Console.WriteLine(e.ToString());  
+        } finally {
+            
+            Thread t = new Thread(()=>Send (handler, "PSW123456"));
+            t.Start();
+                
         }  
     }  
   
