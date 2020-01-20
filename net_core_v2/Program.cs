@@ -133,19 +133,19 @@ public class AsynchronousSocketListener {
             int bytesSent = handler.EndSend(ar);  
             Console.WriteLine("Sent {0} bytes to client.", bytesSent);  
   
-            //handler.Shutdown(SocketShutdown.Both);  
-            //handler.Close();  
+            handler.Shutdown(SocketShutdown.Both);  
+            handler.Close();  
             //invece di chiudere il socket, lo rimetto in ricezione..
-            StateObject state = new StateObject();  
-            state.workSocket = handler;  
-            handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+            //StateObject state = new StateObject();  
+            //state.workSocket = handler;  
+            //handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
   
         } catch (Exception e) {  
             Console.WriteLine(e.ToString());  
         } finally {
             
-            Thread t = new Thread(()=>Send (handler, "#PSW123456"));
-            t.Start();
+            //Thread t = new Thread(()=>Send (handler, "#PSW123456"));
+            //t.Start();
                 
         }  
     }  
