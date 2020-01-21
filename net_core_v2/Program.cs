@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;  
 using System.Text;  
 using System.Threading;  
-using System.Collections.Generic;
+//using System.Collections.Generic;
 // State object for reading client data asynchronously  
 public class StateObject {  
     // Client  socket.  
@@ -27,6 +27,9 @@ public class AsynchronousSocketListener {
     public static void StartListening() {  
         // Establish the local endpoint for the socket.  
         IPAddress ipAddress = IPAddress.Parse("10.10.10.71"); 
+        #if DEBUG
+            ipAddress = IPAddress.Parse("192.168.17.210"); 
+        #endif
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9000);  
   
         // Create a TCP/IP socket.  
@@ -42,7 +45,7 @@ public class AsynchronousSocketListener {
                 allDone.Reset();  
   
                 // Start an asynchronous socket to listen for connections.  
-                Console.WriteLine("Waiting for a new connection...");  
+                Console.WriteLine("Waiting for a new connection...");
                 listener.BeginAccept(new AsyncCallback(AcceptCallback), listener );  
   
                 // Wait until a connection is made before continuing.  
@@ -67,7 +70,7 @@ public class AsynchronousSocketListener {
         // Get the socket that handles the client request.  
         Socket listener = (Socket) ar.AsyncState;  
         Socket handler = listener.EndAccept(ar);  
-    
+        
         // Create the state object.  
         StateObject state = new StateObject();  
         state.workSocket = handler;  
@@ -123,8 +126,6 @@ public class AsynchronousSocketListener {
                 stateN.workSocket = handler;  
                 handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN);  
             }
-
-            
         }
 
     }  
@@ -176,34 +177,40 @@ public class AsynchronousSocketListener {
 ////////////////////////////////////////DATABASE STUFF///////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static void connectionToDB()
+    public static void insertIntoDB(string dataToInsert)
     {  
         MySql.Data.MySqlClient.MySqlConnection conn;
         string myConnectionString;
         myConnectionString = "Server=127.0.0.1;Database=test;Uid=bot_user;Pwd=Qwert@#!99;";
-
-    try
-    {
-        conn = new MySql.Data.MySqlClient.MySqlConnection();
-        conn.ConnectionString = myConnectionString;
-        conn.Open();
-        Console.WriteLine("DB connection OK!");
-
-    }
-    catch (MySql.Data.MySqlClient.MySqlException ex)
-    {
-        Console.WriteLine(ex.Message);
-    }catch(Exception e)
+        try
         {
-        Console.WriteLine(e.Message);
-    }
+            conn = new MySql.Data.MySqlClient.MySqlConnection();
+            conn.ConnectionString = myConnectionString;
+            conn.Open();
+            Console.WriteLine("DB connection OK!");
+            string sql = "INSERT INTO dump (data) VALUES ('"+ dataToInsert +"')";
+            MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+            conn.Close();
+        }
+        catch (MySql.Data.MySqlClient.MySqlException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            //Console.WriteLine("Done.");
+        }
     }  
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static int Main(String[] args) {  
-        connectionToDB();
         StartListening();  
         return 0;  
     }  
