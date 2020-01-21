@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;  
 using System.Text;  
 using System.Threading;  
+
 //using System.Collections.Generic;
 // State object for reading client data asynchronously  
 public class StateObject {  
@@ -203,6 +204,17 @@ public class AsynchronousSocketListener {
         }
         finally
         {
+            
+            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string pathRoot = System.IO.Path.GetDirectoryName(strExeFilePath); 
+
+            if (!System.IO.Directory.Exists(pathRoot + @"\file_dump")) System.IO.Directory.CreateDirectory(pathRoot + @"\file_dump");
+            
+            System.IO.StreamWriter fWriter= new System.IO.StreamWriter(pathRoot + @"\file_dump\"+ DateTime.Today.ToString()+".txt",true);
+            fWriter.WriteLine(DateTime.Now.ToString()+ " - " + dataToInsert);
+            fWriter.Close();
+
+
             //Console.WriteLine("Done.");
         }
     }  

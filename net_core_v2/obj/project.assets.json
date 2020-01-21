@@ -6528,19 +6528,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\fdifazio\\.nuget\\packages\\": {}
+    "C:\\Users\\mdifazio.DEDEMPVP\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\fdifazio\\Source\\Repos\\tlk_python\\net_core_v2\\tlk_core.csproj",
+      "projectUniqueName": "C:\\Users\\mdifazio.DEDEMPVP\\source\\repos\\tlk_python\\net_core_v2\\tlk_core.csproj",
       "projectName": "tlk_core",
-      "projectPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk_python\\net_core_v2\\tlk_core.csproj",
-      "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk_python\\net_core_v2\\obj\\",
+      "projectPath": "C:\\Users\\mdifazio.DEDEMPVP\\source\\repos\\tlk_python\\net_core_v2\\tlk_core.csproj",
+      "packagesPath": "C:\\Users\\mdifazio.DEDEMPVP\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\mdifazio.DEDEMPVP\\source\\repos\\tlk_python\\net_core_v2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\mdifazio.DEDEMPVP\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -6584,7 +6584,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
       }
     }
   }
