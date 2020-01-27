@@ -71,8 +71,8 @@ public class AsynchronousSocketListener {
         // Get the socket that handles the client request.  
         Socket listener = (Socket) ar.AsyncState;  
         Socket handler = listener.EndAccept(ar);  
-        Console.WriteLine("connected to : " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-
+        Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+        insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
         // Create the state object.  
         StateObject state = new StateObject();  
         state.workSocket = handler;  
@@ -100,7 +100,9 @@ public class AsynchronousSocketListener {
         
                 content = state.sb.ToString();  
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
-                
+                insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
+        
+
                 Thread t = new Thread(()=>Send (handler, "#PSW123456#PU1"));
                 t.Start();
                 
@@ -108,6 +110,7 @@ public class AsynchronousSocketListener {
             else 
                 if(bytesRead == 0){
                     Console.WriteLine("Connessione chiusa dal client");
+                    insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close(); 
                     isAlive = false;
@@ -141,9 +144,12 @@ public class AsynchronousSocketListener {
 
         try{  
         // Begin sending the data to the remote device.  
-            handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);  
+            handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);
+          
         }catch(Exception e) {  
             Console.WriteLine("Begin send error: \n" + e.ToString());  
+            insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " begin send error.");
+          
         }
     }  
   
@@ -156,7 +162,8 @@ public class AsynchronousSocketListener {
             // Complete sending the data to the remote device.  
             int bytesSent = handler.EndSend(ar);  
             Console.WriteLine("Sent {0} bytes to client.", bytesSent);  
-  
+            insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " sent " + bytesSent.ToString() + " to client.");
+          
             //handler.Shutdown(SocketShutdown.Both);  
             //handler.Close();  
             //invece di chiudere il socket, lo rimetto in ricezione..
