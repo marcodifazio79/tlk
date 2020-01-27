@@ -162,7 +162,7 @@ public class AsynchronousSocketListener {
             // Complete sending the data to the remote device.  
             int bytesSent = handler.EndSend(ar);  
             Console.WriteLine("Sent {0} bytes to client.", bytesSent);  
-            insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " sent " + bytesSent.ToString() + " to client.");
+            insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + ": sent " + bytesSent.ToString() + " to this client.");
           
             //handler.Shutdown(SocketShutdown.Both);  
             //handler.Close();  
