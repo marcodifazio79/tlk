@@ -71,7 +71,8 @@ public class AsynchronousSocketListener {
         // Get the socket that handles the client request.  
         Socket listener = (Socket) ar.AsyncState;  
         Socket handler = listener.EndAccept(ar);  
-        
+        Console.WriteLine("connected to : " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+
         // Create the state object.  
         StateObject state = new StateObject();  
         state.workSocket = handler;  
