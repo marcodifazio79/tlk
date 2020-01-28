@@ -1,7 +1,7 @@
 # tlk_core.service
 
 [Unit] 
-Description= tlk_core server, getting data from client and putting it into the db Data-> dump.
+Description= tlk_core server, the modems listener.
 Documentation= https://versioning.dedemapp.com/fdifazio/tlk_python/blob/master/readme.md
 
 [Service] 
