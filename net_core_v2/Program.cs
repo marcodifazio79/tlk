@@ -103,7 +103,7 @@ public class AsynchronousSocketListener {
                 insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
         
 
-                Thread t = new Thread(()=>Send (handler, "#PSW123456#PU1"));
+                Thread t = new Thread(()=>Send (handler, "#PSW123456"));
                 t.Start();
                 
             }
