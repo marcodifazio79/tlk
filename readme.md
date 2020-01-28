@@ -17,6 +17,7 @@ Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi:
 Come riferimento:
 https://docs.microsoft.com/en-us/dotnet/framework/network-programming/sockets
 e files nella cartella tlk_docs.
+Se si modifica il file tlk_core.service copiarlo nella cartella /etc/systemd/system/
 
 ### Modem
 PuTTY strumento ❤️ per la connessione al modem <br/>
