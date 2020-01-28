@@ -1,0 +1,13 @@
+# tlk_core.service
+
+[Unit] 
+Description= tlk_core server, getting data from client and putting it in db Data-> dump.
+Documentation= https://versioning.dedemapp.com/fdifazio/tlk_python/blob/master/readme.md
+
+[Service] 
+Type= simple 
+
+ExecStart= /home/kdl_admin/tlk_python/net_core_v2/bin/Debug/netcoreapp3.1/ubuntu.18.04-x64/tlk_core
+TimeoutStopSec= 180 
+ExecStop= /bin/sleep 120 
+ExecStop= /bin/kill -2 $MAINPID
