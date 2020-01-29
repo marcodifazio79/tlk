@@ -9,7 +9,7 @@ Type= simple
 
 ExecStart= /home/kdl_admin/tlk_python/net_core_v2/bin/Debug/netcoreapp3.1/ubuntu.18.04-x64/tlk_core
 TimeoutStopSec= 15
-ExecStop= /bin/sleep 30 
+
 ExecStop= /bin/kill -2 $MAINPID
 
 [Install]

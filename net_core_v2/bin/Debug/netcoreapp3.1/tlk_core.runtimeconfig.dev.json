@@ -1,8 +1,8 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\mdifazio.DEDEMPVP\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\mdifazio.DEDEMPVP\\.nuget\\packages"
+      "C:\\Users\\fdifazio\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\fdifazio\\.nuget\\packages"
     ]
   }
 }
