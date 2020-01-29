@@ -10,7 +10,9 @@ Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi:
 `sudo systemctl start tlk_core.service` per avviare, <br/>
 `sudo systemctl enable tlk_core.service` per abilitare l'avvio al boot e <br/>
 `sudo systemctl disable tlk_core.service` per disabilitare l'avvio automatico. <br/>
-`sudo systemctl status tlk_core.service` per controllare lo status e leggere l'output dell'eseguibile <br/>
+`sudo systemctl status tlk_core.service` per controllare lo status e <br/>
+`sudo journalctl -u tlk_core.service` per leggere l'output dell'eseguibile <br/>
+
 
 
 
