@@ -130,7 +130,8 @@ public class AsynchronousSocketListener {
             {
                 // Create the state object.  
                 StateObject stateN = new StateObject();  
-                stateN.workSocket = handler;  
+                stateN.workSocket = handler;
+                Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) );  
                 handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN);  
             }
         }
