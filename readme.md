@@ -1,10 +1,13 @@
 # Telemetria Kiddie
 
+### The code
 La cartella col codice di riferimento attuale del server è net_core_v2. <br/>
 Da terminale, cd nella cartella net_core_v2 e 
 `dotnet build --runtime ubuntu.18.04-x64` per compilare. <br/>
 L'output è l'eseguibile /net_core_v2/bin/Debug/netcoreapp3.1/ubuntu.18.04-x64/tlk_core
-(se non risulta eseguibile provare `chmod a+x path/to/tlk_core` )<br/>
+
+### The server
+Se tlk_core non risulta eseguibile provare `chmod a+x path/to/tlk_core`<br/>
 Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi: 
 `sudo systemctl stop tlk_core.service` per stoppare, <br/>
 `sudo systemctl start tlk_core.service` per avviare, <br/>
