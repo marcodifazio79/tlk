@@ -4411,7 +4411,7 @@
       ]
     },
     "Remotion.Linq/2.2.0": {
-      "sha512": "fK/76UmpC0FXBlGDFVPLJHQlDLYnGC+XY3eoDgCgbtrhi0vzbXDQ3n/IYHhqSKqXQfGw/u04A1drWs7rFVkRjw==",
+      "sha512": "twDAH8dAXXCAf3sRv1Tf94u66eEHvgU75hfn1nn2v4fSWXD50XoDOAk8WpSrbViNuMkB4kN1ElnOGm1c519IHg==",
       "type": "package",
       "path": "remotion.linq/2.2.0",
       "files": [
@@ -5491,7 +5491,7 @@
       ]
     },
     "System.Collections.Immutable/1.5.0": {
-      "sha512": "EXKiDFsChZW0RjrZ4FYHu9aW6+P4MCgEDCklsVseRfhoO0F+dXeMSsMRAlVXIo06kGJ/zv+2w1a2uc2+kxxSaQ==",
+      "sha512": "RGxi2aQoXgZ5ge0zxrKqI4PU9LrYYoLC+cnEnWXKsSduCOUhE1GEAAoTexUVT8RZOILQyy1B27HC8Xw/XLGzdQ==",
       "type": "package",
       "path": "system.collections.immutable/1.5.0",
       "files": [
@@ -6200,7 +6200,7 @@
       ]
     },
     "System.Interactive.Async/3.1.1": {
-      "sha512": "hZccYiIE5RS1/J9Tb/BNtosAGVggdlsJm4Ojdu+gDV0p4AIi+LUfUogMKkRacljQEJd2AG6vYzvcjhQFkqoZmw==",
+      "sha512": "x9y2omkjEudKbIVuhUzeWw7ZlouEzpk4W98woCEq1lq9gJxERBKRKDTHF5JPEws9E0f4/Uei/2vLxEy1IrfmMg==",
       "type": "package",
       "path": "system.interactive.async/3.1.1",
       "files": [
@@ -6727,7 +6727,7 @@
       ]
     },
     "System.Net.Http/4.3.0": {
-      "sha512": "sYg+FtILtRQuYWSIAuNOELwVuVsxVyJGWQyOnlAzhV4xvhyFnON1bAzYYC+jjRW8JREM45R0R5Dgi8MTC5sEwA==",
+      "sha512": "Z1UfSF6dlpCdZdxh6LeoGlYH+q6ptG/iiIWgUUeKhE3DbQACmZkU7Sz2nOX0qdHjz72MOdYRbkSJ5Qwl6sZgvg==",
       "type": "package",
       "path": "system.net.http/4.3.0",
       "files": [
@@ -9241,19 +9241,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\fdifazio\\.nuget\\packages\\": {}
+    "C:\\Users\\fdifa\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\fdifazio\\Source\\Repos\\tlk_python\\net_core_v2\\tlk_core.csproj",
+      "projectUniqueName": "D:\\Documents\\tlk_python\\net_core_v2\\tlk_core.csproj",
       "projectName": "tlk_core",
-      "projectPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk_python\\net_core_v2\\tlk_core.csproj",
-      "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk_python\\net_core_v2\\obj\\",
+      "projectPath": "D:\\Documents\\tlk_python\\net_core_v2\\tlk_core.csproj",
+      "packagesPath": "C:\\Users\\fdifa\\.nuget\\packages\\",
+      "outputPath": "D:\\Documents\\tlk_python\\net_core_v2\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\fdifa\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -9295,15 +9299,15 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-            "version": "[3.1.0, 3.1.0]"
+            "version": "[3.1.1, 3.1.1]"
           },
           {
             "name": "Microsoft.NETCore.App.Host.linux-x64",
-            "version": "[3.1.0, 3.1.0]"
+            "version": "[3.1.1, 3.1.1]"
           },
           {
             "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-            "version": "[3.1.0, 3.1.0]"
+            "version": "[3.1.1, 3.1.1]"
           }
         ],
         "frameworkReferences": {
@@ -9311,7 +9315,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {
