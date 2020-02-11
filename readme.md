@@ -33,6 +33,7 @@ Password e invio. <br/>
 `#ATC+QIOPEN="TCP","10.10.10.71","9000"` per stabilire una connessione tcp col server 10.10.10.71 sulla porta 9000.<br/>
 `#ATC+QISEND=20` per "inizializzare" l'invio di 20 bytes. ( n = 20, sostituire n con un numero ffs.)<br/>
 `#ATC+QISEND="qualcosa che verrà spedito"` il server in riceverà AT+QISEND="qualcosa<br/>
+`#atc+qird=0,1,0,256` per leggere sul modem cosa ha ricevuto<br/>
 
 
 ### TO DO:
