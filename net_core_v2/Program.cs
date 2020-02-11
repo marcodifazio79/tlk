@@ -120,8 +120,8 @@ public class AsynchronousSocketListener {
 
                 //Console.WriteLine("data1: {0} \n",date1);
                 
-                Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
-                
+                //Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
+                Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,gQkjsp34,"+date1));
                 
                 t.Start();
                 
