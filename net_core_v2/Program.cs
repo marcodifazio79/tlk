@@ -33,7 +33,7 @@ public class AsynchronousSocketListener {
         //#if DEBUG
         //    ipAddress = IPAddress.Parse("192.168.17.210"); 
         //#endif
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9000);  
+        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9005);  
   
         // Create a TCP/IP socket.  
         Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
