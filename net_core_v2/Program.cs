@@ -104,8 +104,12 @@ public class AsynchronousSocketListener {
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
                 insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
         
-
-                Thread t = new Thread(()=>Send (handler, "#PWD123456"));
+                string date1 = DateTime.Now.ToString("yy/MM/dd HH:mm:ss");
+                date1.Replace(' ', ',');
+                Console.WriteLine("data1: {0} \n",date1);
+                
+                Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+"Ajscx4s7,"+date1));
+                
                 
                 t.Start();
                 
