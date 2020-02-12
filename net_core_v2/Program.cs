@@ -107,16 +107,14 @@ public class AsynchronousSocketListener {
                 string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
 
-                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                var stringChars = new char[8];
-                var random = new Random();
-
-                for (int i = 0; i < stringChars.Length; i++)
-                {
-                    stringChars[i] = chars[random.Next(chars.Length)];
-                }
-
-                var finalString = new String(stringChars);
+                //var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                //var stringChars = new char[8];
+                //var random = new Random();
+                //for (int i = 0; i < stringChars.Length; i++)
+                //{
+                //    stringChars[i] = chars[random.Next(chars.Length)];
+                //}
+                //var finalString = new String(stringChars);
 
                 //Console.WriteLine("data1: {0} \n",date1);
                 
