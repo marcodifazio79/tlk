@@ -107,19 +107,30 @@ public class AsynchronousSocketListener {
                 string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
 
-                //var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                //var stringChars = new char[8];
-                //var random = new Random();
-                //for (int i = 0; i < stringChars.Length; i++)
-                //{
-                //    stringChars[i] = chars[random.Next(chars.Length)];
-                //}
-                //var finalString = new String(stringChars);
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                char checksum = '0';
+                var stringChars = new char[6];
+                var random = new Random();
+                for (int i = 0; i < stringChars.Length; i++)
+                {
+                    stringChars[i] = chars[random.Next(chars.Length)];
+                    if (i == 0)
+                        checksum = stringChars[i];
+                    else
+                        checksum ^= stringChars[i];
+                }
+                //de2BUl48  gQkjsp34 examples.
+                //response << boost::format("%02X") % (int)checksum;
 
-                //Console.WriteLine("data1: {0} \n",date1);
-                
-                //Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
-                Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,gQkjsp34,"+date1));
+                byte b = Convert.ToByte(checksum);
+                String hex = b.ToString("X");
+
+                if (hex.Length < 2)
+                    hex = '0' + hex;
+                var finalString = new String(stringChars);
+                finalString = finalString + hex;
+                Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
+                //Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,gQkjsp34,"+date1));
                 
                 t.Start();
                 
