@@ -37,7 +37,8 @@ Password e invio. <br/>
 Durante il normale funzionamento il modem invia due pacchetti, "anagrafica" e "monetica", i tempi di invio son programmabili (vedi LGA e LGG).
 Il modem deve registarsi sul server prima di mandare i pacchetti "anagrafica" e "monetica": in pratica il modem invia un pacchetto tipo
 <MID=55555553-868324022904051><VER=110> e si aspetta di ricevere qualcosa tipo `#PSW123456#ROK,de2BUl48,20/01/14,15:21:41` (formato data yy/MM/dd,hh:mm:ss) 
-la parte centrale del pacchetto (de2BUl48) è ~~stata sniffata dal vecchio portum e stiamo indagando su cosa cavolo è.~~ è generata secondo un algoritmo.
+la parte centrale del pacchetto (de2BUl48) è ~~stata sniffata dal vecchio portum e stiamo indagando su cosa cavolo è.~~ generata secondo un algoritmo 
+importato dal vecchio portum.
 
 
 ### TO DO:
