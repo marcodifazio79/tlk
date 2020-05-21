@@ -45,6 +45,8 @@ importato dal vecchio portum.
 ### TO DO:
 Database connection -> implementere l'output sul db: WIP.
 Vedi https://www.nuget.org/packages/MySql.Data.EntityFrameworkCore/ .
+Migrare su sql server per linux, 
+vedi https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-editions-and-components-2019?view=sql-server-ver15
 
 
 
