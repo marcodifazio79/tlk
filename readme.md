@@ -43,10 +43,12 @@ importato dal vecchio portum.
 
 
 ### TO DO:
-Database connection -> implementere l'output sul db: WIP.
+~~Database connection -> implementere l'output sul db: WIP.
 Vedi https://www.nuget.org/packages/MySql.Data.EntityFrameworkCore/ .
 Migrare su sql server per linux, 
-vedi https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-editions-and-components-2019?view=sql-server-ver15
+vedi https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-editions-and-components-2019?view=sql-server-ver15 ~~
+Creare un nuovo db e riscrivere la funzione per caricare i pacchetti ricevuti <br/>
+nel nuovo db sql server 2019 EXPRESS (user sa e password uguale all'utente di sistema kdl_admin) 
 
 
 
