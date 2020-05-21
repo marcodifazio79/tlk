@@ -17,7 +17,8 @@ Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi:
 `sudo journalctl -u tlk_core.service` per leggere l'output dell'eseguibile <br/>
 
 
-
+La ruote sul server è da rivedere, perde la configurazione dopo ogni reboot.
+`sudo ip route add 172.16.0.0/16 via 10.10.10.13 dev ens160` per ricrearla.
 
 Come riferimento:
 https://docs.microsoft.com/en-us/dotnet/framework/network-programming/sockets
