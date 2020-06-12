@@ -18,7 +18,8 @@ public class StateObject {
 }  
 
 public class AsynchronousSocketListener {  
-    // Thread signal.  
+    
+    // allDone is used to block and release the threads manually.
     public static ManualResetEvent allDone = new ManualResetEvent(false);  
    
     
