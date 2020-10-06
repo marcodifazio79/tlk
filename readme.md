@@ -3,7 +3,7 @@
 ### The code
 La cartella col codice di riferimento attuale del server è net_core_v2. <br/>
 Da terminale, cd nella cartella net_core_v2 e 
-`dotnet build --runtime ubuntu.18.04-x64` per compilare. <br/>
+`dotnet build net_core_v2.sln ` per compilare. <br/>
 L'output è l'eseguibile /net_core_v2/bin/Debug/netcoreapp3.1/ubuntu.18.04-x64/tlk_core
 
 ### The server
