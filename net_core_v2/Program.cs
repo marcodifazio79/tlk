@@ -74,7 +74,7 @@ public class AsynchronousSocketListener {
         Socket listener = (Socket) ar.AsyncState;  
         Socket handler = listener.EndAccept(ar);  
         Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-        Functions.DatabaseFunction.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+        Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
         // Create the state object.  
         StateObject state = new StateObject();  
         state.workSocket = handler;  
@@ -102,7 +102,7 @@ public class AsynchronousSocketListener {
         
                 content = state.sb.ToString();  
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
-                Functions.DatabaseFunction.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
+                Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
         
                 string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
@@ -138,7 +138,7 @@ public class AsynchronousSocketListener {
             else 
                 if(bytesRead == 0){
                     Console.WriteLine("Connessione chiusa dal client");
-                    Functions.DatabaseFunction.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
+                    Functions.DatabaseFunctionss.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close(); 
                     isAlive = false;
@@ -154,11 +154,10 @@ public class AsynchronousSocketListener {
         }finally {
             if(isAlive)
             {
-                // Create the state object.  
                 StateObject stateN = new StateObject();  
                 stateN.workSocket = handler;
-                Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) );  
-                handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN);  
+                Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) );
+                handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN);
             }
         }
 
@@ -177,7 +176,7 @@ public class AsynchronousSocketListener {
           
         }catch(Exception e) {  
             Console.WriteLine("Begin send error: \n" + e.ToString());  
-            Functions.DatabaseFunction.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " begin send error.");
+            Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " begin send error.");
           
         }
     }  
@@ -191,7 +190,7 @@ public class AsynchronousSocketListener {
             // Complete sending the data to the remote device.  
             int bytesSent = handler.EndSend(ar);  
             Console.WriteLine("Sent {0} bytes to client.", bytesSent);  
-            Functions.DatabaseFunction.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + ": sent " + bytesSent.ToString() + " to this client.");
+            Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + ": sent " + bytesSent.ToString() + " to this client.");
           
             //handler.Shutdown(SocketShutdown.Both);  
             //handler.Close();  
