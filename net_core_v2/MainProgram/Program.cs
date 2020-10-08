@@ -46,11 +46,13 @@ public class AsynchronousSocketListener {
         // Create a TCP/IP socket for the modem 
         Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
   
+        Socket listenerForCommand = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
+  
         // Bind the socket to the local endpoint and listen for incoming connections from modems.  
         Thread tModems = new Thread(()=>StartListeningForModems(localEndPoint, listener));
         tModems.Start();
 
-        Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listener));
+        Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
 
 
@@ -59,9 +61,10 @@ public class AsynchronousSocketListener {
     }  
     
     public static void StartListeningForModems(IPEndPoint localEndPoint, Socket listener){
+
          try {  
             listener.Bind(localEndPoint);  
-            listener.Listen(100);  
+            listener.Listen(1000);  
   
             while (true) {  
                 // Set the event to nonsignaled state.  
@@ -79,18 +82,18 @@ public class AsynchronousSocketListener {
             Console.WriteLine(e.ToString());  
         }  
     }
-    public static void StartListeningForCommands(IPEndPoint commandsInputEndPoint, Socket listener){
+    public static void StartListeningForCommands(IPEndPoint commandsInputEndPoint, Socket listenerForCommand){
         try {  
-            listener.Bind(commandsInputEndPoint);  
-            listener.Listen(100);  
+            listenerForCommand.Bind(commandsInputEndPoint);  
+            listenerForCommand.Listen(1000);  
   
             while (true) {  
                 // Set the event to nonsignaled state.  
                 allDoneCommand.Reset();  
   
                 // Start an asynchronous socket to listen for connections.  
-                Console.WriteLine("Waiting for a connection...");  
-                listener.BeginAccept(new AsyncCallback(AcceptCallback),listener );  
+                Console.WriteLine("Waiting for a connection (backend)...");  
+                listenerForCommand.BeginAccept(new AsyncCallback(AcceptCallback),listenerForCommand );  
   
                 // Wait until a connection is made before continuing.  
                 allDoneCommand.WaitOne();  
