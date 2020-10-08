@@ -1,0 +1,124 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj": {}
+  },
+  "projects": {
+    "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
+        "projectName": "Functions",
+        "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
+        "packagesPath": "/home/fdifazio/.nuget/packages/",
+        "outputPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "MySql.Data.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.19, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj",
+        "projectName": "tlk_core",
+        "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj",
+        "packagesPath": "/home/fdifazio/.nuget/packages/",
+        "outputPath": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj": {
+                "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "MySql.Data.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.19, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

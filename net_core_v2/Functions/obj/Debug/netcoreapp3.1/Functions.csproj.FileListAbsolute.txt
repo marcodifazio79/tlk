@@ -1,0 +1,8 @@
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/bin/Debug/netcoreapp3.1/Functions.deps.json
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/bin/Debug/netcoreapp3.1/Functions.dll
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/bin/Debug/netcoreapp3.1/Functions.pdb
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/Debug/netcoreapp3.1/Functions.AssemblyInfoInputs.cache
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/Debug/netcoreapp3.1/Functions.AssemblyInfo.cs
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/Debug/netcoreapp3.1/Functions.csproj.CoreCompileInputs.cache
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/Debug/netcoreapp3.1/Functions.dll
+/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/Debug/netcoreapp3.1/Functions.pdb

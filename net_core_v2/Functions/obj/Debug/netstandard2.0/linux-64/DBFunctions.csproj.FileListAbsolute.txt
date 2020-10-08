@@ -1,0 +1,9 @@
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/bin/Debug/netstandard2.0/linux-64/DBFunctions.deps.json
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/bin/Debug/netstandard2.0/linux-64/DBFunctions.dll
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/bin/Debug/netstandard2.0/linux-64/DBFunctions.pdb
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/linux-64/DBFunctions.csprojAssemblyReference.cache
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/linux-64/DBFunctions.AssemblyInfoInputs.cache
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/linux-64/DBFunctions.AssemblyInfo.cs
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/linux-64/DBFunctions.csproj.CoreCompileInputs.cache
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/linux-64/DBFunctions.dll
+/home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/linux-64/DBFunctions.pdb
