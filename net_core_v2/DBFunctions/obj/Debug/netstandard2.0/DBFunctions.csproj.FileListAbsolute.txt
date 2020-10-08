@@ -6,3 +6,12 @@
 /home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/bin/Debug/netstandard2.0/DBFunctions.pdb
 /home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/DBFunctions.dll
 /home/fdifazio/Documents/tlk/net_core_v2/DBFunctions/obj/Debug/netstandard2.0/DBFunctions.pdb
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\bin\Debug\netstandard2.0\DBFunctions.deps.json
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\bin\Debug\netstandard2.0\DBFunctions.dll
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\bin\Debug\netstandard2.0\DBFunctions.pdb
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\obj\Debug\netstandard2.0\DBFunctions.csprojAssemblyReference.cache
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\obj\Debug\netstandard2.0\DBFunctions.AssemblyInfoInputs.cache
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\obj\Debug\netstandard2.0\DBFunctions.AssemblyInfo.cs
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\obj\Debug\netstandard2.0\DBFunctions.csproj.CoreCompileInputs.cache
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\obj\Debug\netstandard2.0\DBFunctions.dll
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\DBFunctions\obj\Debug\netstandard2.0\DBFunctions.pdb

@@ -139,3 +139,9 @@ C:/Users/mdifazio.DEDEMPVP/source/repos/tlk_python/net_core_v2/obj/Debug/netcore
 /home/fdifazio/Documents/tlk/net_core_v2/bin/Debug/netcoreapp3.1/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll
 /home/fdifazio/Documents/tlk/net_core_v2/bin/Debug/netcoreapp3.1/runtimes/win/lib/netcoreapp3.0/System.Windows.Extensions.dll
 /home/fdifazio/Documents/tlk/net_core_v2/obj/Debug/netcoreapp3.1/tlk_core.csproj.CopyComplete
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\obj\Debug\netcoreapp3.1\tlk_core.csprojAssemblyReference.cache
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\obj\Debug\netcoreapp3.1\tlk_core.AssemblyInfoInputs.cache
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\obj\Debug\netcoreapp3.1\tlk_core.AssemblyInfo.cs
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\obj\Debug\netcoreapp3.1\tlk_core.csproj.CoreCompileInputs.cache
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\obj\Debug\netcoreapp3.1\tlk_core.dll
+D:\Users\fdifazio\Source\Repos\tlk\net_core_v2\obj\Debug\netcoreapp3.1\tlk_core.pdb

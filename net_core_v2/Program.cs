@@ -20,9 +20,11 @@ public class StateObject {
 
 public class AsynchronousSocketListener {  
     
-    // allDone is used to block and release the threads manually.
-    public static ManualResetEvent allDone = new ManualResetEvent(false);  
-   
+    // allDoneModem is used to block and release the threads manually.
+    public static ManualResetEvent allDoneModem = new ManualResetEvent(false);  
+    //same as said.
+    public static ManualResetEvent allDoneCommand = new ManualResetEvent(false);  
+    
     
     public AsynchronousSocketListener() {  
     }  
@@ -34,40 +36,99 @@ public class AsynchronousSocketListener {
         //#if DEBUG
         //    ipAddress = IPAddress.Parse("192.168.17.210"); 
         //#endif
+        
+        //endpoint per i modem
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9005);  
-  
-        // Create a TCP/IP socket. 
+
+        //endpoint per il backend
+        IPEndPoint commandsInputEndPoint = new IPEndPoint(ipAddress, 9909);
+
+        // Create a TCP/IP socket for the modem 
         Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
   
-        // Bind the socket to the local endpoint and listen for incoming connections.  
-        try {  
+        // Bind the socket to the local endpoint and listen for incoming connections from modems.  
+        Thread tModems = new Thread(()=>StartListeningForModems(localEndPoint, listener));
+        t.Start();
+
+        Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listener));
+        t.Start();
+
+
+        Console.WriteLine("\nPress ENTER to continue...");  
+        Console.Read();  
+    }  
+    
+    public static void StartListeningForModems(IPEndPoint localEndPoint, Socket listener){
+         try {  
             listener.Bind(localEndPoint);  
             listener.Listen(100);  
   
             while (true) {  
                 // Set the event to nonsignaled state.  
-                allDone.Reset();  
+                allDoneModem.Reset();  
   
                 // Start an asynchronous socket to listen for connections.  
-                Console.WriteLine("Waiting for a new connection...");
+                Console.WriteLine("Waiting for a new connection (modem)...");
                 listener.BeginAccept(new AsyncCallback(AcceptCallback), listener );  
   
                 // Wait until a connection is made before continuing.  
-                allDone.WaitOne();  
+                allDoneModem.WaitOne();  
             }  
   
         } catch (Exception e) {  
             Console.WriteLine(e.ToString());  
         }  
+    }
+    public static void StartListeningForCommands(IPEndPoint commandsInputEndPoint, Socket listener){
+        try {  
+            listener.Bind(commandsInputEndPoint);  
+            listener.Listen(100);  
   
-        Console.WriteLine("\nPress ENTER to continue...");  
-        Console.Read();  
-    }  
+            while (true) {  
+                // Set the event to nonsignaled state.  
+                allDoneModem.Reset();  
   
+                // Start an asynchronous socket to listen for connections.  
+                Console.WriteLine("Waiting for a new connection (commands backend)...");
+                //listener.BeginAccept(new AsyncCallback(AcceptCallback), listener );  
+                
+                int receivedDataSize = 10;
+                listener.BeginAccept(null, receivedDataSize, new AsyncCallback(AcceptReceiveDataCallback), listener);
+
+                // Wait until a connection is made before continuing.  
+                allDoneModem.WaitOne();  
+            }
+  
+        } catch (Exception e) {  
+            Console.WriteLine(e.ToString());  
+        }
+    }
+    public static void AcceptReceiveDataCallback(IAsyncResult ar)
+    {
+        // Get the socket that handles the client request.
+        Socket listener = (Socket) ar.AsyncState;
+
+        // End the operation and display the received data on the console.
+        byte[] Buffer;
+        int bytesTransferred;
+        Socket handler = listener.EndAccept(out Buffer, out bytesTransferred, ar);
+        string stringTransferred = Encoding.ASCII.GetString(Buffer, 0, bytesTransferred);
+
+        Console.WriteLine(stringTransferred);
+        Console.WriteLine("Size of data transferred is {0}", bytesTransferred);
+
+        // Create the state object for the asynchronous receive.
+        StateObject state = new StateObject();
+        state.workSocket = handler;
+        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+    }
+
+
+
     public static void AcceptCallback(IAsyncResult ar) {  
 
         // Signal the main thread to continue.  
-        allDone.Set();  
+        allDoneModem.Set();  
 
        
         // Get the socket that handles the client request.  
@@ -96,8 +157,8 @@ public class AsynchronousSocketListener {
         try{
             int bytesRead = handler.EndReceive(ar);
             
-            if (bytesRead > 0) {  
-                // There  might be more data, so store the data received so far.  
+            if (bytesRead > 0) {
+                // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
         
                 content = state.sb.ToString();  
@@ -154,10 +215,19 @@ public class AsynchronousSocketListener {
         }finally {
             if(isAlive)
             {
+                //////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////
+                //TODO:
+                // dopo aver stabilito la connessione (che a questo punto è fatta),                  /////
+                // dovranno partire due thread: uno per il receive dei dati dal modem e uno          /////
+                // per il send degli eventuali comandi che arriveranno dal beckend al modem          /////
+                //////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////
                 StateObject stateN = new StateObject();  
                 stateN.workSocket = handler;
                 Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) );
                 handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN);
+
             }
         }
 
