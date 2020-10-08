@@ -128,6 +128,7 @@ public class AsynchronousSocketListener {
 
         Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
         Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+        
         // Create the state object.  
         StateObject state = new StateObject();  
         state.workSocket = handler;  
