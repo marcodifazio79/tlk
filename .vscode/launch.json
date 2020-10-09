@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/net_core_v2/bin/Debug/netcoreapp3.1/tlk_core.dll",
+            "program": "${workspaceFolder}/net_core_v2/MainProgram/bin/Debug/netcoreapp3.1/tlk_core",
             "args": [],
-            "cwd": "${workspaceFolder}/net_core_v2",
+            "cwd": "${workspaceFolder}/net_core_v2/MainProgram/bin/Debug/netcoreapp3.1/",
             "console": "internalConsole",
             "stopAtEntry": false
         },

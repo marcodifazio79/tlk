@@ -7,10 +7,10 @@ Documentation= https://versioning.dedemapp.com/fdifazio/tlk_python/blob/master/r
 [Service] 
 Type= simple 
 
-ExecStart= /home/kdl_admin/tlk_python/net_core_v2/bin/Debug/netcoreapp3.1/ubuntu.18.04-x64/tlk_core
+ExecStart= /home/kdl_admin/tlk/net_core_v2/MainProgram/bin/Debug/netcoreapp3.1/ubuntu.18.04-x64/tlk_core
 TimeoutStopSec= 15
 
-ExecStop= /bin/kill -2 $MAINPID
+ExecStop= /bin/kill -9 $MAINPID
 
 [Install]
 WantedBy= multi-user.target

@@ -117,7 +117,8 @@ public class AsynchronousSocketListener {
         Socket handler = listener.EndAccept(ar);  
 
         //figure out if the callback come from the modem or the backend, based on which port it come from, and signal the corrisponding thread to continue
-        int ConPort =  ((IPEndPoint)handler.RemoteEndPoint).Port;
+        int ConPort =  ((IPEndPoint)handler.LocalEndPoint).Port;
+        Console.WriteLine("accepting callback from " + ((IPEndPoint)handler.LocalEndPoint).Port.ToString());
         if(ConPort == 9005) {  
             // Signal the modem thread to continue.  
             allDoneModem.Set();  
@@ -127,7 +128,6 @@ public class AsynchronousSocketListener {
             // TODO: analizzare se è necessario: in teoria il backend potrebbe essere uno solo e quindi non serve aspettarsi nuove connessioni con una aperta.
             allDoneCommand.Set();
         }  
-
 
         Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
         Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
@@ -284,7 +284,7 @@ public class AsynchronousSocketListener {
     public static int Main(String[] args) {
         
         //check if the config file exiast:
-        if(  File.Exists("appsettings.json")  ){
+        if(  File.Exists("appsettings.json")){
             Configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
             .AddEnvironmentVariables()
