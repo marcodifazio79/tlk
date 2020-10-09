@@ -283,20 +283,31 @@ public class AsynchronousSocketListener {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static int Main(String[] args) {
         
+        //check if the config file exiast:
         if(  File.Exists("appsettings.json")  ){
-            
             Configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
             .AddEnvironmentVariables()
             .AddCommandLine(args)
             .Build();
-            StartListening();  
+
+            if(  
+                //check if the config file have necessary entries:
+                !string.IsNullOrEmpty(Configuration["LocalAddressForConnections"].ToString())    &
+                !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                    &
+                !string.IsNullOrEmpty(Configuration["Port:Backend"])    
+            ){
+                // ...start Listening (for connection), it's hard to comment on this one.
+                StartListening(); 
+            }else{
+                Console.WriteLine("Parameters missing in appsettings.json file, startup cancelled.");  
+            }
+            
+             
         }
         else{
-            Console.WriteLine("Configuration file is missing, startup cancelled.");  
+            Console.WriteLine("appsettings.json is missing, startup cancelled.");  
         }  
-        
-
         return 0;  
     
     }  
