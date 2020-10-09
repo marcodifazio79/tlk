@@ -1,8 +1,10 @@
 ﻿using System;  
+using System.IO;
 using System.Net;  
 using System.Net.Sockets;  
 using System.Text;  
 using System.Threading;
+using Microsoft.Extensions.Configuration;
 using Functions;
 
 //using System.Collections.Generic;
@@ -24,7 +26,8 @@ public class AsynchronousSocketListener {
     public static ManualResetEvent allDoneModem = new ManualResetEvent(false);  
     public static ManualResetEvent allDoneCommand = new ManualResetEvent(false);  
     
-    
+    //configuration file, loaded at startup
+    public static IConfiguration Configuration;
     
     public AsynchronousSocketListener() {  
     }  
@@ -32,16 +35,16 @@ public class AsynchronousSocketListener {
     public static void StartListening() {  
 
         // Establish the local endpoint for the socket.  
-        IPAddress ipAddress = IPAddress.Parse("10.10.10.71"); 
+        IPAddress ipAddress = IPAddress.Parse(  Configuration["LocalAddressForConnections"].ToString()); 
         //#if DEBUG
         //    ipAddress = IPAddress.Parse("192.168.17.210"); 
         //#endif
         
         //endpoint per i modem
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9005);  
+        IPEndPoint localEndPoint = new IPEndPoint(ipAddress,Convert.ToInt32( Configuration["Port:Modem"]));
 
         //endpoint per il backend
-        IPEndPoint commandsInputEndPoint = new IPEndPoint(ipAddress, 9909);
+        IPEndPoint commandsInputEndPoint = new IPEndPoint(ipAddress, Convert.ToInt32( Configuration["Port:Backend"]) );
 
         // Create a TCP/IP socket for the modem 
         Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
@@ -89,11 +92,11 @@ public class AsynchronousSocketListener {
   
             while (true) {  
                 // Set the event to nonsignaled state.  
-                allDoneCommand.Reset();  
+                allDoneCommand.Reset();
   
                 // Start an asynchronous socket to listen for connections.  
-                Console.WriteLine("Waiting for a connection (backend)...");  
-                listenerForCommand.BeginAccept(new AsyncCallback(AcceptCallback),listenerForCommand );  
+                Console.WriteLine("Waiting for a connection (backend)...");
+                listenerForCommand.BeginAccept(new AsyncCallback(AcceptCallback),listenerForCommand );
   
                 // Wait until a connection is made before continuing.  
                 allDoneCommand.WaitOne();  
@@ -279,7 +282,22 @@ public class AsynchronousSocketListener {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static int Main(String[] args) {
-        StartListening();  
+        
+        if(  File.Exists("appsettings.json")  ){
+            
+            Configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+            .AddEnvironmentVariables()
+            .AddCommandLine(args)
+            .Build();
+            StartListening();  
+        }
+        else{
+            Console.WriteLine("Configuration file is missing, startup cancelled.");  
+        }  
+        
+
         return 0;  
+    
     }  
 }

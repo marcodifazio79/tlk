@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj": {}
+    "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\MainProgram\\tlk_core.csproj": {}
   },
   "projects": {
-    "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj": {
+    "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
+        "projectUniqueName": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj",
         "projectName": "Functions",
-        "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
-        "packagesPath": "/home/fdifazio/.nuget/packages/",
-        "outputPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/",
+        "projectPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj",
+        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,38 +53,46 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj": {
+    "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\MainProgram\\tlk_core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj",
+        "projectUniqueName": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\MainProgram\\tlk_core.csproj",
         "projectName": "tlk_core",
-        "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj",
-        "packagesPath": "/home/fdifazio/.nuget/packages/",
-        "outputPath": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/obj/",
+        "projectPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\MainProgram\\tlk_core.csproj",
+        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\MainProgram\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj": {
-                "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj"
+              "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj": {
+                "projectPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj"
               }
             }
           }
@@ -96,6 +106,22 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
+            "Microsoft.Extensions.Configuration.CommandLine": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
             "MySql.Data.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.19, )"
@@ -111,12 +137,18 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

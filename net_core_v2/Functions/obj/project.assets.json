@@ -6528,24 +6528,26 @@
     ]
   },
   "packageFolders": {
-    "/home/fdifazio/.nuget/packages/": {}
+    "C:\\Users\\fdifazio\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
+      "projectUniqueName": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj",
       "projectName": "Functions",
-      "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
-      "packagesPath": "/home/fdifazio/.nuget/packages/",
-      "outputPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/",
+      "projectPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj",
+      "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
+      "outputPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/fdifazio/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -6577,12 +6579,18 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[3.1.2, 3.1.2]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
       }
     }
   }
