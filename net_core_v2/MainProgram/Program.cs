@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;  
 using System.Text;  
 using System.Threading;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Functions;
 
@@ -29,6 +30,9 @@ public class AsynchronousSocketListener {
     //configuration file, loaded at startup
     public static IConfiguration Configuration;
     
+    //
+    public static List<Socket> ModemsSocketList = new List<Socket>();
+
     public AsynchronousSocketListener() {  
     }  
   
@@ -116,12 +120,16 @@ public class AsynchronousSocketListener {
         Socket listener = (Socket) ar.AsyncState;  
         Socket handler = listener.EndAccept(ar);  
 
+        
         //figure out if the callback come from the modem or the backend, based on which port it come from, and signal the corrisponding thread to continue
         int ConPort =  ((IPEndPoint)handler.LocalEndPoint).Port;
-        Console.WriteLine("accepting callback from " + ((IPEndPoint)handler.LocalEndPoint).Port.ToString());
         if(ConPort == 9005) {  
             // Signal the modem thread to continue.  
             allDoneModem.Set();  
+
+            //add the connection to the list
+            ModemsSocketList.Add(handler);
+
         }
         else if(ConPort == 9909){  
             // Signal the command thread to continue.   
