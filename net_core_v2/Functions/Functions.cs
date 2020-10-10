@@ -39,18 +39,36 @@ namespace Functions
         }
     }
 
+    //la lista non tiene conto degli accentratori: comefunziona con n kiddie sotto un solo modem? indagare.
+
     public class SocketListFunctions
     {
-        public static List<Socket> addToList(Socket SocketToInsert, List<Socket> SocketList)
+        
+
+        public static List<Socket> removeFromList(Socket SocketToRemove, List<Socket> SocketList)
         {      
             
-            if (SocketList.Exists(  x=>( (IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToInsert.RemoteEndPoint).Address.ToString()  ))
+            if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
             {
-                //bool status = SocketList.Find(  x=>( (IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToInsert.RemoteEndPoint).Address.ToString()   )
-                //.Poll(-1, SelectMode.SelectWrite);
-
+                SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );
             }
+
             return SocketList;
+        }
+
+        public static List<Socket> checkIfAlive(Socket SocketToCheck, List<Socket> SocketList)
+        {      
+
+            if( !((SocketToCheck.Poll(1200, SelectMode.SelectRead) && (SocketToCheck.Available == 0)) || !SocketToCheck.Connected))
+            {
+                return SocketList;    
+            }
+            else
+            {
+                SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToCheck.RemoteEndPoint).Address  )  );
+                return SocketList;
+            }
+                
         }
     }
 }

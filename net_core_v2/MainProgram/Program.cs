@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using System.Xml;
 using Functions;
 
 //using System.Collections.Generic;
@@ -21,6 +22,7 @@ public class StateObject {
     public StringBuilder sb = new StringBuilder();    
 }  
 
+  
 public class AsynchronousSocketListener {  
     
     // allDoneModem is used to block and release the threads manually.
@@ -111,6 +113,7 @@ public class AsynchronousSocketListener {
         }  
     }
 
+    
 
 
 
@@ -126,28 +129,80 @@ public class AsynchronousSocketListener {
         if(ConPort == 9005) {  
             // Signal the modem thread to continue.  
             allDoneModem.Set();  
-
             //add the connection to the list
+            
+            //ModemsSocketList = Functions.SocketListFunctions.addToList(handler, ModemsSocketList);
             ModemsSocketList.Add(handler);
 
+            Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
+            Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+
+            // Create the state object.  
+            StateObject state = new StateObject();  
+            state.workSocket = handler;  
+            handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadFirstCallback), state);  
+     
         }
         else if(ConPort == 9909){  
             // Signal the command thread to continue.   
             // TODO: analizzare se è necessario: in teoria il backend potrebbe essere uno solo e quindi non serve aspettarsi nuove connessioni con una aperta.
             allDoneCommand.Set();
-        }  
 
-        Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-        Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-        
-        // Create the state object.  
-        StateObject state = new StateObject();  
-        state.workSocket = handler;  
-        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
- 
+            Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())     );
+            Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+
+            StateObject state = new StateObject();  
+            state.workSocket = handler;  
+            handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCommandsCallback), state);  
+     
+        }  
     }  
   
-    public static void ReadCallback(IAsyncResult ar) {
+    public static void ReadCommandsCallback(IAsyncResult ar) {
+        String content = String.Empty;  
+  
+        // Retrieve the state object and the handler socket  
+        // from the asynchronous state object.  
+        StateObject state = (StateObject) ar.AsyncState;  
+        Socket handler = state.workSocket;  
+        
+        // Read data from the client socket.   
+        try{
+            int bytesRead = handler.EndReceive(ar);
+            
+            if (bytesRead > 0) {
+                // There  might be more data, so store the data received so far.
+                state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
+                content = state.sb.ToString();  
+                Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
+                Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " sent the command: "  + content);
+
+                XmlDocument receivedCommand = new XmlDocument();
+                receivedCommand.LoadXml(content);
+
+                //implement a targeting solution, i shuold not send to handler but to someone defined in receivedCommand
+
+                //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
+                String targetModemIP = receivedCommand.SelectSingleNode(@"/data/targetip").InnerText;
+                String command = receivedCommand.SelectSingleNode(@"/data/command").InnerText;
+                String port = receivedCommand.SelectSingleNode(@"/data/targetport").InnerText;
+                
+                Thread t = new Thread(()=>Send (  
+                    ModemsSocketList.Find(      Soc => 
+                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP     && 
+                        ((IPEndPoint)Soc.RemoteEndPoint).Port.ToString()    == port         )  ,
+                         command ));
+                t.Start();
+
+            }
+        }catch(Exception e) {
+            Console.WriteLine(e.ToString());
+        }    
+
+    }  
+  
+
+    public static void ReadFirstCallback(IAsyncResult ar) {
         String content = String.Empty;  
   
         // Retrieve the state object and the handler socket  
@@ -168,7 +223,6 @@ public class AsynchronousSocketListener {
                 Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
         
                 string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
-
 
                 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                 char checksum = '0';
@@ -203,7 +257,10 @@ public class AsynchronousSocketListener {
                     Console.WriteLine("Connessione chiusa dal client");
                     DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
                     handler.Shutdown(SocketShutdown.Both);  
-                    handler.Close(); 
+                    handler.Close();
+                    ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
+         
+
                     isAlive = false;
                 }
         }
@@ -217,25 +274,54 @@ public class AsynchronousSocketListener {
         }finally {
             if(isAlive)
             {
-                //////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////
-                //TODO:
-                // dopo aver stabilito la connessione (che a questo punto è fatta),                  /////
-                // dovranno partire due thread: uno per il receive dei dati dal modem e uno          /////
-                // per il send degli eventuali comandi che arriveranno dal backend al modem          /////
-                //////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////
                 StateObject stateN = new StateObject();  
                 stateN.workSocket = handler;
                 Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-                Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN));
-                
-
+                Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
+                t.Start();
             }
         }
+    }
+    public static void ReadOtherCallback(IAsyncResult ar) {
+        StateObject state = (StateObject) ar.AsyncState;
+        Socket handler = state.workSocket;
+        String content = String.Empty;
+           
+        int bytesRead = handler.EndReceive(ar);
+        try{
+            if (bytesRead > 0) {
+                state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
+                content = state.sb.ToString();  
+                Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",content.Length, content);
+                Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
+            }        
+            else if(bytesRead == 0){
+                        Console.WriteLine("Connessione chiusa dal client: "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+                        DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
+                        ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
+         
+                        handler.Shutdown(SocketShutdown.Both);  
+                        handler.Close();
+                        return;
+            }
+        }catch(Exception e) {
+            Console.WriteLine("Errore comunicazione con: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + e.Message);
+            DatabaseFunctions.insertIntoDB("Errore comunicazione con: " +IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) );
+            ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
+         
+            handler.Shutdown(SocketShutdown.Both);  
+            handler.Close();
+            return;
+        }
+        Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+        state = new StateObject();
+        Thread t = new Thread(()=> handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
+        t.Start(); 
 
-    }  
+    }
+      
     
+
     public static void Send(Socket handler, String data) {  
         
         //Console.WriteLine("Waiting for user command: ");
