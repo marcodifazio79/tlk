@@ -134,8 +134,8 @@ public class AsynchronousSocketListener {
             //ModemsSocketList = Functions.SocketListFunctions.addToList(handler, ModemsSocketList);
             ModemsSocketList.Add(handler);
 
-            Console.WriteLine("Connection established to modem : " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-            Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ())));
+            Console.WriteLine("Connection established to modem : "                 + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
+            Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
 
             // Create the state object.  
             StateObject state = new StateObject();  
@@ -149,7 +149,7 @@ public class AsynchronousSocketListener {
             allDoneCommand.Set();
 
             Console.WriteLine("Connection established to backend : " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())  + " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()  ) );
-            Functions.DatabaseFunctions.insertIntoDB("Connection established to backend: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ())));
+            Functions.DatabaseFunctions.insertIntoDB("Connection established to backend: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
 
             StateObject state = new StateObject();  
             state.workSocket = handler;  
