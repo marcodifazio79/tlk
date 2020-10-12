@@ -293,8 +293,9 @@ public class AsynchronousSocketListener {
         Socket handler = state.workSocket;
         String content = String.Empty;
            
-        int bytesRead = handler.EndReceive(ar);
         try{
+        int bytesRead = handler.EndReceive(ar);
+        
             if (bytesRead > 0) {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = state.sb.ToString();  

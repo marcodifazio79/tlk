@@ -14,7 +14,7 @@ sock.connect(server_address)
 try:
     
     # Send data
-    message = str.encode('<data><targetip>10.10.10.71</targetip><targetport>59430</targetport><command>#TEST</command></data>')
+    message = str.encode('<data><targetip>172.16.158.143</targetip><targetport>59430</targetport><command>#PU1</command></data>')
     print (sys.stderr, 'sending "%s"' % message)
     sock.sendall(message)
 
