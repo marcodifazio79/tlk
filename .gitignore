@@ -3,7 +3,6 @@
 
 #net_core_v2/MainProgram/bin/*
 net_core_v2/MainProgram/obj/Debug/*
-net_core_v2/Functions/bin/*
 net_core_v2/Functions/obj/Debug/*
 
 # OS generated files #
