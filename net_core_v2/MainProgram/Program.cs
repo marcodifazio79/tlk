@@ -127,9 +127,9 @@ public class AsynchronousSocketListener {
         if(ConPort == 9005) {  
             // Signal the modem thread to continue.  
             allDoneModem.Set();  
-            //add the connection to the list
             
-            //ModemsSocketList = Functions.SocketListFunctions.addToList(handler, ModemsSocketList);
+            //add the connection to the list, but first remove it, just in case
+            ModemsSocketList.Remove(ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  ));
             ModemsSocketList.Add(handler);
 
             Console.WriteLine("Connection established to modem : "                 + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
