@@ -286,7 +286,9 @@ public class AsynchronousSocketListener {
                     Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
                     Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
                     t.Start();
-                }catch(Exception e){}
+                }catch(Exception e){
+                    Console.WriteLine("Something went wrong while reopening the connection");
+                }
             }
         }
     }
