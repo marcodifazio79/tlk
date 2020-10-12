@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj": {}
+    "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj": {}
   },
   "projects": {
-    "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj": {
+    "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
+        "projectUniqueName": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj",
         "projectName": "Functions",
-        "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj",
-        "packagesPath": "/home/fdifazio/.nuget/packages/",
-        "outputPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/obj/",
+        "projectPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\Functions.csproj",
+        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\fdifazio\\Source\\Repos\\tlk\\net_core_v2\\Functions\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,12 +53,31 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            },
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[3.1.4, 3.1.4]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "[3.1.4, 3.1.4]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/3.1.107/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }

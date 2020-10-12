@@ -185,13 +185,13 @@ public class AsynchronousSocketListener {
                 //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
                 String targetModemIP = receivedCommand.SelectSingleNode(@"/data/targetip").InnerText;
                 String command = receivedCommand.SelectSingleNode(@"/data/command").InnerText;
-                String port = receivedCommand.SelectSingleNode(@"/data/targetport").InnerText;
+                //String port = receivedCommand.SelectSingleNode(@"/data/targetport").InnerText;
                 
                 Thread t = new Thread(()=>Send (  
                     ModemsSocketList.Find(      Soc => 
-                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP     && 
-                        ((IPEndPoint)Soc.RemoteEndPoint).Port.ToString()    == port         )  ,
-                         command ));
+                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP      
+                       //&& ((IPEndPoint)Soc.RemoteEndPoint).Port.ToString()    == port         )  
+                        ), command ));
                 t.Start();
 
             }
