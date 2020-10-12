@@ -3,8 +3,8 @@
 ### The code
 La cartella col codice di riferimento attuale del server è net_core_v2. <br/>
 Da terminale, cd nella cartella net_core_v2 e 
-`dotnet build tlk_core.csproj` per compilare. <br/>
-L'output è l'eseguibile /net_core_v2/bin/Debug/netcoreapp3.1/
+`dotnet publish tlk_core.csproj --self-contained true -r linux-x64` per compilare. <br/>
+L'output è l'eseguibile /net_core_v2/bin/Debug/netcoreapp3.1/linux-x64
 
 ### The server
 Se tlk_core non risulta eseguibile provare `chmod a+x path/to/tlk_core`<br/>
