@@ -42,9 +42,6 @@ public class AsynchronousSocketListener {
 
         // Establish the local endpoint for the socket.  
         IPAddress ipAddress = IPAddress.Parse(  Configuration["LocalAddressForConnections"].ToString()); 
-        //#if DEBUG
-        //    ipAddress = IPAddress.Parse("192.168.17.210"); 
-        //#endif
         
         //endpoint per i modem
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress,Convert.ToInt32( Configuration["Port:Modem"]));
@@ -119,6 +116,7 @@ public class AsynchronousSocketListener {
 
     public static void AcceptCallback(IAsyncResult ar) {  
 
+        try{
         // Get the socket that handles the client request.  
         Socket listener = (Socket) ar.AsyncState;  
         Socket handler = listener.EndAccept(ar);  
@@ -155,6 +153,10 @@ public class AsynchronousSocketListener {
             state.workSocket = handler;  
             handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCommandsCallback), state);  
      
+        }
+        }catch(Exception e){
+            Console.WriteLine("Exception in AcceptCallback");
+            Functions.DatabaseFunctions.insertIntoDB("Exception in AcceptCallback");
         }  
     }  
   
@@ -254,7 +256,6 @@ public class AsynchronousSocketListener {
                 var finalString = new String(stringChars);
                 finalString = finalString + hex;
                 Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
-                
                 t.Start();
                 
             }
@@ -265,9 +266,8 @@ public class AsynchronousSocketListener {
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close();
                     ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
-         
-
                     isAlive = false;
+                    return;
                 }
         }
         catch(System.Net.Sockets.SocketException a){
@@ -280,11 +280,13 @@ public class AsynchronousSocketListener {
         }finally {
             if(isAlive)
             {
-                StateObject stateN = new StateObject();  
-                stateN.workSocket = handler;
-                Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-                Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
-                t.Start();
+                try{
+                    StateObject stateN = new StateObject();  
+                    stateN.workSocket = ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  );
+                    Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+                    Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
+                    t.Start();
+                }catch(Exception e){}
             }
         }
     }
@@ -312,12 +314,13 @@ public class AsynchronousSocketListener {
                         return;
             }
         }catch(Exception e) {
+            try{
             Console.WriteLine("Errore comunicazione con: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + e.Message);
             DatabaseFunctions.insertIntoDB("Errore comunicazione con: " +IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) );
             ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
-         
             handler.Shutdown(SocketShutdown.Both);  
             handler.Close();
+            }catch(Exception ex){}
             return;
         }
         Console.WriteLine("Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
@@ -334,9 +337,9 @@ public class AsynchronousSocketListener {
         //Console.WriteLine("Waiting for user command: ");
         //data = data + Console.ReadLine();
         // Convert the string data to byte data using ASCII encoding.  
-        byte[] byteData = Encoding.ASCII.GetBytes(data);  
         try{  
-        // Begin sending the data to the remote device.  
+            byte[] byteData = Encoding.ASCII.GetBytes(data);  
+            // Begin sending the data to the remote device.  
             handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);
             
         }catch(Exception e) {  
@@ -359,8 +362,10 @@ public class AsynchronousSocketListener {
           
 
         } catch (Exception e) {  
+            try{
             ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
-            Console.WriteLine(e.ToString());  
+            Console.WriteLine(e.ToString()); 
+            }catch(Exception ex){} 
         } finally {
             
             //Thread t = new Thread(()=>Send (handler, "#PSW123456"));
