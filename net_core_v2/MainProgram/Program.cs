@@ -187,6 +187,13 @@ public class AsynchronousSocketListener {
                 String command = receivedCommand.SelectSingleNode(@"/data/command").InnerText;
                 //String port = receivedCommand.SelectSingleNode(@"/data/targetport").InnerText;
                 
+                bool checker = ModemsSocketList.Exists(      Soc => 
+                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP);
+                if(checker == false)
+                {
+                    Console.WriteLine("Sembra che {0} non sia connesso (non in ModemsSocketList), sending abort. \n",targetModemIP);
+                    return;
+                }    
                 Thread t = new Thread(()=>Send (  
                     ModemsSocketList.Find(      Soc => 
                         ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP      
