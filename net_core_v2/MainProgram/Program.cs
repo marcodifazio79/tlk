@@ -65,7 +65,7 @@ public class AsynchronousSocketListener {
         tCommands.Start();
 
 
-        Console.WriteLine("\nPress ENTER to continue...");  
+        //Console.WriteLine("\nPress ENTER to continue...");  
         Console.Read();  
     }  
     
@@ -134,8 +134,8 @@ public class AsynchronousSocketListener {
             //ModemsSocketList = Functions.SocketListFunctions.addToList(handler, ModemsSocketList);
             ModemsSocketList.Add(handler);
 
-            Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-            Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+            Console.WriteLine("Connection established to modem : " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
+            Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ())));
 
             // Create the state object.  
             StateObject state = new StateObject();  
@@ -148,8 +148,8 @@ public class AsynchronousSocketListener {
             // TODO: analizzare se è necessario: in teoria il backend potrebbe essere uno solo e quindi non serve aspettarsi nuove connessioni con una aperta.
             allDoneCommand.Set();
 
-            Console.WriteLine("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())     );
-            Functions.DatabaseFunctions.insertIntoDB("Connection established to: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+            Console.WriteLine("Connection established to backend : " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())  + " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()  ) );
+            Functions.DatabaseFunctions.insertIntoDB("Connection established to backend: " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ())));
 
             StateObject state = new StateObject();  
             state.workSocket = handler;  
@@ -247,7 +247,6 @@ public class AsynchronousSocketListener {
                 var finalString = new String(stringChars);
                 finalString = finalString + hex;
                 Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
-                //Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,gQkjsp34,"+date1));
                 
                 t.Start();
                 
@@ -351,14 +350,9 @@ public class AsynchronousSocketListener {
             Console.WriteLine("Sent {0} bytes to client.", bytesSent);  
             Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + ": sent " + bytesSent.ToString() + " to this client.");
           
-            //handler.Shutdown(SocketShutdown.Both);  
-            //handler.Close();  
-            //invece di chiudere il socket, lo rimetto in ricezione..
-            //StateObject state = new StateObject();  
-            //state.workSocket = handler;  
-            //handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
-  
+
         } catch (Exception e) {  
+            ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
             Console.WriteLine(e.ToString());  
         } finally {
             
