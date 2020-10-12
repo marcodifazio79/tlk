@@ -6,9 +6,9 @@ Documentation= https://versioning.dedemapp.com/fdifazio/tlk_python/blob/master/r
 
 [Service] 
 Type= simple 
-WorkingDirectory= /home/kdl_admin/tlk/net_core_v2/MainProgram/bin/Debug/netcoreapp3.1/ 
-ExecStart= /home/kdl_admin/tlk/net_core_v2/MainProgram/bin/Debug/netcoreapp3.1/tlk_core
-TimeoutStopSec= 15
+WorkingDirectory= /home/kdl_admin/tlk/net_core_v2/MainProgram/bin/Debug/netcoreapp3.1/linux-x64
+ExecStart= /home/kdl_admin/tlk/net_core_v2/MainProgram/bin/Debug/netcoreapp3.1/linux-x64/tlk_core
+TimeoutStopSec= 3
 
 ExecStop= /bin/kill -9 $MAINPID
 
