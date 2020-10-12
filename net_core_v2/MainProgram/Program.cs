@@ -327,14 +327,13 @@ public class AsynchronousSocketListener {
         //data = data + Console.ReadLine();
         // Convert the string data to byte data using ASCII encoding.  
         byte[] byteData = Encoding.ASCII.GetBytes(data);  
-
         try{  
         // Begin sending the data to the remote device.  
             handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);
-          
+            
         }catch(Exception e) {  
             Console.WriteLine("Begin send error: \n" + e.ToString());  
-            Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " begin send error.");
+            Functions.DatabaseFunctions.insertIntoDB("begin send error.");
           
         }
     }  
