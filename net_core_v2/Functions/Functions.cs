@@ -6,11 +6,54 @@ using System.Collections.Generic;
 namespace Functions
 {
     public class DatabaseFunctions
-    {        public static void insertIntoDB(string dataToInsert)
+    {
+        static string myConnectionString = "Server=127.0.0.1;Database=test;Uid=bot_user;Pwd=Qwert@#!99;";
+        
+        public static void insertIntoModemTable(string send_or_recv, string command, string modemAddress)
+        {
+            try
+            {
+                MySql.Data.MySqlClient.MySqlConnection conn;
+                conn = new MySql.Data.MySqlClient.MySqlConnection();
+                conn.ConnectionString = myConnectionString;
+                conn.Open();
+
+                //Console.WriteLine("DB connection OK!");
+
+                string sql = "SELECT COUNT(*) AS TotalNORows, id FROM Modem WHERE ip_address = "+ modemAddress +" GROUP BY ip_address;";
+                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if(reader.GetInt32(0) > 0 )
+                            {
+                                Console.WriteLine("There's already a modem with that IP! Solve this.");
+                                return;
+                            }    
+                            sql = "SELECT ";
+
+                            Console.WriteLine(string.Format(
+                                "Reading from table=({0}, {1}, {2})",
+                                reader.GetInt32(0),
+                                reader.GetString(1),
+                                reader.GetInt32(2)));
+                        }
+                    }
+
+                
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+        public static void insertIntoDB(string dataToInsert)
         {  
             MySql.Data.MySqlClient.MySqlConnection conn;
-            string myConnectionString;
-            myConnectionString = "Server=127.0.0.1;Database=test;Uid=bot_user;Pwd=Qwert@#!99;";
             try
             {
                 conn = new MySql.Data.MySqlClient.MySqlConnection();

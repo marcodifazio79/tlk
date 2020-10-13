@@ -247,7 +247,7 @@ public class AsynchronousSocketListener {
                 }
                 //de2BUl48  gQkjsp34 examples.
                 //response << boost::format("%02X") % (int)checksum;
-
+  
                 byte b = Convert.ToByte(checksum);
                 String hex = b.ToString("X");
 
