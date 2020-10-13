@@ -28,7 +28,7 @@ namespace Functions
                         {
                             if(reader.GetInt32(0) > 0 )
                             {
-                                Console.WriteLine("There's already a modem with that IP! Solve this.");
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : There's already a modem with that IP! Solve this.");
                                 conn.Close();
                                 return;
                             }    
@@ -63,39 +63,25 @@ namespace Functions
                 conn.Open();
                 string sql = "SELECT id FROM Modem_InMemory WHERE ip_address = '"+ ip_addr +"'";
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-
-
-
                 using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             if(reader.GetInt32(0) < 1 )
                             {
-                                Console.WriteLine("Modem not listed: adding..");
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
                                 insertIntoModemTable(ip_addr ,0);
                             }
                         }
-
-                        sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,command,id_modem) VALUES ('"+ip_addr+"','"+tcp_local_port+ "','"+transferred_data+"')";
+                        sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                         cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                         cmd.ExecuteNonQuery();
-
-                    }
-
-                
+                    }               
                 conn.Close();
-
-
-
-
-
-
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : "+ex.Message);
             }
 
         }
@@ -117,12 +103,12 @@ namespace Functions
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
                 
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + ex.Message);
             }
             catch(Exception e)
             {
                 
-                Console.WriteLine(e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
             }
             finally
             {
