@@ -1,31 +1,44 @@
 
  CREATE TABLE `ModemConnectionTrace` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON CREATE CURRENT_TIMESTAMP,
+  `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip_address` varchar(15) NOT NULL,
   `send_or_recv` varchar(4) NOT NULL,
-  `command` varchar(10000) NOT NULL,
-  `id_modem` int(11) NOT NULL,
+  `transferred_data` varchar(10000) NOT NULL,
   KEY `index_ip_address` (`ip_address`),
   KEY `index_time_stamp` (`time_stamp`),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
-
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
  CREATE TABLE `Modem` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
   `tcp_local_port` int(11) NOT NULL,
   `mid` varchar(50) DEFAULT NULL,
-  `last_online` timestamp NOT NULL ON CREATE CURRENT_TIMESTAMP,
+  `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip_address` (`ip_address`),
   UNIQUE KEY `mid` (`mid`),
   KEY `index_ip_address` (`ip_address`),
   KEY `index_mid` (`mid`),
-  KEY `index_local_port` (`ip_local_port`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1 
+  KEY `index_tcp_local_port` (`tcp_local_port`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+ CREATE TABLE `Modem_InMemory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(15) NOT NULL,
+  `tcp_local_port` int(11) NOT NULL,
+  `mid` varchar(50) DEFAULT NULL,
+  `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ip_address` (`ip_address`),
+  UNIQUE KEY `mid` (`mid`),
+  KEY `index_ip_address` (`ip_address`),
+  KEY `index_mid` (`mid`),
+  KEY `index_local_port` (`tcp_local_port`)
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 
  CREATE TABLE `dump` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

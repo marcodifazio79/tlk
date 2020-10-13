@@ -7,9 +7,9 @@ namespace Functions
 {
     public class DatabaseFunctions
     {
-        static string myConnectionString = "Server=127.0.0.1;Database=test;Uid=bot_user;Pwd=Qwert@#!99;";
+        static string myConnectionString = "Server=127.0.0.1;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
         
-        public static void insertIntoModemTable(string send_or_recv, string command, string modemAddress)
+        public static void insertIntoModemTable(string ip_addr, int tcp_local_port)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace Functions
 
                 //Console.WriteLine("DB connection OK!");
 
-                string sql = "SELECT COUNT(*) AS TotalNORows, id FROM Modem WHERE ip_address = "+ modemAddress +" GROUP BY ip_address;";
+                string sql = "SELECT COUNT(*) AS TotalNORows, id FROM Modem_InMemory WHERE ip_address = '"+ ip_addr +"' GROUP BY ip_address";
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 using (var reader = cmd.ExecuteReader())
                     {
@@ -29,20 +29,69 @@ namespace Functions
                             if(reader.GetInt32(0) > 0 )
                             {
                                 Console.WriteLine("There's already a modem with that IP! Solve this.");
+                                conn.Close();
                                 return;
                             }    
-                            sql = "SELECT ";
-
-                            Console.WriteLine(string.Format(
-                                "Reading from table=({0}, {1}, {2})",
-                                reader.GetInt32(0),
-                                reader.GetString(1),
-                                reader.GetInt32(2)));
+                            sql = "INSERT INTO Modem_InMemory  (ip_address,tcp_local_port) VALUES ('"+ip_addr+"','"+tcp_local_port+ "')";
+                            cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                            cmd.ExecuteNonQuery();
+                            //Console.WriteLine(string.Format(
+                            //    "Reading from table=({0}, {1}, {2})",
+                            //    reader.GetInt32(0),
+                            //    reader.GetString(1),
+                            //    reader.GetInt32(2)));
                         }
                     }
 
                 
                 conn.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+        public static void insertIntoModemModemConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
+        {
+            try
+            {
+                MySql.Data.MySqlClient.MySqlConnection conn;
+                conn = new MySql.Data.MySqlClient.MySqlConnection();
+                conn.ConnectionString = myConnectionString;
+                conn.Open();
+                string sql = "SELECT id FROM Modem_InMemory WHERE ip_address = '"+ ip_addr +"'";
+                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+
+
+
+                using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if(reader.GetInt32(0) < 1 )
+                            {
+                                Console.WriteLine("Modem not listed: adding..");
+                                insertIntoModemTable(ip_addr ,0);
+                            }
+                        }
+
+                        sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,command,id_modem) VALUES ('"+ip_addr+"','"+tcp_local_port+ "','"+transferred_data+"')";
+                        cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                        cmd.ExecuteNonQuery();
+
+                    }
+
+                
+                conn.Close();
+
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
