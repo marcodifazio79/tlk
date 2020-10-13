@@ -12,20 +12,22 @@ print (sys.stderr, 'connecting to %s port %s' % server_address)
 sock.connect(server_address)
 
 try:
-    
-    # Send data
-    message = str.encode('This is the message.  It will be repeated.')
-    print (sys.stderr, 'sending "%s"' % message)
-    sock.sendall(message)
+    while True:
+        # Send data
+        message = str.encode('This is the message.<-----|')
+        print (sys.stderr, 'sending "%s"' % message)
+        sock.sendall(message)
 
-    # Look for the response
-    amount_received = 0
-    amount_expected = len(message)
-    
-    while amount_received < amount_expected:
-        data = sock.recv(64)
-        amount_received += len(data)
-        print (sys.stderr, 'received "%s"' % data)
+        # Look for the response
+        amount_received = 0
+        amount_expected = len(message)
+        
+        while amount_received < amount_expected:
+            data = sock.recv(64)
+            amount_received += len(data)
+            print (sys.stderr, 'received "%s"' % data)
+        
+        input("Press any key to continue.. \n")
 
 finally:
     print (sys.stderr, 'closing socket')

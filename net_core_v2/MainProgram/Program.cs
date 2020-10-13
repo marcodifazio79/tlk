@@ -155,7 +155,7 @@ public class AsynchronousSocketListener {
      
         }
         }catch(Exception e){
-            Console.WriteLine(e.InnerException.Message);
+            Console.WriteLine(e.Message);
             
         }  
     }  
@@ -261,9 +261,9 @@ public class AsynchronousSocketListener {
                 if(bytesRead == 0){
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client");
                     DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
+                    ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close();
-                    ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
                     isAlive = false;
                     return;
                 }
