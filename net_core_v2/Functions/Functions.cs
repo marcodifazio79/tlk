@@ -31,7 +31,7 @@ namespace Functions
                                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : There's already a modem with that IP! Solve this.");
                                 conn.Close();
                                 return;
-                            }    
+                            }
                             reader.Close();
                             sql = "INSERT INTO Modem_InMemory  (ip_address,tcp_local_port) VALUES ('"+ip_addr+"','"+tcp_local_port+ "')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);

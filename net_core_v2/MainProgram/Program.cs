@@ -338,13 +338,16 @@ public class AsynchronousSocketListener {
 
     public static void Send(Socket handler, String data) {  
         
-        //Console.WriteLine("Waiting for user command: ");
-        //data = data + Console.ReadLine();
-        // Convert the string data to byte data using ASCII encoding.  
         try{  
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
-            // Begin sending the data to the remote device.  
-            handler.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), handler);
+            //byte[] byteData = Encoding.ASCII.GetBytes(data);
+            // Begin sending the data to the remote device.
+
+            StateObject state = new StateObject();
+            state.workSocket = handler;
+            state.sb = new StringBuilder(data, data.Length);
+            state.buffer = Encoding.ASCII.GetBytes(data);
+
+            handler.BeginSend(state.buffer, 0, state.buffer.Length, 0, new AsyncCallback(SendCallback), state);
             
         }catch(Exception e) {
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Begin send error: \n" + e.ToString());
@@ -354,19 +357,23 @@ public class AsynchronousSocketListener {
   
     private static void SendCallback(IAsyncResult ar) {  
         // Retrieve the socket from the state object.  
-        Socket handler = (Socket) ar.AsyncState;  
+        //Socket handler = (Socket) ar.AsyncState;  
+
+        StateObject state = (StateObject) ar.AsyncState;
+        //Socket handler = state.workSocket;
+        //String content = String.Empty;
         try {  
-            
   
             // Complete sending the data to the remote device.  
-            int bytesSent = handler.EndSend(ar);  
+            int bytesSent = state.workSocket.EndSend(ar);
+            
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Sent {0} bytes to client.", bytesSent);  
-            Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"SEND", ""  );
+            Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString() ,"SEND", state.sb.ToString()  );
           
 
         } catch (Exception e) {  
             try{
-            ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
+            ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)state.workSocket.RemoteEndPoint).Address  )  );
             Console.WriteLine(e.ToString()); 
             }catch(Exception ex){} 
         } finally {
