@@ -25,9 +25,8 @@ try:
         while amount_received < amount_expected:
             data = sock.recv(64)
             amount_received += len(data)
-            print (sys.stderr, 'received "%s"' % data)
-        
-        input("Press any key to continue.. \n")
+            print (sys.stderr, 'received "%s"' % data)        
+        x = input('Press any key to continue.. \n')
 
 finally:
     print (sys.stderr, 'closing socket')

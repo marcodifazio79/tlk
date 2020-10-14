@@ -32,6 +32,7 @@ namespace Functions
                                 conn.Close();
                                 return;
                             }    
+                            reader.Close();
                             sql = "INSERT INTO Modem_InMemory  (ip_address,tcp_local_port) VALUES ('"+ip_addr+"','"+tcp_local_port+ "')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                             cmd.ExecuteNonQuery();
@@ -73,6 +74,7 @@ namespace Functions
                                 insertIntoModemTable(ip_addr ,0);
                             }
                         }
+                        reader.Close();
                         sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                         cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                         cmd.ExecuteNonQuery();
