@@ -283,7 +283,7 @@ public class AsynchronousSocketListener {
                     StateObject stateN = new StateObject();  
                     stateN.workSocket = ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  );
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-                    Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), stateN));
+                    Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
                     t.Start();
                 }catch(Exception e){
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Something went wrong while reopening the connection");
@@ -291,7 +291,7 @@ public class AsynchronousSocketListener {
             }
         }
     }
-/*    public static void ReadOtherCallback(IAsyncResult ar) {
+    public static void ReadOtherCallback(IAsyncResult ar) {
         StateObject state = (StateObject) ar.AsyncState;
         Socket handler = state.workSocket;
         String content = String.Empty;
@@ -332,7 +332,7 @@ public class AsynchronousSocketListener {
         Thread t = new Thread(()=> handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
         t.Start(); 
 
-    }*/
+    }
       
     
 
@@ -369,7 +369,7 @@ public class AsynchronousSocketListener {
             
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Sent {0} bytes to client.", bytesSent);  
             Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString() ,"SEND", state.sb.ToString()  );
-          
+            
 
         } catch (Exception e) {  
             try{
