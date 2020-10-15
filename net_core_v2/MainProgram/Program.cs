@@ -194,12 +194,6 @@ public class AsynchronousSocketListener {
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), abort...",targetModemIP);
                     
-                    // StateObject stateNew = new StateObject();  
-                    // stateNew.workSocket = new Socket(  IPAddress.Parse(targetModemIP).AddressFamily , SocketType.Stream, ProtocolType.Tcp);  
-                    
-                    // stateNew.workSocket.BeginConnect(  new IPEndPoint(IPAddress.Parse( targetModemIP ) , Convert.ToInt32( Configuration["Port:Modem"])) ,new AsyncCallback(ConnectCallback) ,  stateNew.workSocket  );
-                    
-                    // connectDone.WaitOne();
                     return;
                 }    
                 Thread t = new Thread(()=>Send (  
@@ -215,24 +209,6 @@ public class AsynchronousSocketListener {
         }    
 
     }  
-//    private static void ConnectCallback(IAsyncResult ar) {  
-//         try {  
-//             // Retrieve the socket from the state object. 
-//             StateObject SO = (StateObject)ar.AsyncState;
-//             Socket s = SO.workSocket;//(Socket) ar.AsyncState;  
-  
-//             // Complete the connection.  
-//             s.EndConnect(ar);  
-  
-//             Console.WriteLine("Socket connected to {0}", s.RemoteEndPoint.ToString());
-//             ModemsSocketList.Add(s);  
-//             connectDone.Set(); 
-           
-//         } catch (Exception e) {  
-//             Console.WriteLine(e.ToString());  
-//         }  
-//     }  
-
     public static void ReadCallback(IAsyncResult ar) {
         String content = String.Empty;  
   
@@ -284,7 +260,6 @@ public class AsynchronousSocketListener {
             else 
                 if(bytesRead == 0){
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client");
-                    //DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
                     Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", "" );
                     ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
                     handler.Shutdown(SocketShutdown.Both);  
@@ -325,11 +300,17 @@ public class AsynchronousSocketListener {
         
             if (bytesRead > 0) {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
-                content = state.sb.ToString();  
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
-                //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
-                Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
-
+                content = state.sb.ToString();
+                if (content.IndexOf(">") > -1) {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
+                    //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
+                    Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                }else {  
+                // Not all data received. Get more.  
+                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
+                new AsyncCallback(ReadOtherCallback), state);
+            }      
+            
             }        
             else if(bytesRead == 0){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
@@ -384,12 +365,9 @@ public class AsynchronousSocketListener {
     }  
   
     private static void SendCallback(IAsyncResult ar) {  
-        // Retrieve the socket from the state object.  
-        //Socket handler = (Socket) ar.AsyncState;  
-
+        
         StateObject state = (StateObject) ar.AsyncState;
-        //Socket handler = state.workSocket;
-        //String content = String.Empty;
+        
         try {  
   
             // Complete sending the data to the remote device.  
