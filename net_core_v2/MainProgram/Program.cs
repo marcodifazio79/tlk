@@ -188,8 +188,7 @@ public class AsynchronousSocketListener {
                 String command = "#PWD123456" +  receivedCommand.SelectSingleNode(@"/data/command").InnerText;
                 //String port = receivedCommand.SelectSingleNode(@"/data/targetport").InnerText;
                 
-                bool checker = ModemsSocketList.Exists(Soc => 
-                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP);
+                bool checker = ModemsSocketList.Exists(Soc =>  ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP);
                 if(checker == false)
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), abort...",targetModemIP);
@@ -300,16 +299,16 @@ public class AsynchronousSocketListener {
         
             if (bytesRead > 0) {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
-                content = state.sb.ToString();
+                content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
                 if (content.IndexOf(">") > -1) {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " :£ Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
                     Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 }else {  
                 // Not all data received. Get more.  
                 handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
                 new AsyncCallback(ReadOtherCallback), state);
-            }      
+            }     
             
             }        
             else if(bytesRead == 0){
