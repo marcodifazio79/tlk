@@ -196,8 +196,9 @@ public class AsynchronousSocketListener {
                     
                     StateObject stateNew = new StateObject();  
                     stateNew.workSocket = new Socket(  IPAddress.Parse(targetModemIP).AddressFamily , SocketType.Stream, ProtocolType.Tcp);  
-
-                    handler.BeginConnect(  new IPEndPoint(IPAddress.Parse( targetModemIP ) , Convert.ToInt32( Configuration["Port:Modem"])) ,new AsyncCallback(ConnectCallback) ,  stateNew.workSocket  );
+                    
+                    stateNew.workSocket.BeginConnect(  new IPEndPoint(IPAddress.Parse( targetModemIP ) , Convert.ToInt32( Configuration["Port:Modem"])) ,new AsyncCallback(ConnectCallback) ,  stateNew.workSocket  );
+                    
                     connectDone.WaitOne();
                     //return;
                 }    
