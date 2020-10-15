@@ -28,7 +28,8 @@ public class AsynchronousSocketListener {
     // allDoneModem is used to block and release the threads manually.
     public static ManualResetEvent allDoneModem = new ManualResetEvent(false);  
     public static ManualResetEvent allDoneCommand = new ManualResetEvent(false);  
-    
+    //connection requested by the server to the modem
+    private static ManualResetEvent connectDone = new ManualResetEvent(false); 
     //configuration file, loaded at startup
     public static IConfiguration Configuration;
     
@@ -191,8 +192,14 @@ public class AsynchronousSocketListener {
                         ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP);
                 if(checker == false)
                 {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), sending abort. \n",targetModemIP);
-                    return;
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), connecting... \n",targetModemIP);
+                    
+                    StateObject stateNew = new StateObject();  
+                    stateNew.workSocket = new Socket(  IPAddress.Parse(targetModemIP).AddressFamily , SocketType.Stream, ProtocolType.Tcp);  
+
+                    handler.BeginConnect(  new IPEndPoint(IPAddress.Parse( targetModemIP ) , Convert.ToInt32( Configuration["Port:Modem"])) ,new AsyncCallback(ConnectCallback) ,  stateNew.workSocket  );
+                    connectDone.WaitOne();
+                    //return;
                 }    
                 Thread t = new Thread(()=>Send (  
                     ModemsSocketList.Find(      Soc => 
@@ -207,7 +214,23 @@ public class AsynchronousSocketListener {
         }    
 
     }  
+   private static void ConnectCallback(IAsyncResult ar) {  
+        try {  
+            // Retrieve the socket from the state object. 
+            StateObject SO = (StateObject)ar.AsyncState;
+            Socket s = SO.workSocket;//(Socket) ar.AsyncState;  
   
+            // Complete the connection.  
+            s.EndConnect(ar);  
+  
+            Console.WriteLine("Socket connected to {0}", s.RemoteEndPoint.ToString());
+            ModemsSocketList.Add(s);  
+            connectDone.Set(); 
+           
+        } catch (Exception e) {  
+            Console.WriteLine(e.ToString());  
+        }  
+    }  
 
     public static void ReadCallback(IAsyncResult ar) {
         String content = String.Empty;  
