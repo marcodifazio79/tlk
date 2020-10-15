@@ -29,7 +29,7 @@ public class AsynchronousSocketListener {
     public static ManualResetEvent allDoneModem = new ManualResetEvent(false);  
     public static ManualResetEvent allDoneCommand = new ManualResetEvent(false);  
     //connection requested by the server to the modem
-    private static ManualResetEvent connectDone = new ManualResetEvent(false); 
+    //private static ManualResetEvent connectDone = new ManualResetEvent(false); 
     //configuration file, loaded at startup
     public static IConfiguration Configuration;
     
@@ -192,15 +192,15 @@ public class AsynchronousSocketListener {
                         ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP);
                 if(checker == false)
                 {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), connecting...",targetModemIP);
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), abort...",targetModemIP);
                     
-                    StateObject stateNew = new StateObject();  
-                    stateNew.workSocket = new Socket(  IPAddress.Parse(targetModemIP).AddressFamily , SocketType.Stream, ProtocolType.Tcp);  
+                    // StateObject stateNew = new StateObject();  
+                    // stateNew.workSocket = new Socket(  IPAddress.Parse(targetModemIP).AddressFamily , SocketType.Stream, ProtocolType.Tcp);  
                     
-                    stateNew.workSocket.BeginConnect(  new IPEndPoint(IPAddress.Parse( targetModemIP ) , Convert.ToInt32( Configuration["Port:Modem"])) ,new AsyncCallback(ConnectCallback) ,  stateNew.workSocket  );
+                    // stateNew.workSocket.BeginConnect(  new IPEndPoint(IPAddress.Parse( targetModemIP ) , Convert.ToInt32( Configuration["Port:Modem"])) ,new AsyncCallback(ConnectCallback) ,  stateNew.workSocket  );
                     
-                    connectDone.WaitOne();
-                    //return;
+                    // connectDone.WaitOne();
+                    return;
                 }    
                 Thread t = new Thread(()=>Send (  
                     ModemsSocketList.Find(      Soc => 
@@ -215,23 +215,23 @@ public class AsynchronousSocketListener {
         }    
 
     }  
-   private static void ConnectCallback(IAsyncResult ar) {  
-        try {  
-            // Retrieve the socket from the state object. 
-            StateObject SO = (StateObject)ar.AsyncState;
-            Socket s = SO.workSocket;//(Socket) ar.AsyncState;  
+//    private static void ConnectCallback(IAsyncResult ar) {  
+//         try {  
+//             // Retrieve the socket from the state object. 
+//             StateObject SO = (StateObject)ar.AsyncState;
+//             Socket s = SO.workSocket;//(Socket) ar.AsyncState;  
   
-            // Complete the connection.  
-            s.EndConnect(ar);  
+//             // Complete the connection.  
+//             s.EndConnect(ar);  
   
-            Console.WriteLine("Socket connected to {0}", s.RemoteEndPoint.ToString());
-            ModemsSocketList.Add(s);  
-            connectDone.Set(); 
+//             Console.WriteLine("Socket connected to {0}", s.RemoteEndPoint.ToString());
+//             ModemsSocketList.Add(s);  
+//             connectDone.Set(); 
            
-        } catch (Exception e) {  
-            Console.WriteLine(e.ToString());  
-        }  
-    }  
+//         } catch (Exception e) {  
+//             Console.WriteLine(e.ToString());  
+//         }  
+//     }  
 
     public static void ReadCallback(IAsyncResult ar) {
         String content = String.Empty;  
@@ -321,7 +321,7 @@ public class AsynchronousSocketListener {
         String content = String.Empty;
            
         try{
-        int bytesRead = handler.EndReceive(ar);
+            int bytesRead = handler.EndReceive(ar);
         
             if (bytesRead > 0) {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
@@ -341,6 +341,8 @@ public class AsynchronousSocketListener {
                         handler.Close();
                         return;
             }
+
+
         }catch(Exception e) {
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + e.ToString());
             try{
@@ -356,8 +358,10 @@ public class AsynchronousSocketListener {
         }
         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
         state = new StateObject();
-        Thread t = new Thread(()=> handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
-        t.Start();
+        state.workSocket = handler;
+        state.workSocket.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state);
+        //Thread t = new Thread(()=> state.workSocket.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
+        //t.Start();
     }    
 
     public static void Send(Socket handler, String data) {  
