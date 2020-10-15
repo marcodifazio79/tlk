@@ -155,7 +155,7 @@ public class AsynchronousSocketListener {
      
         }
         }catch(Exception e){
-            Console.WriteLine(e.Message);
+            Console.WriteLine(e.ToString());
             
         }  
     }  
@@ -325,7 +325,7 @@ public class AsynchronousSocketListener {
             handler.Shutdown(SocketShutdown.Both);  
             handler.Close();
             }catch(Exception ex){
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.ToString());
             }
             return;
         }
@@ -375,7 +375,7 @@ public class AsynchronousSocketListener {
             Console.WriteLine(e.ToString()); 
             ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)state.workSocket.RemoteEndPoint).Address  )  );
             }catch(Exception ex){
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.ToString());
             } 
         } finally {
             
