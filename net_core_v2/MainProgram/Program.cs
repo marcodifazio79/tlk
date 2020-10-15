@@ -185,7 +185,7 @@ public class AsynchronousSocketListener {
 
                 //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
                 String targetModemIP = receivedCommand.SelectSingleNode(@"/data/targetip").InnerText;
-                String command = receivedCommand.SelectSingleNode(@"/data/command").InnerText;
+                String command = "#PWD123456" +  receivedCommand.SelectSingleNode(@"/data/command").InnerText;
                 //String port = receivedCommand.SelectSingleNode(@"/data/targetport").InnerText;
                 
                 bool checker = ModemsSocketList.Exists(Soc => 
