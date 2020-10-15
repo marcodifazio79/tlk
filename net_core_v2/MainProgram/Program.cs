@@ -15,7 +15,7 @@ public class StateObject {
     // Client  socket.  
     public Socket workSocket = null;  
     // Size of receive buffer.  
-    public const int BufferSize = 1024;  
+    public const int BufferSize = 10240;  
     // Receive buffer.  
     public byte[] buffer = new byte[BufferSize];  
 // Received data string.  
@@ -286,7 +286,7 @@ public class AsynchronousSocketListener {
                     Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
                     t.Start();
                 }catch(Exception e){
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Something went wrong while reopening the connection");
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Something went wrong while reopening the connection " + e.Message);
                 }
             }
         }
@@ -324,17 +324,16 @@ public class AsynchronousSocketListener {
             ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
             handler.Shutdown(SocketShutdown.Both);  
             handler.Close();
-            }catch(Exception ex){}
+            }catch(Exception ex){
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.Message);
+            }
             return;
         }
         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
         state = new StateObject();
         Thread t = new Thread(()=> handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
-        t.Start(); 
-
-    }
-      
-    
+        t.Start();
+    }    
 
     public static void Send(Socket handler, String data) {  
         
@@ -370,12 +369,14 @@ public class AsynchronousSocketListener {
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Sent {0} bytes to client.", bytesSent);  
             Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString() ,"SEND", state.sb.ToString()  );
             
-
+            
         } catch (Exception e) {  
             try{
-            ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)state.workSocket.RemoteEndPoint).Address  )  );
             Console.WriteLine(e.ToString()); 
-            }catch(Exception ex){} 
+            ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)state.workSocket.RemoteEndPoint).Address  )  );
+            }catch(Exception ex){
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.Message);
+            } 
         } finally {
             
             //Thread t = new Thread(()=>Send (handler, "#PSW123456"));
