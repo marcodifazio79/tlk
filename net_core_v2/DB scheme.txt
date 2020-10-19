@@ -17,6 +17,7 @@
   `mid` varchar(50) DEFAULT NULL,
   `kal_value` int DEFAULT NULL,
   `lgg_value` int DEFAULT NULL,
+  `version` varchar(10) DEFAULT NULL,
   `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
   `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -47,4 +48,4 @@
   `data` varchar(10000) NOT NULL,
   `timeStamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1
+) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;

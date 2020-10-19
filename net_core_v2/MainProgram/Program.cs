@@ -134,7 +134,7 @@ public class AsynchronousSocketListener {
             ModemsSocketList.Add(handler);
 
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-            Functions.DatabaseFunctions.insertIntoModemTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,(((IPEndPoint)handler.RemoteEndPoint).Port));
+            Functions.DatabaseFunctions.insertIntoModemTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()); //,(((IPEndPoint)handler.RemoteEndPoint).Port));
 
             // Create the state object.  
             StateObject state = new StateObject();  
@@ -148,7 +148,6 @@ public class AsynchronousSocketListener {
             allDoneCommand.Set();
 
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to backend : " + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())  + " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()  ) );
-            Functions.DatabaseFunctions.insertIntoModemTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,(((IPEndPoint)handler.RemoteEndPoint).Port));
 
             StateObject state = new StateObject();  
             state.workSocket = handler;  
@@ -227,7 +226,13 @@ public class AsynchronousSocketListener {
                 content = state.sb.ToString();  
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
+                
                 Functions.DatabaseFunctions.insertIntoModemModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                if(content.Contains("<MID")){
+                    //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
+                    //nell forma     <MID=1234567890-865291049819286><VER=110>
+                    Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
+                }
                 string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
                 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

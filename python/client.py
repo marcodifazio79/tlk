@@ -14,7 +14,7 @@ sock.connect(server_address)
 try:
     while True:
         # Send data
-        message = str.encode('This is the message.<-----|')
+        message = str.encode('<MID=1234567890-865291049819286><VER=110>')
         print (sys.stderr, 'sending "%s"' % message)
         sock.sendall(message)
 
