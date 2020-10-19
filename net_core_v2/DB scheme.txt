@@ -13,8 +13,10 @@
  CREATE TABLE `Modem` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
-  `tcp_local_port` int(11) NOT NULL,
+  `imei` BIGINT DEFAULT NULL,
   `mid` varchar(50) DEFAULT NULL,
+  `kal_value` int DEFAULT NULL,
+  `lgg_value` int DEFAULT NULL,
   `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
   `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -22,7 +24,7 @@
   UNIQUE KEY `mid` (`mid`),
   KEY `index_ip_address` (`ip_address`),
   KEY `index_mid` (`mid`),
-  KEY `index_tcp_local_port` (`tcp_local_port`)
+  KEY `index_imei` (`imei`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
