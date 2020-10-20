@@ -13,21 +13,23 @@ namespace Functions
         {
             try
             {
-                System.Xml.XmlDocument receivedString = new System.Xml.XmlDocument();
-                receivedString.LoadXml(s);
-                System.Xml.XmlAttribute MID = receivedString.DocumentElement.GetAttributeNode("MID");
-                System.Xml.XmlAttribute VER = receivedString.DocumentElement.GetAttributeNode("VER");
+                string mid = s.Substring(0, s.IndexOf(">"));
+                mid =mid.Substring(mid.IndexOf("="),mid.Length-1);
 
-
+                string imei = s.Substring(s.IndexOf("<",3), s.IndexOf(">",s.IndexOf(">")+1));
+                imei =imei.Substring(imei.IndexOf("="),imei.Length-1);
+                
                 MySql.Data.MySqlClient.MySqlConnection conn;
                 conn = new MySql.Data.MySqlClient.MySqlConnection();
                 conn.ConnectionString = myConnectionString;
                 conn.Open();
 
-                string sql = "UPDATE Modem (imei, mid, version , last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                string sql = "UPDATE Modem (imei, mid, version , last_communication) VALUES ('"+imei+","+ mid+","+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
-            }catch(Exception e){}
+            }catch(Exception e){
+                Console.WriteLine(e.Message);
+            }
         }
 
 
