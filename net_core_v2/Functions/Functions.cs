@@ -13,18 +13,23 @@ namespace Functions
         {
             try
             {
-                string mid = s.Substring(0, s.IndexOf(">"));
-                mid =mid.Substring(mid.IndexOf("="),mid.Length-1);
+                //   s = <MID=1234567890-865291049819286><VER=110>
+                string mid = s.Substring(s.IndexOf("=")+1);
+                mid =mid.Substring(0,mid.IndexOf("-"));
 
-                string imei = s.Substring(s.IndexOf("<",3), s.IndexOf(">",s.IndexOf(">")+1));
-                imei =imei.Substring(imei.IndexOf("="),imei.Length-1);
+                string imei = s.Substring(s.IndexOf("-")+1);
+                imei =imei.Substring(0,imei.IndexOf(">"));
                 
+
+                string version = s.Substring(     s.IndexOf("VER=")+4     );
+                version = version.Substring(0,version.IndexOf(">"));
+
                 MySql.Data.MySqlClient.MySqlConnection conn;
                 conn = new MySql.Data.MySqlClient.MySqlConnection();
                 conn.ConnectionString = myConnectionString;
                 conn.Open();
 
-                string sql = "UPDATE Modem (imei, mid, version , last_communication) VALUES ('"+imei+","+ mid+","+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                string sql = "UPDATE Modem SET imei = "+imei+", mid="+mid+", version = "+version+", last_communication='"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"' WHERE ip_address = '"+ ip_addr+"'";
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
             }catch(Exception e){
@@ -51,7 +56,7 @@ namespace Functions
                             if(reader.GetInt32(0) > 0 )
                             {
                                 //so there's already a modem with that IP, let's just update the last_communication value with "now"
-                                sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                                sql = "UPDATE Modem SET last_communication='"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"' WHERE ip_address = "+ ip_addr;
                                 cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                                 cmd.ExecuteNonQuery();
                                 conn.Close();
@@ -65,7 +70,7 @@ namespace Functions
                             //    reader.GetInt32(2)));
                         }
                         reader.Close();
-                        sql = "INSERT INTO Modem (ip_address,tcp_local_port) VALUES ('"+ip_addr+"')";
+                        sql = "INSERT INTO Modem (ip_address) VALUES ('"+ip_addr+"')";
                         cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                         cmd.ExecuteNonQuery();
                     }
