@@ -91,8 +91,14 @@ namespace Functions
                         if (!reader.Read())
                         {
                             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
-                            insertIntoModemTable(ip_addr);
+                            
                         }
+                        //at this point insertIntoModemTable will just update the last_communication value
+                        //if the modem is already present, it should probably be renamed..
+                        //this way i query 2 time the db for the same ip, here and in the insertIntoModemTable
+                        //function, it should not be a big deal but keep it in mind if further 
+                        //optimization is needed.
+                        insertIntoModemTable(ip_addr);
                         reader.Close();
                         sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                         cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
