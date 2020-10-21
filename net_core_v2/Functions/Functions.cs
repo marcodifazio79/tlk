@@ -42,27 +42,18 @@ namespace Functions
                 conn.ConnectionString = myConnectionString;
                 conn.Open();
 
-                string sql = "SELECT COUNT(*) AS TotalNORows, id FROM Modem WHERE ip_address = '"+ ip_addr +"' GROUP BY ip_address";
+                string sql = "SELECT id FROM Modem WHERE ip_address = '"+ ip_addr +"'";
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            if(reader.GetInt32(0) > 0 )
-                            {
-                                //so there's already a modem with that IP, let's just update the last_communication value with "now"
-                                sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
-                                cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                                cmd.ExecuteNonQuery();
-                                conn.Close();
-                                return;
-                            }
-                            
-                            //Console.WriteLine(string.Format(
-                            //    "Reading from table=({0}, {1}, {2})",
-                            //    reader.GetInt32(0),
-                            //    reader.GetString(1),
-                            //    reader.GetInt32(2)));
+                            //so there's already a modem with that IP, let's just update the last_communication value with "now"
+                            sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                            cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                            cmd.ExecuteNonQuery();
+                            conn.Close();
+                            return;
                         }
                         reader.Close();
                         sql = "INSERT INTO Modem (ip_address,tcp_local_port) VALUES ('"+ip_addr+"')";
