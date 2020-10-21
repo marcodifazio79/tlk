@@ -111,7 +111,7 @@ namespace Functions
                     {
                         if (!reader.Read())
                         {
-                            if(!ip_addr.StartsWith("172.16."))
+                            if(ip_addr.StartsWith("172.16."))
                             {
                                 //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, and i don't wont
                                 //to add the backand to the modem list
