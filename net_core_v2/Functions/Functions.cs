@@ -85,8 +85,8 @@ namespace Functions
                 conn = new MySql.Data.MySqlClient.MySqlConnection();
                 conn.ConnectionString = myConnectionString;
                 conn.Open();
-                sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
-                cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                string sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
                 conn.Close();
             }catch (Exception ex)
