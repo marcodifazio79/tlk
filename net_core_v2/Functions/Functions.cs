@@ -98,8 +98,9 @@ namespace Functions
                         //this way i query 2 time the db for the same ip, here and in the insertIntoModemTable
                         //function, it should not be a big deal but keep it in mind if further 
                         //optimization is needed.
-                        insertIntoModemTable(ip_addr);
                         reader.Close();
+                        insertIntoModemTable(ip_addr);
+                        
                         sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                         cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                         cmd.ExecuteNonQuery();
