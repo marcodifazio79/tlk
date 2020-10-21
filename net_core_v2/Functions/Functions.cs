@@ -120,13 +120,10 @@ namespace Functions
                             }
                             else
                             {
-                                //this is doubled, it's an ugly solution but i'll settle for it for now.
                                 reader.Close();
                                 sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                                 cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                                cmd.ExecuteNonQuery();
-                                updateModemlast_connection(ip_addr);
-                            }
+                                cmd.ExecuteNonQuery();                            }
                         }
                         else
                         {
