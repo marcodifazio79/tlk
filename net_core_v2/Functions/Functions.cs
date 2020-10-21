@@ -55,13 +55,7 @@ namespace Functions
                         {
                             reader.Close();
                             updateModemlast_connection(ip_addr);
-                            //so there's already a modem with that IP, let's just update the last_communication value with "now"
-                            //sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
-                            //cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                            //cmd.ExecuteNonQuery();
-                            //conn.Close();
-                            //return;
-                        }else{
+                            
                             reader.Close();
                             sql = "INSERT INTO Modem (ip_address) VALUES ('"+ip_addr+"')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
@@ -77,6 +71,12 @@ namespace Functions
 
         }
 
+
+        /////
+        //  
+        //  this should be probably be replaced by a trigger on the db, but it's a hard life
+        //
+        /////
         public static void updateModemlast_connection(string ip_addr)
         {
             try
@@ -122,6 +122,7 @@ namespace Functions
                                 sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                                 cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                                 cmd.ExecuteNonQuery();
+                                updateModemlast_connection(ip_addr);
                             }
                         }
                         else
@@ -130,8 +131,9 @@ namespace Functions
                             sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                             cmd.ExecuteNonQuery();
+                            updateModemlast_connection(ip_addr);
                         }
-                    }               
+                    }
                 conn.Close();
             }
             catch (Exception ex)
