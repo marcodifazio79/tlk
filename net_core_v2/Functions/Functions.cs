@@ -108,24 +108,29 @@ namespace Functions
                     {
                         if (!reader.Read())
                         {
-                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
-                            insertIntoModemTable(ip_addr);
+                            if(!ip_addr.StartsWith("172.16."))
+                            {
+                                //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, and i don't wont
+                                //to add the backand to the modem list
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
+                                insertIntoModemTable(ip_addr);
+                            }
+                            else
+                            {
+                                //this is doubled, it's an ugly solution but i'll settle for it for now.
+                                reader.Close();
+                                sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
+                                cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                                cmd.ExecuteNonQuery();
+                            }
                         }
-                        else{
-
+                        else
+                        {
                             reader.Close();
                             sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                             cmd.ExecuteNonQuery();
                         }
-                        //at this point insertIntoModemTable will just update the last_communication value
-                        //if the modem is already present, it should probably be renamed..
-                        //this way i query 2 time the db for the same ip, here and in the insertIntoModemTable
-                        //function, it should not be a big deal but keep it in mind if further 
-                        //optimization is needed.
-                        
-                        
-                       
                     }               
                 conn.Close();
             }

@@ -18,7 +18,7 @@ public class StateObject {
     public const int BufferSize = 10240;  
     // Receive buffer.  
     public byte[] buffer = new byte[BufferSize];  
-// Received data string.  
+    // Received data string.  
     public StringBuilder sb = new StringBuilder();    
 }  
 
