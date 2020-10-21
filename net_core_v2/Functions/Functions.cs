@@ -51,22 +51,23 @@ namespace Functions
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 using (var reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
+                        if (reader.Read())
                         {
+                            reader.Close();
+                            updateModemlast_connection(ip_addr);
                             //so there's already a modem with that IP, let's just update the last_communication value with "now"
-                            sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                            //sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                            //cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                            //cmd.ExecuteNonQuery();
+                            //conn.Close();
+                            //return;
+                        }else{
+                            reader.Close();
+                            sql = "INSERT INTO Modem (ip_address) VALUES ('"+ip_addr+"')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                             cmd.ExecuteNonQuery();
-                            conn.Close();
-                            return;
                         }
-                        reader.Close();
-                        sql = "INSERT INTO Modem (ip_address) VALUES ('"+ip_addr+"')";
-                        cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                        cmd.ExecuteNonQuery();
                     }
-
-                
                 conn.Close();
             }
             catch (Exception ex)
@@ -76,7 +77,24 @@ namespace Functions
 
         }
 
-        public static void insertIntoModemModemConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
+        public static void updateModemlast_connection(string ip_addr)
+        {
+            try
+            {
+                MySql.Data.MySqlClient.MySqlConnection conn;
+                conn = new MySql.Data.MySqlClient.MySqlConnection();
+                conn.ConnectionString = myConnectionString;
+                conn.Open();
+                sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address = "+ ip_addr;
+                cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }catch (Exception ex)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : "+ex.Message);
+            }
+        }
+        public static void insertIntoModemConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             try
             {
@@ -91,19 +109,23 @@ namespace Functions
                         if (!reader.Read())
                         {
                             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
-                            
+                            insertIntoModemTable(ip_addr);
+                        }
+                        else{
+
+                            reader.Close();
+                            sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
+                            cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                            cmd.ExecuteNonQuery();
                         }
                         //at this point insertIntoModemTable will just update the last_communication value
                         //if the modem is already present, it should probably be renamed..
                         //this way i query 2 time the db for the same ip, here and in the insertIntoModemTable
                         //function, it should not be a big deal but keep it in mind if further 
                         //optimization is needed.
-                        reader.Close();
-                        insertIntoModemTable(ip_addr);
                         
-                        sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
-                        cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                        cmd.ExecuteNonQuery();
+                        
+                       
                     }               
                 conn.Close();
             }
