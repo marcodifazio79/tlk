@@ -226,7 +226,6 @@ public class AsynchronousSocketListener {
                 content = state.sb.ToString();  
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
-                
                 Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 if(content.Contains("<MID")){
                     //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,

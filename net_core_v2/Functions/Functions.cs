@@ -55,7 +55,8 @@ namespace Functions
                         {
                             reader.Close();
                             updateModemlast_connection(ip_addr);
-                            
+                        }
+                        else{
                             reader.Close();
                             sql = "INSERT INTO Modem (ip_address) VALUES ('"+ip_addr+"')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
@@ -85,10 +86,7 @@ namespace Functions
                 conn = new MySql.Data.MySqlClient.MySqlConnection();
                 conn.ConnectionString = myConnectionString;
                 conn.Open();
-                Console.WriteLine("sbadamiao: "+ip_addr);
-                string sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address ='"+ ip_addr+"'";
-                Console.WriteLine("sbadastinga: "+sql);
-                
+                string sql = "UPDATE Modem (last_communication) VALUES ('"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"') WHERE ip_address ='"+ ip_addr+"'";               
                 var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
                 conn.Close();
@@ -131,7 +129,7 @@ namespace Functions
                             sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                             cmd.ExecuteNonQuery();
-                            updateModemlast_connection(ip_addr);
+                            //updateModemlast_connection(ip_addr);
                         }
                     }
                 conn.Close();
