@@ -109,7 +109,7 @@ namespace Functions
                 MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                 using (var reader = cmd.ExecuteReader())
                     {
-                        if (!reader.Read())
+                        if (reader.Read())
                         {
                             if(ip_addr.StartsWith("172.16."))
                             {

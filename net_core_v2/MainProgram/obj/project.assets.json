@@ -9470,31 +9470,33 @@
     ]
   },
   "packageFolders": {
-    "/home/fdifazio/.nuget/packages/": {}
+    "C:\\Users\\fdifazio\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj",
+      "projectUniqueName": "C:\\tlk\\net_core_v2\\MainProgram\\tlk_core.csproj",
       "projectName": "tlk_core",
-      "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/tlk_core.csproj",
-      "packagesPath": "/home/fdifazio/.nuget/packages/",
-      "outputPath": "/home/fdifazio/Documents/tlk/net_core_v2/MainProgram/obj/",
+      "projectPath": "C:\\tlk\\net_core_v2\\MainProgram\\tlk_core.csproj",
+      "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
+      "outputPath": "C:\\tlk\\net_core_v2\\MainProgram\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/fdifazio/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj": {
-              "projectPath": "/home/fdifazio/Documents/tlk/net_core_v2/Functions/Functions.csproj"
+            "C:\\tlk\\net_core_v2\\Functions\\Functions.csproj": {
+              "projectPath": "C:\\tlk\\net_core_v2\\Functions\\Functions.csproj"
             }
           }
         }
@@ -9545,6 +9547,10 @@
             "version": "[3.1.9, 3.1.9]"
           },
           {
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
+            "version": "[3.1.9, 3.1.9]"
+          },
+          {
             "name": "Microsoft.NETCore.App.Runtime.linux-x64",
             "version": "[3.1.9, 3.1.9]"
           }
@@ -9554,7 +9560,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.403/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {
