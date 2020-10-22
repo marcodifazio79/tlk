@@ -109,27 +109,29 @@ namespace Functions
                     {
                         if (reader.Read())
                         {
+                            reader.Close();
+                            sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
+                            cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                            cmd.ExecuteNonQuery();
+                        }
+                        else
+                        {
                             if(ip_addr.StartsWith("172.16."))
                             {
-                                //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, and i don't wont
-                                //to add the backand to the modem list
+                                //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
+                                //and i don't wont to add the backand to the modem list
                                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
                                 insertIntoModemTable(ip_addr);
+                                //at this point i can just call me again to pupolate ModemConnectionTrace
+                                insertIntoModemConnectionTrace( ip_addr, send_or_recv, transferred_data );
                             }
                             else
                             {
                                 reader.Close();
                                 sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                                 cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                                cmd.ExecuteNonQuery();                            }
-                        }
-                        else
-                        {
-                            reader.Close();
-                            sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
-                            cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                            cmd.ExecuteNonQuery();
-                            //updateModemlast_connection(ip_addr);
+                                cmd.ExecuteNonQuery();
+                            }
                         }
                     }
                 conn.Close();
