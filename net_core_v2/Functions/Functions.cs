@@ -113,6 +113,7 @@ namespace Functions
                             sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                             cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                             cmd.ExecuteNonQuery();
+                            updateModemlast_connection(ip_addr);
                         }
                         else
                         {
@@ -131,6 +132,7 @@ namespace Functions
                                 sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
                                 cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
                                 cmd.ExecuteNonQuery();
+                                
                             }
                         }
                     }
