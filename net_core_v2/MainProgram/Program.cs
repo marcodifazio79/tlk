@@ -167,7 +167,7 @@ public class AsynchronousSocketListener {
         // from the asynchronous state object.  
         StateObject state = (StateObject) ar.AsyncState;  
         Socket handler = state.workSocket;  
-        
+        string answerToBackend = "";
         // Read data from the client socket.   
         try{
             int bytesRead = handler.EndReceive(ar);
@@ -178,10 +178,9 @@ public class AsynchronousSocketListener {
                 content = state.sb.ToString();  
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
-
+                
                 XmlDocument receivedCommand = new XmlDocument();
                 receivedCommand.LoadXml(content);
-
                 //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
                 String targetModemIP = receivedCommand.SelectSingleNode(@"/data/targetip").InnerText;
                 String command = "#PWD123456" +  receivedCommand.SelectSingleNode(@"/data/command").InnerText;
@@ -200,12 +199,20 @@ public class AsynchronousSocketListener {
                        //&& ((IPEndPoint)Soc.RemoteEndPoint).Port.ToString()    == port         )  
                         ), command ));
                 t.Start();
-
+                answerToBackend = "command-received-ok";
             }
-        }catch(Exception e) {
+        }
+        catch(Exception e) {
+            answerToBackend = "error";
             Console.WriteLine(e.ToString());
-        }    
+        }
+        finally
+        {
+                //response for the backend
 
+                Thread responseToBackendThred = new Thread(()=>Send (  handler   ,  ""  ));
+                responseToBackendThred.Start();
+        }
     }  
     public static void ReadCallback(IAsyncResult ar) {
         String content = String.Empty;  
