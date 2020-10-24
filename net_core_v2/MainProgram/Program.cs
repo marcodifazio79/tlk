@@ -210,7 +210,7 @@ public class AsynchronousSocketListener {
         {
                 //response for the backend
 
-                Thread responseToBackendThred = new Thread(()=>Send (  handler   ,  ""  ));
+                Thread responseToBackendThred = new Thread(()=>Send (  handler   ,  answerToBackend  ));
                 responseToBackendThred.Start();
         }
     }  
