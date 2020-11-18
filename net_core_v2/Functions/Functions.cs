@@ -7,7 +7,7 @@ namespace Functions
 {
     public class DatabaseFunctions
     {
-        static string myConnectionString = "Server=127.0.0.1;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
+        static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
         
         public static void updateModemTableEntry(string ip_addr,  string s)
         {

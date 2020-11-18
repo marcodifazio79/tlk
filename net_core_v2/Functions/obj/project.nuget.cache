@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "24CIAyD2q6o+cogbMYyGXtZd9f37XQZb5JfQMqx1GmZxjP6VZAO3wYgNVC+KJf7gJCA0mxIUcGM4qQ9tdE5/0A==",
+  "dgSpecHash": "kgIgcwD9kDKIdHLICAdqNa7Pe4jc6KtyhV5Rv1QAoEJn09DtbbNgJ2kyKKEmhhwGT2kl4+tvCU7zl9RC5xfXhw==",
   "success": true,
   "projectFilePath": "C:\\tlk\\net_core_v2\\Functions\\Functions.csproj",
   "expectedPackageFiles": [
@@ -150,9 +150,7 @@
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.xml.xmldocument\\4.0.1\\system.xml.xmldocument.4.0.1.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.xml.xpath\\4.0.1\\system.xml.xpath.4.0.1.nupkg.sha512",
-    "C:\\Users\\fdifazio\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
-    "C:\\Users\\fdifazio\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\3.1.9\\microsoft.netcore.app.runtime.linux-x64.3.1.9.nupkg.sha512",
-    "C:\\Users\\fdifazio\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\3.1.9\\microsoft.aspnetcore.app.runtime.linux-x64.3.1.9.nupkg.sha512"
+    "C:\\Users\\fdifazio\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512"
   ],
   "logs": []
 }
