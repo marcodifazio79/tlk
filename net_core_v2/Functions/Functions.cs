@@ -2,6 +2,7 @@
 using System.Net;  
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace Functions
 {
@@ -207,5 +208,45 @@ namespace Functions
             }
                 
         }
+    }
+
+    public class InterfaceFunctions 
+    {
+        public static void commandExecutor(string content){
+        
+            XmlDocument receivedXml = new XmlDocument();
+
+            //XML EXAMPLE = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
+
+            receivedXml.LoadXml(content);
+            //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
+            
+            String transactionTarget = receivedXml.SelectSingleNode(@"/data/transactionTarget").InnerText;
+            
+            switch(transactionTarget){
+                case "backend":
+                    sendCommandToModem(receivedXml);
+                break;
+                case "modem":
+                break;
+                default:
+                break;
+            }
+
+        }
+        static void sendCommandToModem(XmlDocument data){
+            //esempio di come dovrebbe essere "data" 
+            //
+            //<data>
+	        //    <transactionTarget>modem<transactionTarget/>
+	        //    <codElettronico>123456789</codElettronico>
+	        //    <command>TakeARide!</command>
+            //</data>
+            String codElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
+            String command = data.SelectSingleNode(@"/data/command").InnerText;
+            
+            
+        }
+        
     }
 }
