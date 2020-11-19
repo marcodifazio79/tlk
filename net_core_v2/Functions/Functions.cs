@@ -3,17 +3,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Xml;
+using Functions.database;
 
 namespace Functions
 {
-
-    
-
-
     public class DatabaseFunctions
     {
         static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
+
         
+        static listener_DBContext DB = new listener_DBContext (); 
+
         public static void updateModemTableEntry(string ip_addr,  string s)
         {
             try
@@ -150,7 +150,19 @@ namespace Functions
 
         }
 
+
         public static void insertIntoDB(string dataToInsert)
+        {  
+            try
+            {
+                DB.Dump.Add( new Dump { Data = dataToInsert });
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
+            }
+        }
+        public static void insertIntoDB_old(string dataToInsert)
         {  
             MySql.Data.MySqlClient.MySqlConnection conn;
             try
