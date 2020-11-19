@@ -21,7 +21,6 @@
   `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
   `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ip_address` (`ip_address`),
   UNIQUE KEY `mid` (`mid`),
   KEY `index_ip_address` (`ip_address`),
   KEY `index_mid` (`mid`),
@@ -49,3 +48,18 @@
   `timeStamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
+
+ CREATE TABLE `RemoteCommand` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `body` varchar(10000) NOT NULL,
+  `ReceivedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `SendedAt` datetime DEFAULT NULL,
+  `AnsweredAt` datetime DEFAULT NULL,
+  `Sender` varchar(15) NOT NULL,
+  `ID_Macchina` int(11) NOT NULL,
+  `LifespanSeconds` int(11) DEFAULT 15,
+  `Status` varchar(15) NOT NULL,
+  KEY `index_ID_Macchina` (`ID_Macchina`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
+

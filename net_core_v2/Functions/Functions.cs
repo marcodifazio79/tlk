@@ -6,6 +6,10 @@ using System.Xml;
 
 namespace Functions
 {
+
+    
+
+
     public class DatabaseFunctions
     {
         static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
@@ -175,6 +179,72 @@ namespace Functions
                 //Console.WriteLine("Done.");
             }
         }
+
+
+        public static string selectIpFromModem(string codElettronico)
+        {
+                MySql.Data.MySqlClient.MySqlConnection conn;
+                try
+                {
+                    conn = new MySql.Data.MySqlClient.MySqlConnection();
+                    conn.ConnectionString = myConnectionString;
+                    conn.Open();
+                    string sql = "SELECT ip_address FROM Modem WHERE mid = '"+ codElettronico +"'";
+                    MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if(    string.IsNullOrEmpty(   reader.ToString()    )     )
+                            return "nessun modem con quel mid.";
+                        return reader.ToString();
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
+                    return "error";
+                }
+            
+        }
+        public static void insertIntoRemoteCommand(XmlDocument data , string ipSender)
+        {
+            //esempio di come dovrebbe essere "data" 
+            //
+            //<data>
+	        //    <transactionTarget>modem<transactionTarget/>
+	        //    <codElettronico>123456789</codElettronico>
+	        //    <command>TakeARide!</command>
+            //</data>
+            String codElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
+            String command = data.SelectSingleNode(@"/data/command").InnerText;
+            
+
+            MySql.Data.MySqlClient.MySqlConnection conn;
+            try
+            {
+                conn = new MySql.Data.MySqlClient.MySqlConnection();
+                conn.ConnectionString = myConnectionString;
+                conn.Open();
+                Console.WriteLine("DB connection OK!");
+                string sql = "INSERT INTO RemoteCommand (body,Sender,ID_Macchina,Status) VALUES ('"+ data.ToString() +","+ipSender+","+ codElettronico+",pending')";
+                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + ex.Message);
+            }
+            catch(Exception e)
+            {
+                
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
+            }
+            finally
+            {
+                //Console.WriteLine("Done.");
+            }
+
+        }
     }
 
     //la lista non tiene conto degli accentratori: comefunziona con n kiddie sotto un solo modem? indagare.
@@ -182,7 +252,7 @@ namespace Functions
     public class SocketListFunctions
     {
         
-
+        
         public static List<Socket> removeFromList(Socket SocketToRemove, List<Socket> SocketList)
         {      
             
@@ -212,7 +282,7 @@ namespace Functions
 
     public class InterfaceFunctions 
     {
-        public static void commandExecutor(string content){
+        public static string[] commandExecutor(string content, string ipSender){
         
             XmlDocument receivedXml = new XmlDocument();
 
@@ -225,28 +295,25 @@ namespace Functions
             
             switch(transactionTarget){
                 case "backend":
-                    sendCommandToModem(receivedXml);
-                break;
+                    Functions.DatabaseFunctions.insertIntoRemoteCommand(receivedXml, ipSender);
+                    return new string[]{  
+                        
+                        //get modem ip from the modem table based on codElettronico
+                        Functions.DatabaseFunctions.selectIpFromModem( receivedXml.SelectSingleNode(@"/data/codElettronico").InnerText), 
+                        //command \0/
+                        receivedXml.SelectSingleNode(@"/data/command").InnerText};
+
                 case "modem":
                 break;
                 default:
                 break;
             }
+            return new string[]{};
 
         }
-        static void sendCommandToModem(XmlDocument data){
-            //esempio di come dovrebbe essere "data" 
-            //
-            //<data>
-	        //    <transactionTarget>modem<transactionTarget/>
-	        //    <codElettronico>123456789</codElettronico>
-	        //    <command>TakeARide!</command>
-            //</data>
-            String codElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
-            String command = data.SelectSingleNode(@"/data/command").InnerText;
-            
-            
-        }
+        
         
     }
+
+    
 }

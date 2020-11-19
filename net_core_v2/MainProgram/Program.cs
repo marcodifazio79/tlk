@@ -179,27 +179,31 @@ public class AsynchronousSocketListener {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
-                XmlDocument receivedCommand = new XmlDocument();
-
-                //XML EXAMPLE = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
-
-                receivedCommand.LoadXml(content);
-                //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
-                String targetModemIP = receivedCommand.SelectSingleNode(@"/data/targetip").InnerText;
-                String command = "#PWD123456" +  receivedCommand.SelectSingleNode(@"/data/command").InnerText;
+                //XmlDocument receivedCommand = new XmlDocument();
+                ////XML EXAMPLE = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
+                //receivedCommand.LoadXml(content);
+                ////ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
+                //String targetModemIP = receivedCommand.SelectSingleNode(@"/data/targetip").InnerText;
+                //String command = "#PWD123456" +  receivedCommand.SelectSingleNode(@"/data/command").InnerText;
                 
-                bool checker = ModemsSocketList.Exists(Soc =>  ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP);
+                string[] response =  Functions.InterfaceFunctions.commandExecutor(  content , ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()   );
+                //response[0] ip del target modem
+                //response[1] comando da mandare a response[0]
+                bool checker = ModemsSocketList.Exists(Soc =>  ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == response[0]);
                 if(checker == false)
                 {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), abort...",targetModemIP);
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), abort...",response[0]);
                     return;
                 }
+
                 Thread t = new Thread(()=>Send (
                     ModemsSocketList.Find(      Soc =>
-                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == targetModemIP
-                       //&& ((IPEndPoint)Soc.RemoteEndPoint).Port.ToString()    == port         )  
-                        ), command ));
+                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == response[0]
+                        ), response[1] ));
                 t.Start();
+
+
+
                 answerToBackend = "command-received-ok";
             }
         }
