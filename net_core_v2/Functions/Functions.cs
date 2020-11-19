@@ -287,7 +287,7 @@ namespace Functions
             XmlDocument receivedXml = new XmlDocument();
 
             //XML EXAMPLE = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
-
+            Console.WriteLine(DateTime.Now.ToString("received content : ") + content);
             receivedXml.LoadXml(content);
             //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
             
@@ -295,7 +295,9 @@ namespace Functions
             
             switch(transactionTarget){
                 case "backend":
-                    Functions.DatabaseFunctions.insertIntoRemoteCommand(receivedXml, ipSender);
+                    break;
+                case "modem":
+                        Functions.DatabaseFunctions.insertIntoRemoteCommand(receivedXml, ipSender);
                     return new string[]{  
                         
                         //get modem ip from the modem table based on codElettronico
@@ -303,8 +305,7 @@ namespace Functions
                         //command \0/
                         receivedXml.SelectSingleNode(@"/data/command").InnerText};
 
-                case "modem":
-                break;
+                
                 default:
                 break;
             }
