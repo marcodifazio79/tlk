@@ -3,7 +3,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Xml;
+
 using Functions.database;
+
+using System.Linq;
 
 namespace Functions
 {
@@ -100,7 +103,49 @@ namespace Functions
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : "+ex.Message);
             }
         }
+
+
+        
         public static void insertIntoModemConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
+        {
+            try
+            {
+                if(   DB.Modem.Any( y=> y.IpAddress == ip_addr )   )
+                {
+                    Modem m = DB.Modem.First( y=> y.IpAddress == ip_addr );
+                    DB.ModemConnectionTrace.Add(new ModemConnectionTrace 
+                    {
+                        IpAddress = m.IpAddress,
+                        SendOrRecv = send_or_recv,
+                        TransferredData = transferred_data
+                    });
+                }
+                else
+                {
+                    if(ip_addr.StartsWith("172.16."))
+                    {
+                        //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
+                        //and i don't wont to add the backand to the modem list
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
+                        insertIntoModemTable(ip_addr);
+                        //at this point i can just call me again to pupolate ModemConnectionTrace
+                        insertIntoModemConnectionTrace( ip_addr, send_or_recv, transferred_data );
+                    }
+                    else
+                    {
+                        DB.ModemConnectionTrace.Add(new ModemConnectionTrace 
+                        {
+                            IpAddress = ip_addr,
+                            SendOrRecv = send_or_recv,
+                            TransferredData = transferred_data
+                        });
+                    }
+                }
+            }catch(Exception e){}
+    
+        }
+
+        public static void insertIntoModemConnectionTraceOld(string ip_addr, string send_or_recv, string transferred_data)
         {
             try
             {
@@ -156,6 +201,7 @@ namespace Functions
             try
             {
                 DB.Dump.Add( new Dump { Data = dataToInsert });
+                DB.SaveChanges();
             }
             catch(Exception e)
             {
