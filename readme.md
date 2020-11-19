@@ -50,6 +50,7 @@ vedi https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-editions-and-co
 Creare un nuovo db e riscrivere la funzione per caricare i pacchetti ricevuti
 nel nuovo db sql server 2019 EXPRESS (user kdl_admin e password uguale all'utente di sistema kdl_admin)~~
 
+dotnet ef dbcontext scaffold 'server=10.10.10.71;port=3306;user=bot_user;password=FILLME;database=listener_DB' MySql.Data.EntityFrameworkCore -o database -f
 
 ## For older rev: 
 for reference:
