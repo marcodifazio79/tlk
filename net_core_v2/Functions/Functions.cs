@@ -37,12 +37,12 @@ namespace Functions
                     MachineToUpdate.Imei =  Convert.ToInt64(imei);
                     MachineToUpdate.Mid = mid;
                     MachineToUpdate.Version = version;
-                    MachineToUpdate.last_communication = DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss");
+                    MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                 }
                 DB.SaveChanges();
 
             }catch(Exception e){
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: "e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: " + e.Message);
             }
         }
 
@@ -62,8 +62,8 @@ namespace Functions
                         IpAddress = ip_addr,
                         Mid = "",
                         Version = "",
-                        last_communication ="",
-                        time_creation =""
+                        last_communication =null,
+                        time_creation =null
                         });
                 }
                 DB.SaveChanges();
@@ -71,7 +71,7 @@ namespace Functions
             catch(Exception ex)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertIntoMachinesTable: " + ex.Message);
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertIntoMachinesTable: " + ex.inne);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertIntoMachinesTable Ext: " + ex.InnerException);
             
             }
             finally{
@@ -116,7 +116,9 @@ namespace Functions
                     {
                         IpAddress = m.IpAddress,
                         SendOrRecv = send_or_recv,
-                        TransferredData = transferred_data
+                        TransferredData = transferred_data,
+                        IdMacchina = m.Id
+                        
                     });
                 }
                 else
@@ -140,7 +142,9 @@ namespace Functions
                         });
                     }
                 }
-            }catch(Exception e){}
+            }catch(Exception e){
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
+            }
     
         }
 
