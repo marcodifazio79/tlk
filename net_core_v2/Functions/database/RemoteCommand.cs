@@ -8,7 +8,7 @@ namespace Functions.database
         public int Id { get; set; }
         public string Body { get; set; }
         public string Sender { get; set; }
-        public int IdMacchina { get; set; }
+        public int? IdMacchina { get; set; }
         public int? LifespanSeconds { get; set; }
         public string Status { get; set; }
         public DateTime? ReceivedAt { get; set; }

@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <!-- <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies> 
     <OutDir>$(SolutionDir)bin\Debug\netcoreapp3.1\</OutDir>-->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
   </PropertyGroup>
 
 

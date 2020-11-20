@@ -93,7 +93,7 @@ public class AsynchronousSocketListener {
         try {  
             listenerForCommand.Bind(commandsInputEndPoint);  
             listenerForCommand.Listen(1000);  
-  
+   
             while (true) {  
                 // Set the event to nonsignaled state.  
                 allDoneCommand.Reset();
@@ -180,31 +180,37 @@ public class AsynchronousSocketListener {
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
                 //XmlDocument receivedCommand = new XmlDocument();
-                ////XML EXAMPLE = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
-                //receivedCommand.LoadXml(content);
+                //At this point content should look like = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
+                
                 ////ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
                 //String targetModemIP = receivedCommand.SelectSingleNode(@"/data/targetip").InnerText;
                 //String command = "#PWD123456" +  receivedCommand.SelectSingleNode(@"/data/command").InnerText;
-                
-                string[] response =  Functions.InterfaceFunctions.commandExecutor(  content , ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()   );
-                //response[0] ip del target modem
-                //response[1] comando da mandare a response[0]
-                bool checker = ModemsSocketList.Exists(Soc =>  ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == response[0]);
-                if(checker == false)
-                {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), abort...",response[0]);
-                    return;
+
+                int targetMachines = Functions.DatabaseFunctions.insertIntoRemoteCommand(  content, ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()  );
+                if(  targetMachines == -1   )
+                    answerToBackend = "command-error codice elettronico non collegato a una macchina nel db";
+                else{
+                    
+                    
+                    
+                    string[] response =  Functions.InterfaceFunctions.commandExecutor(  content , ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()   );
+                    
+                    bool checker = ModemsSocketList.Exists(Soc =>  ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == response[0]);
+                    if(checker == false)
+                    {
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Sembra che {0} non sia connesso (non in ModemsSocketList), abort...",response[0]);
+                        return;
+                    }
+
+                    Thread t = new Thread(()=>Send (
+                        ModemsSocketList.Find(      Soc =>
+                            ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == response[0]
+                            ), response[1] ));
+                    t.Start();
+
                 }
 
-                Thread t = new Thread(()=>Send (
-                    ModemsSocketList.Find(      Soc =>
-                        ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == response[0]
-                        ), response[1] ));
-                t.Start();
-
-
-
-                answerToBackend = "command-received-ok";
+                
             }
         }
         catch(Exception e) {

@@ -64,7 +64,7 @@
   `SendedAt` datetime DEFAULT NULL,
   `AnsweredAt` datetime DEFAULT NULL,
   `Sender` varchar(15) NOT NULL,
-  `id_Macchina` int(11) NOT NULL,
+  `id_Macchina` int(11) DEFAULT NULL,
   `LifespanSeconds` int(11) DEFAULT 15,
   `Status` varchar(15) NOT NULL,
   KEY `index_ID_Macchina` (`id_Macchina`),

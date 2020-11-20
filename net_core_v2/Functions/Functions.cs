@@ -10,11 +10,11 @@ using System.Linq;
 
 namespace Functions
 {
+    
     public class DatabaseFunctions
     {
         static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
 
-        
         static listener_DBContext DB = new listener_DBContext (); 
 
         public static void updateModemTableEntry(string ip_addr,  string s)
@@ -265,8 +265,14 @@ namespace Functions
                 }
             
         }
-        public static void insertIntoRemoteCommand(XmlDocument data , string ipSender)
+        /// <summary>
+        /// Insert the command in the DB. 
+        /// Return the command id in RemoteCommand table if succesfully,  
+        /// -1 if no Machines matches the target (or other error)
+        /// </summary>
+        public static int insertIntoRemoteCommand(string content , string ipSender)
         {
+            try{
             //esempio di come dovrebbe essere "data" 
             //
             //<data>
@@ -274,37 +280,113 @@ namespace Functions
 	        //    <codElettronico>123456789</codElettronico>
 	        //    <command>TakeARide!</command>
             //</data>
+
+            XmlDocument data = new XmlDocument();
+            data.LoadXml(content);
+
             String codElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
             String command = data.SelectSingleNode(@"/data/command").InnerText;
-            
+            RemoteCommand remCom = null;
 
-            MySql.Data.MySqlClient.MySqlConnection conn;
+            if(DB.Machines.Any(y=> y.IpAddress == ipSender))
+            {
+
+                remCom = new RemoteCommand { 
+                    Body = data.ToString(),
+                    Sender = ipSender,
+                    IdMacchina = DB.Machines.First(   y=> y.Mid == codElettronico    ).Id,
+                    Status = "Pending",
+                    ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                    SendedAt = null,
+                    AnsweredAt = null
+                } ;
+                DB.RemoteCommand.Add( remCom  );
+                
+            }
+            else
+            {
+                remCom = new RemoteCommand { 
+                    Body = data.ToString(),
+                    Sender = ipSender,
+                    IdMacchina = null,
+                    Status = "Error",
+                    ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                    SendedAt = null,
+                    AnsweredAt = null
+
+                } ;
+                DB.RemoteCommand.Add( remCom  );
+            }
+            DB.SaveChanges();
+
+            if(remCom.Status=="Pending")
+                return remCom.Id;
+            else 
+                return -1; //error
+
+            }catch(Exception e )
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss insertIntoRemoteCommand : ") + e.Message);
+                return -1;
+            }
+        }
+        /// <summary>
+        /// Based on the elapsed time between the last communication and the Keep Alive value, estimate if the machines is online
+        /// </summary>
+        public static bool IsMachineAlive(int machineId)
+        {
+
+            if(DB.Machines.Any(y=> y.Id == machineId))
+            {
+                Machines m = DB.Machines.First(y=> y.Id == machineId);
+                if(m.KalValue!=null)
+                {
+                    double miutesFromLastKalorPacket = (  DateTime.Now - DateTime.Parse( m.last_communication.ToString())).TotalMinutes;
+                    if (m.KalValue >= miutesFromLastKalorPacket )
+                    {
+                        return true;
+                    }   
+                }   
+            }
+            return false;
+        }
+        /// <summary>
+        /// Match the commands in queue with an appopriate action: 
+        /// IsAlive command can be answered from us,
+        /// PlayTheGame must be forwarded to modem
+        /// </summary>
+        public static int FetchRemoteCommand(   int targetMachinesId   )
+        {
             try
             {
-                conn = new MySql.Data.MySqlClient.MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-                Console.WriteLine("DB connection OK!");
-                string sql = "INSERT INTO RemoteCommand (body,Sender,ID_Macchina,Status) VALUES ('"+ data.ToString() +","+ipSender+","+ codElettronico+",pending')";
-                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + ex.Message);
+                RemoteCommand commandToExecute = DB.RemoteCommand.First(  y=>y.Id == targetMachinesId  );
+                XmlDocument data = new XmlDocument();
+                data.LoadXml(commandToExecute.Body);
+
+                switch(data.SelectSingleNode(@"/data/command").InnerText)
+                {
+                    case "IsAlive":
+
+                    break;
+
+                    case "PlayTheGame":
+
+                    break;
+
+                    default:
+                    break;
+                }
+
+                return -1;
             }
             catch(Exception e)
             {
-                
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
-            }
-            finally
-            {
-                //Console.WriteLine("Done.");
-            }
-
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss FetchRemoteCommand : ") + e.Message);
+                return -1;
+            }      
+            
         }
+
     }
 
     //la lista non tiene conto degli accentratori: comefunziona con n kiddie sotto un solo modem? indagare.
@@ -342,6 +424,8 @@ namespace Functions
 
     public class InterfaceFunctions 
     {
+       
+
         public static string[] commandExecutor(string content, string ipSender){
         
             XmlDocument receivedXml = new XmlDocument();
@@ -357,7 +441,7 @@ namespace Functions
                 case "backend":
                     break;
                 case "modem":
-                        Functions.DatabaseFunctions.insertIntoRemoteCommand(receivedXml, ipSender);
+                        Functions.DatabaseFunctions.insertIntoRemoteCommand(content, ipSender);
                     return new string[]{  
                         
                         //get modem ip from the modem table based on codElettronico
