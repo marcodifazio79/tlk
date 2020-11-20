@@ -139,6 +139,7 @@ namespace Functions
                         });
                     }
                 }
+            DB.SaveChanges();
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
             }
