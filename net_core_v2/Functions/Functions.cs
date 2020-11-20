@@ -37,13 +37,12 @@ namespace Functions
                     MachineToUpdate.Imei =  Convert.ToInt64(imei);
                     MachineToUpdate.Mid = mid;
                     MachineToUpdate.Version = version;
-                    MachineToUpdate.last_communication = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    
+                    MachineToUpdate.last_communication = DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss");
                 }
                 DB.SaveChanges();
 
             }catch(Exception e){
-                Console.WriteLine(e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: "e.Message);
             }
         }
 
@@ -62,16 +61,21 @@ namespace Functions
                     DB.Machines.Add( new Machines{
                         IpAddress = ip_addr,
                         Mid = "",
-                        Version = ""
+                        Version = "",
+                        last_communication ="",
+                        time_creation =""
                         });
                 }
+                DB.SaveChanges();
             }
             catch(Exception ex)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertIntoMachinesTable: " + ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertIntoMachinesTable: " + ex.inne);
+            
             }
             finally{
-                DB.SaveChanges();
+                
             }
         }
 
