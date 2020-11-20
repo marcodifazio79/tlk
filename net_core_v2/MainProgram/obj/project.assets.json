@@ -2102,6 +2102,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1",
           "MySql.Data.EntityFrameworkCore": "8.0.19"
         },
         "compile": {
@@ -4657,6 +4658,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1",
           "MySql.Data.EntityFrameworkCore": "8.0.19"
         },
         "compile": {
