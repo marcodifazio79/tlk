@@ -11,5 +11,10 @@ namespace Functions.database
         public int IdMacchina { get; set; }
         public int? LifespanSeconds { get; set; }
         public string Status { get; set; }
+        public DateTime? ReceivedAt { get; set; }
+        public DateTime? SendedAt { get; set; }
+        public DateTime? AnsweredAt { get; set; }
+
+        public virtual Machines IdMacchinaNavigation { get; set; }
     }
 }

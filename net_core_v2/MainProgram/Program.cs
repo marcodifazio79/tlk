@@ -134,7 +134,7 @@ public class AsynchronousSocketListener {
             ModemsSocketList.Add(handler);
 
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-            Functions.DatabaseFunctions.insertIntoModemTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()); //,(((IPEndPoint)handler.RemoteEndPoint).Port));
+            Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()); //,(((IPEndPoint)handler.RemoteEndPoint).Port));
 
             // Create the state object.  
             StateObject state = new StateObject();  
@@ -177,7 +177,7 @@ public class AsynchronousSocketListener {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = state.sb.ToString();  
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
-                Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
                 //XmlDocument receivedCommand = new XmlDocument();
                 ////XML EXAMPLE = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
@@ -238,7 +238,7 @@ public class AsynchronousSocketListener {
                 content = state.sb.ToString();  
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
-                Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 if(content.Contains("<MID")){
                     //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
                     //nell forma     <MID=1234567890-865291049819286><VER=110>
@@ -275,7 +275,7 @@ public class AsynchronousSocketListener {
             else 
                 if(bytesRead == 0){
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client");
-                    Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", "Connessione chiusa dal client" );
+                    Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", "Connessione chiusa dal client" );
                     ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close();
@@ -321,7 +321,7 @@ public class AsynchronousSocketListener {
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
-                    Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                    Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 }
                 else 
                 {  
@@ -334,7 +334,7 @@ public class AsynchronousSocketListener {
             else if(bytesRead == 0){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
                         //DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " connection closed.");
-                        Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                        Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                         ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
          
                         handler.Shutdown(SocketShutdown.Both);  
@@ -393,7 +393,7 @@ public class AsynchronousSocketListener {
             int bytesSent = state.workSocket.EndSend(ar);
             
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Sent {0} bytes to client.", bytesSent);  
-            Functions.DatabaseFunctions.insertIntoModemConnectionTrace( ((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString() ,"SEND", state.sb.ToString()  );
+            Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString() ,"SEND", state.sb.ToString()  );
             
             
         } catch (Exception e) {  

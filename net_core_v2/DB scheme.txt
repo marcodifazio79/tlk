@@ -1,20 +1,4 @@
 
- CREATE TABLE `MachinesConnectionTrace` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ip_address` varchar(15) NOT NULL,
-  `send_or_recv` varchar(4) NOT NULL,
-  `transferred_data` varchar(10000) NOT NULL,
-  `id_Machines` int(11) NOT NULL,
-  KEY `index_ip_address` (`ip_address`),
-  KEY `index_time_stamp` (`time_stamp`),
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`id_Machines`)
-        REFERENCES Machines(id)
-        ON DELETE NO ACTION
-
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
  CREATE TABLE `Machines` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
@@ -30,6 +14,26 @@
   KEY `index_mid` (`mid`),
   KEY `index_imei` (`imei`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ CREATE TABLE `MachinesConnectionTrace` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ip_address` varchar(15) NOT NULL,
+  `send_or_recv` varchar(4) NOT NULL,
+  `transferred_data` varchar(10000) NOT NULL,
+  `id_Macchina` int(11) NOT NULL,
+  KEY `index_ip_address` (`ip_address`),
+  KEY `index_time_stamp` (`time_stamp`),
+  KEY `index_id_Macchina` (`id_Macchina`),
+  
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`id_Macchina`)
+        REFERENCES Machines(id)
+        ON DELETE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 
 
  CREATE TABLE `Machines_InMemory` (
@@ -60,12 +64,12 @@
   `SendedAt` datetime DEFAULT NULL,
   `AnsweredAt` datetime DEFAULT NULL,
   `Sender` varchar(15) NOT NULL,
-  `id_Machines` int(11) NOT NULL,
+  `id_Macchina` int(11) NOT NULL,
   `LifespanSeconds` int(11) DEFAULT 15,
   `Status` varchar(15) NOT NULL,
-  KEY `index_ID_Macchina` (`ID_Macchina`),
+  KEY `index_ID_Macchina` (`id_Macchina`),
   PRIMARY KEY (`id`),
-    FOREIGN KEY (`id_Machines`)
+    FOREIGN KEY (`id_Macchina`)
         REFERENCES Machines(id)
         ON DELETE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;

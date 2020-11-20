@@ -28,56 +28,51 @@ namespace Functions
                 string imei = s.Substring(s.IndexOf("-")+1);
                 imei =imei.Substring(0,imei.IndexOf(">"));
                 
-
-                string version = s.Substring(     s.IndexOf("VER=")+4     );
+                string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
 
-                MySql.Data.MySqlClient.MySqlConnection conn;
-                conn = new MySql.Data.MySqlClient.MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
+                if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
+                {
+                    Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr );
+                    MachineToUpdate.Imei =  Convert.ToInt64(imei);
+                    MachineToUpdate.Mid = mid;
+                    MachineToUpdate.Version = version;
+                    MachineToUpdate.last_communication = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    
+                }
+                DB.SaveChanges();
 
-                string sql = "UPDATE Modem SET imei = "+imei+", mid="+mid+", version = "+version+", last_communication='"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"' WHERE ip_address = '"+ ip_addr+"'";
-                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                cmd.ExecuteNonQuery();
             }catch(Exception e){
                 Console.WriteLine(e.Message);
             }
         }
 
 
-        public static void insertIntoModemTable(string ip_addr)
+        public static void insertIntoMachinesTable(string ip_addr)
         {
             try
             {
-                MySql.Data.MySqlClient.MySqlConnection conn;
-                conn = new MySql.Data.MySqlClient.MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-
-                string sql = "SELECT id FROM Modem WHERE ip_address = '"+ ip_addr +"'";
-                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            reader.Close();
-                            updateModemlast_connection(ip_addr);
-                        }
-                        else{
-                            reader.Close();
-                            sql = "INSERT INTO Modem (ip_address) VALUES ('"+ip_addr+"')";
-                            cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                conn.Close();
+                if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
+                {
+                    Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
+                    updateModemlast_connection(ip_addr);
+                }
+                else
+                {
+                    DB.Machines.Add( new Machines{
+                        IpAddress = ip_addr,
+                        Mid = "",
+                        Version = ""
+                        });
+                }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertIntoMachinesTable: " + ex.Message);
             }
-
+            finally{
+                DB.SaveChanges();
+            }
         }
 
 
@@ -106,14 +101,14 @@ namespace Functions
 
 
         
-        public static void insertIntoModemConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
+        public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             try
             {
-                if(   DB.Modem.Any( y=> y.IpAddress == ip_addr )   )
+                if(   DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
-                    Modem m = DB.Modem.First( y=> y.IpAddress == ip_addr );
-                    DB.ModemConnectionTrace.Add(new ModemConnectionTrace 
+                    Machines m = DB.Machines.First( y=> y.IpAddress == ip_addr );
+                    DB.MachinesConnectionTrace.Add(new MachinesConnectionTrace 
                     {
                         IpAddress = m.IpAddress,
                         SendOrRecv = send_or_recv,
@@ -126,14 +121,14 @@ namespace Functions
                     {
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
-                        insertIntoModemTable(ip_addr);
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
+                        insertIntoMachinesTable(ip_addr);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
-                        insertIntoModemConnectionTrace( ip_addr, send_or_recv, transferred_data );
+                        insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
                     }
                     else
                     {
-                        DB.ModemConnectionTrace.Add(new ModemConnectionTrace 
+                        DB.MachinesConnectionTrace.Add(new MachinesConnectionTrace 
                         {
                             IpAddress = ip_addr,
                             SendOrRecv = send_or_recv,
@@ -145,7 +140,7 @@ namespace Functions
     
         }
 
-        public static void insertIntoModemConnectionTraceOld(string ip_addr, string send_or_recv, string transferred_data)
+        public static void insertIntoMachinesConnectionTraceOld(string ip_addr, string send_or_recv, string transferred_data)
         {
             try
             {
@@ -172,9 +167,9 @@ namespace Functions
                                 //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                                 //and i don't wont to add the backand to the modem list
                                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
-                                insertIntoModemTable(ip_addr);
+                                insertIntoMachinesTable(ip_addr);
                                 //at this point i can just call me again to pupolate ModemConnectionTrace
-                                insertIntoModemConnectionTrace( ip_addr, send_or_recv, transferred_data );
+                                insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
                             }
                             else
                             {

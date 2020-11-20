@@ -24,9 +24,9 @@ namespace Functions.database
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Dump> Dump { get; set; }
         public virtual DbSet<EfmigrationsHistory> EfmigrationsHistory { get; set; }
-        public virtual DbSet<Modem> Modem { get; set; }
-        public virtual DbSet<ModemConnectionTrace> ModemConnectionTrace { get; set; }
-        public virtual DbSet<ModemInMemory> ModemInMemory { get; set; }
+        public virtual DbSet<Machines> Machines { get; set; }
+        public virtual DbSet<MachinesConnectionTrace> MachinesConnectionTrace { get; set; }
+        public virtual DbSet<MachinesInMemory> MachinesInMemory { get; set; }
         public virtual DbSet<RemoteCommand> RemoteCommand { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -176,17 +176,16 @@ namespace Functions.database
                     .HasMaxLength(32);
             });
 
-            modelBuilder.Entity<Modem>(entity =>
+            modelBuilder.Entity<Machines>(entity =>
             {
                 entity.HasIndex(e => e.Imei)
                     .HasName("index_imei");
 
-                entity.HasIndex(e => e.IpAddress)
-                    .HasName("index_ip_address");
-
                 entity.HasIndex(e => e.Mid)
-                    .HasName("mid")
-                    .IsUnique();
+                    .HasName("index_mid");
+
+                entity.HasIndex(e => new { e.IpAddress, e.Mid })
+                    .HasName("index_ip_mid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -216,15 +215,32 @@ namespace Functions.database
                 entity.Property(e => e.Version)
                     .HasColumnName("version")
                     .HasMaxLength(10);
+
+                entity.Property(e => e.last_communication)
+                    .HasColumnName("last_communication")
+                    .HasColumnType("timestamp");
+                    
+                
+                entity.Property(e => e.time_creation)
+                    .HasColumnName("time_creation")
+                    .HasColumnType("timestamp");
+
             });
 
-            modelBuilder.Entity<ModemConnectionTrace>(entity =>
+            modelBuilder.Entity<MachinesConnectionTrace>(entity =>
             {
+                entity.HasIndex(e => e.IdMacchina)
+                    .HasName("index_id_Macchina");
+
                 entity.HasIndex(e => e.IpAddress)
                     .HasName("index_ip_address");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdMacchina)
+                    .HasColumnName("id_Macchina")
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.IpAddress)
@@ -241,15 +257,24 @@ namespace Functions.database
                     .IsRequired()
                     .HasColumnName("transferred_data")
                     .HasColumnType("varchar(10000)");
+
+                entity.Property(e => e.time_stamp)
+                    .HasColumnName("time_stamp")
+                    .HasColumnType("timestamp");
+
+                entity.HasOne(d => d.IdMacchinaNavigation)
+                    .WithMany(p => p.MachinesConnectionTrace)
+                    .HasForeignKey(d => d.IdMacchina)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("MachinesConnectionTrace_ibfk_1");
             });
 
-            modelBuilder.Entity<ModemInMemory>(entity =>
+            modelBuilder.Entity<MachinesInMemory>(entity =>
             {
-                entity.ToTable("Modem_InMemory");
+                entity.ToTable("Machines_InMemory");
 
                 entity.HasIndex(e => e.IpAddress)
-                    .HasName("ip_address")
-                    .IsUnique();
+                    .HasName("index_ip_address");
 
                 entity.HasIndex(e => e.Mid)
                     .HasName("mid")
@@ -291,12 +316,22 @@ namespace Functions.database
                     .HasColumnType("varchar(10000)");
 
                 entity.Property(e => e.IdMacchina)
-                    .HasColumnName("ID_Macchina")
+                    .HasColumnName("id_Macchina")
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.LifespanSeconds)
                     .HasColumnType("int(11)")
                     .HasDefaultValueSql("'15'");
+                    
+                entity.Property(e => e.ReceivedAt)
+                    .HasColumnName("ReceivedAt")
+                    .HasColumnType("timestamp");
+                entity.Property(e => e.SendedAt)
+                    .HasColumnName("SendedAt")
+                    .HasColumnType("timestamp");
+                entity.Property(e => e.AnsweredAt)
+                    .HasColumnName("AnsweredAt")
+                    .HasColumnType("timestamp");
 
                 entity.Property(e => e.Sender)
                     .IsRequired()
@@ -305,6 +340,12 @@ namespace Functions.database
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasMaxLength(15);
+
+                entity.HasOne(d => d.IdMacchinaNavigation)
+                    .WithMany(p => p.RemoteCommand)
+                    .HasForeignKey(d => d.IdMacchina)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RemoteCommand_ibfk_1");
             });
 
             OnModelCreatingPartial(modelBuilder);
