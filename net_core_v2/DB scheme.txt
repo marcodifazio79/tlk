@@ -1,16 +1,21 @@
 
- CREATE TABLE `ModemConnectionTrace` (
+ CREATE TABLE `MachinesConnectionTrace` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip_address` varchar(15) NOT NULL,
   `send_or_recv` varchar(4) NOT NULL,
   `transferred_data` varchar(10000) NOT NULL,
+  `id_Machines` int(11) NOT NULL,
   KEY `index_ip_address` (`ip_address`),
   KEY `index_time_stamp` (`time_stamp`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`id_Machines`)
+        REFERENCES Machines(id)
+        ON DELETE NO ACTION
+
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
- CREATE TABLE `Modem` (
+ CREATE TABLE `Machines` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
   `imei` BIGINT DEFAULT NULL,
@@ -21,21 +26,19 @@
   `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
   `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `mid` (`mid`),
-  KEY `index_ip_address` (`ip_address`),
+  KEY `index_ip_mid` (`ip_address`,`mid`),
   KEY `index_mid` (`mid`),
   KEY `index_imei` (`imei`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
- CREATE TABLE `Modem_InMemory` (
+ CREATE TABLE `Machines_InMemory` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
   `tcp_local_port` int(11) NOT NULL,
   `mid` varchar(50) DEFAULT NULL,
   `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ip_address` (`ip_address`),
   UNIQUE KEY `mid` (`mid`),
   KEY `index_ip_address` (`ip_address`),
   KEY `index_mid` (`mid`),
@@ -49,6 +52,7 @@
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
 
+
  CREATE TABLE `RemoteCommand` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `body` varchar(10000) NOT NULL,
@@ -56,10 +60,13 @@
   `SendedAt` datetime DEFAULT NULL,
   `AnsweredAt` datetime DEFAULT NULL,
   `Sender` varchar(15) NOT NULL,
-  `ID_Macchina` int(11) NOT NULL,
+  `id_Machines` int(11) NOT NULL,
   `LifespanSeconds` int(11) DEFAULT 15,
   `Status` varchar(15) NOT NULL,
   KEY `index_ID_Macchina` (`ID_Macchina`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+    FOREIGN KEY (`id_Machines`)
+        REFERENCES Machines(id)
+        ON DELETE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
 
