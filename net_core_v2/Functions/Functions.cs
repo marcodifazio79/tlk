@@ -13,7 +13,7 @@ namespace Functions
     
     public class DatabaseFunctions
     {
-        static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
+        //static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
 
         static listener_DBContext DB = new listener_DBContext (); 
 
@@ -88,14 +88,13 @@ namespace Functions
         {
             try
             {
-                MySql.Data.MySqlClient.MySqlConnection conn;
-                conn = new MySql.Data.MySqlClient.MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-                string sql = "UPDATE Modem SET last_communication = '"+DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")+"' WHERE ip_address ='"+ ip_addr+"'";               
-                var cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                cmd.ExecuteNonQuery();
-                conn.Close();
+                
+                if( DB.Machines.Any(  s=>s.IpAddress == ip_addr ))
+                {
+                    Machines m = DB.Machines.First(  s=>s.IpAddress == ip_addr );
+                    m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    DB.SaveChanges();
+                }
             }catch (Exception ex)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : "+ex.Message);
@@ -160,61 +159,8 @@ namespace Functions
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
             }
         }
-        public static void insertIntoDB_old(string dataToInsert)
-        {  
-            MySql.Data.MySqlClient.MySqlConnection conn;
-            try
-            {
-                conn = new MySql.Data.MySqlClient.MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-                Console.WriteLine("DB connection OK!");
-                string sql = "INSERT INTO dump (data) VALUES ('"+ dataToInsert +"')";
-                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
-            {
-                
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + ex.Message);
-            }
-            catch(Exception e)
-            {
-                
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
-            }
-            finally
-            {
-                //Console.WriteLine("Done.");
-            }
-        }
+        
 
-
-        public static string selectIpFromModem(string codElettronico)
-        {
-                MySql.Data.MySqlClient.MySqlConnection conn;
-                try
-                {
-                    conn = new MySql.Data.MySqlClient.MySqlConnection();
-                    conn.ConnectionString = myConnectionString;
-                    conn.Open();
-                    string sql = "SELECT ip_address FROM Modem WHERE mid = '"+ codElettronico +"'";
-                    MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if(    string.IsNullOrEmpty(   reader.ToString()    )     )
-                            return "nessun modem con quel mid.";
-                        return reader.ToString();
-                    }
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
-                    return "error";
-                }
-            
-        }
         /// <summary>
         /// Insert the command in the DB. 
         /// Return the command id in RemoteCommand table if succesfully,  
