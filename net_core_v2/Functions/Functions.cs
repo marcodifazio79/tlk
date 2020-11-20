@@ -117,7 +117,6 @@ namespace Functions
                         SendOrRecv = send_or_recv,
                         TransferredData = transferred_data,
                         IdMacchina = m.Id
-                        
                     });
                 }
                 else
@@ -147,55 +146,6 @@ namespace Functions
     
         }
 
-        public static void insertIntoMachinesConnectionTraceOld(string ip_addr, string send_or_recv, string transferred_data)
-        {
-            try
-            {
-                MySql.Data.MySqlClient.MySqlConnection conn;
-                conn = new MySql.Data.MySqlClient.MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-                string sql = "SELECT id FROM Modem WHERE ip_address = '"+ ip_addr +"'";
-                MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            reader.Close();
-                            sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
-                            cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                            cmd.ExecuteNonQuery();
-                            updateModemlast_connection(ip_addr);
-                        }
-                        else
-                        {
-                            if(ip_addr.StartsWith("172.16."))
-                            {
-                                //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
-                                //and i don't wont to add the backand to the modem list
-                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Modem not listed: adding..");
-                                insertIntoMachinesTable(ip_addr);
-                                //at this point i can just call me again to pupolate ModemConnectionTrace
-                                insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
-                            }
-                            else
-                            {
-                                reader.Close();
-                                sql = "INSERT INTO ModemConnectionTrace  (ip_address,send_or_recv,transferred_data) VALUES ('"+ip_addr+"','"+send_or_recv+ "','"+transferred_data+"')";
-                                cmd = new MySql.Data.MySqlClient.MySqlCommand(sql, conn);
-                                cmd.ExecuteNonQuery();
-                                
-                            }
-                        }
-                    }
-                conn.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : "+ex.Message);
-            }
-
-        }
 
 
         public static void insertIntoDB(string dataToInsert)
@@ -350,13 +300,36 @@ namespace Functions
             }
             return false;
         }
+
+        /// <summary>
+        /// Check the last M1 packet for the machine with Machine ID = machineID and return the credits needed for a run
+        /// </summary>
+        public static int CalculateCreditForARun(int machineID)
+        {
+            try
+            {
+                string mPacket = DB.MachinesConnectionTrace.First( k=>k.IdMacchina == machineID &&  k.SendOrRecv.StartsWith("<TPK=$M1,")   ).SendOrRecv;
+                string[] mPacketArray = mPacket.Split(',');
+                return (Convert.ToInt32(mPacketArray[3]) / Convert.ToInt32( mPacketArray[4]));
+            }
+            catch(Exception e)
+            {
+                return -1;
+            }
+        }   
+
         /// <summary>
         /// Match the commands in queue with an appopriate action: 
         /// IsAlive command can be answered from us,
         /// PlayTheGame must be forwarded to modem
         /// </summary>
-        public static int FetchRemoteCommand(   int targetMachinesId   )
-        {
+        public static string[] FetchRemoteCommand(   int targetMachinesId   )
+        {   
+            //  return:
+            //  [0] =  ComandoNonRiconosciuto / ComandoDaGirare / ComandoDaEseguire
+            //  [1] =  ip of the target machine 
+            //  [2] =  command 
+            //
             try
             {
                 RemoteCommand commandToExecute = DB.RemoteCommand.First(  y=>y.Id == targetMachinesId  );
@@ -366,26 +339,41 @@ namespace Functions
                 switch(data.SelectSingleNode(@"/data/command").InnerText)
                 {
                     case "IsAlive":
-
-                    break;
-
+                        return new string[] {   "ComandoDaEseguire" , "" , ""   };
+                    
                     case "PlayTheGame":
-
-                    break;
-
+                        return new string[] {   "ComandoDaGirare" , "" , "#PSW123456#PU1"   };
+                    
                     default:
-                    break;
+                        return new string[] {   "ComandoNonRiconosciuto" , "" , ""   };
                 }
-
-                return -1;
+                  
             }
             catch(Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss FetchRemoteCommand : ") + e.Message);
-                return -1;
-            }      
-            
+                return new string[] { };   
+            }
         }
+            
+        /// <summary>
+        /// Return the coin need to play if alive, else return Mid+OFFLINE
+        /// </summary>
+        public static string IsAliveAnswer( int machineId )
+        {
+            bool isAlive = IsMachineAlive(machineId);
+            if(isAlive)
+            {
+                return "<Error>" + DB.Machines.Last(y=>y.Id == machineId).Mid + " offline</Error>" ;
+            }
+            else
+            {
+                int costoDiUnGiro = CalculateCreditForARun(machineId);
+                if(costoDiUnGiro == -1)
+                    return "<Error>Errore nel calcolo del costo in crediti</Error>" ;
+                return  "<CreditsForARun>"+ costoDiUnGiro.ToString()+"</CreditsForARun>";
+            }
+        }      
 
     }
 
@@ -420,44 +408,6 @@ namespace Functions
             }
                 
         }
-    }
-
-    public class InterfaceFunctions 
-    {
-       
-
-        public static string[] commandExecutor(string content, string ipSender){
-        
-            XmlDocument receivedXml = new XmlDocument();
-
-            //XML EXAMPLE = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
-            Console.WriteLine(DateTime.Now.ToString("received content : ") + content);
-            receivedXml.LoadXml(content);
-            //ModemsSocketList.Find( m => ((IPEndPoint)m.RemoteEndPoint).Address.ToString()   == receivedCommand.InnerXml   )
-            
-            String transactionTarget = receivedXml.SelectSingleNode(@"/data/transactionTarget").InnerText;
-            
-            switch(transactionTarget){
-                case "backend":
-                    break;
-                case "modem":
-                        Functions.DatabaseFunctions.insertIntoRemoteCommand(content, ipSender);
-                    return new string[]{  
-                        
-                        //get modem ip from the modem table based on codElettronico
-                        Functions.DatabaseFunctions.selectIpFromModem( receivedXml.SelectSingleNode(@"/data/codElettronico").InnerText), 
-                        //command \0/
-                        receivedXml.SelectSingleNode(@"/data/command").InnerText};
-
-                
-                default:
-                break;
-            }
-            return new string[]{};
-
-        }
-        
-        
     }
 
     
