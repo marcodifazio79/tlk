@@ -2230,7 +2230,13 @@
       "Functions/1.0.0": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1",
-          "MySql.Data.EntityFrameworkCore": "8.0.22"
+          "Microsoft.EntityFrameworkCore.Tools.DotNet": "2.0.3",
+          "Microsoft.Extensions.Configuration": "3.1.8",
+          "Microsoft.Extensions.Configuration.CommandLine": "3.1.8",
+          "Microsoft.Extensions.Configuration.EnvironmentVariables": "3.1.8",
+          "Microsoft.Extensions.Configuration.Json": "3.1.8",
+          "MySql.Data.EntityFrameworkCore": "8.0.22",
+          "System.Threading.ThreadPool": "4.3.0"
         },
         "runtime": {
           "Functions.dll": {}

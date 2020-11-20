@@ -48,9 +48,33 @@
               "target": "Package",
               "version": "[3.1.1, )"
             },
+            "Microsoft.EntityFrameworkCore.Tools.DotNet": {
+              "target": "Package",
+              "version": "[2.0.3, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
+            "Microsoft.Extensions.Configuration.CommandLine": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[3.1.8, )"
+            },
             "MySql.Data.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.19, )"
+              "version": "[8.0.22, )"
+            },
+            "System.Threading.ThreadPool": {
+              "target": "Package",
+              "version": "[4.3.0, )"
             }
           },
           "imports": [
