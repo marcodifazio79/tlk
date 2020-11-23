@@ -270,7 +270,7 @@ namespace Functions
         {
             try
             {
-                string mPacket = DB.MachinesConnectionTrace.First( k=>k.IdMacchina == machineID &&  k.SendOrRecv.StartsWith("<TPK=$M1,")   ).SendOrRecv;
+                string mPacket = DB.MachinesConnectionTrace.First( k=>k.IdMacchina == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   ).SendOrRecv;
                 string[] mPacketArray = mPacket.Split(',');
                 return (Convert.ToInt32(mPacketArray[3]) / Convert.ToInt32( mPacketArray[4]));
             }
@@ -325,6 +325,10 @@ namespace Functions
                     case "PlayTheGame":
                         return new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#PSW123456#PU1"   };
                     
+                    case "Cassa":
+                        return new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#PSW123456#CAS?"   };
+                    
+
                     default:
                         return new string[] {   "ComandoNonRiconosciuto" , "" , ""   };
                 }
