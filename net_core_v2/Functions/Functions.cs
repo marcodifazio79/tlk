@@ -385,16 +385,16 @@ namespace Functions
         {
             listener_DBContext DB = new listener_DBContext (); 
             try{
-                Machines t = DB.RemoteCommand.First( h=>h.Id == commandid ).IdMacchinaNavigation;
-                bool isAlive = IsMachineAlive(  t.Id);
+                int t = DB.RemoteCommand.First( h=>h.Id == commandid ).IdMacchinaNavigation.Id;
+                bool isAlive = IsMachineAlive(  t);
                 if(isAlive)
                 {
                     DB.DisposeAsync();
-                    return "<Error>" + t.Mid + " offline</Error>" ;
+                    return "<Error>" + DB.RemoteCommand.First( h=>h.Id == commandid ).IdMacchinaNavigation.Mid + " offline</Error>" ;
                 }
                 else
                 {
-                    int costoDiUnGiro = CalculateCreditForARun(t.Id);
+                    int costoDiUnGiro = CalculateCreditForARun(t);
                     DB.DisposeAsync();
                     if(costoDiUnGiro == -1)
                         return "<Error>Errore nel calcolo del costo in crediti</Error>" ;
@@ -402,8 +402,8 @@ namespace Functions
                 }
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss IsAliveAnswer : ") + e.Message);
-                 DB.DisposeAsync();
-                 return "<Error>Qualcosa è andato storto</Error>";
+                DB.DisposeAsync();
+                return "<Error>Qualcosa non ha funzionato</Error>";
             }
         }      
 
