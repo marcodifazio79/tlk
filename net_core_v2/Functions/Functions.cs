@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Xml;
+using System.Threading;
 
 using Functions.database;
 
@@ -16,7 +17,11 @@ namespace Functions
         //static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
 
         static listener_DBContext DB = new listener_DBContext (); 
-
+        
+        
+        /// <summary>
+        ///  
+        /// </summary>
         public static void updateModemTableEntry(string ip_addr,  string s)
         {
             try
@@ -46,7 +51,9 @@ namespace Functions
             }
         }
 
-
+        /// <summary>
+        ///  
+        /// </summary>
         public static void insertIntoMachinesTable(string ip_addr)
         {
             try
@@ -78,12 +85,9 @@ namespace Functions
             }
         }
 
-
-        /////
-        //  
-        //  this should be probably be replaced by a trigger on the db, but it's a hard life
-        //
-        /////
+        /// <summary>
+        ///  
+        /// </summary>
         public static void updateModemlast_connection(string ip_addr)
         {
             try
@@ -102,7 +106,9 @@ namespace Functions
         }
 
 
-        
+        /// <summary>
+        ///  
+        /// </summary>
         public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             try
@@ -147,7 +153,9 @@ namespace Functions
         }
 
 
-
+        /// <summary>
+        ///  
+        /// </summary>
         public static void insertIntoDB(string dataToInsert)
         {  
             try
@@ -264,6 +272,23 @@ namespace Functions
                 return -1;
             }
         }   
+        /// <summary>
+        ///  
+        /// </summary>
+        public static string checkAnswerToCommand(string modemIp)
+        {
+            int Millisec = 15000; // millisecondi in cui aspetto che il modem mi risponda
+            string answer = "NoAnswer";
+            Thread.Sleep(10000);
+            MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
+                .OrderByDescending(z=>z.time_stamp)
+                .First(l => l.IpAddress == modemIp);
+            double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
+            if(secondsFromLastPacket > Millisec)
+                answer = lastReceivedFromModem.TransferredData;
+            
+            return answer;
+        }
 
         /// <summary>
         /// Match the commands in queue with an appopriate action: 
@@ -282,14 +307,15 @@ namespace Functions
                 RemoteCommand commandToExecute = DB.RemoteCommand.First(  y=>y.Id == targetMachinesId  );
                 XmlDocument data = new XmlDocument();
                 data.LoadXml(commandToExecute.Body);
-
+                
+                string targetCodElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
                 switch(data.SelectSingleNode(@"/data/command").InnerText)
                 {
                     case "IsAlive":
                         return new string[] {   "ComandoDaEseguire" , "" , ""   };
                     
                     case "PlayTheGame":
-                        return new string[] {   "ComandoDaGirare" , "" , "#PSW123456#PU1"   };
+                        return new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#PSW123456#PU1"   };
                     
                     default:
                         return new string[] {   "ComandoNonRiconosciuto" , "" , ""   };

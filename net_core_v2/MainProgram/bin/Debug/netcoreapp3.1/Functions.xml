@@ -4,6 +4,31 @@
         <name>Functions</name>
     </assembly>
     <members>
+        <member name="M:Functions.DatabaseFunctions.updateModemTableEntry(System.String,System.String)">
+            <summary>
+             
+            </summary>
+        </member>
+        <member name="M:Functions.DatabaseFunctions.insertIntoMachinesTable(System.String)">
+            <summary>
+             
+            </summary>
+        </member>
+        <member name="M:Functions.DatabaseFunctions.updateModemlast_connection(System.String)">
+            <summary>
+             
+            </summary>
+        </member>
+        <member name="M:Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace(System.String,System.String,System.String)">
+            <summary>
+             
+            </summary>
+        </member>
+        <member name="M:Functions.DatabaseFunctions.insertIntoDB(System.String)">
+            <summary>
+             
+            </summary>
+        </member>
         <member name="M:Functions.DatabaseFunctions.insertIntoRemoteCommand(System.String,System.String)">
             <summary>
             Insert the command in the DB. 
@@ -19,6 +44,11 @@
         <member name="M:Functions.DatabaseFunctions.CalculateCreditForARun(System.Int32)">
             <summary>
             Check the last M1 packet for the machine with Machine ID = machineID and return the credits needed for a run
+            </summary>
+        </member>
+        <member name="M:Functions.DatabaseFunctions.checkAnswerToCommand(System.String)">
+            <summary>
+             
             </summary>
         </member>
         <member name="M:Functions.DatabaseFunctions.FetchRemoteCommand(System.Int32)">

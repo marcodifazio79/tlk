@@ -199,14 +199,20 @@ public class AsynchronousSocketListener {
                             Thread t = new Thread(()=>Send (
                             ModemsSocketList.Find(      Soc =>
                                 ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == remoteComm[1]
-                                ), remoteComm[2] ));
+                                ), remoteComm[2]));
                             t.Start();
                             answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
+                            Thread answerCheck = new Thread( () => {
+                                
+                                string responseFromModem = Functions.DatabaseFunctions.checkAnswerToCommand(((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
+                                Thread responseFromModemToBackendThred = new Thread(()=>
+                                    Send (  handler   ,  responseFromModem  ));
+                            });
                         break;
                         case "ComandoDaEseguire":
                             answerToBackend = Functions.DatabaseFunctions.IsAliveAnswer(command_id);
                         break;
-                    }                   
+                    }
                 }
             }
         }
@@ -221,6 +227,7 @@ public class AsynchronousSocketListener {
             responseToBackendThred.Start();
         }
     }  
+
     public static void ReadCallback(IAsyncResult ar) {
         String content = String.Empty;  
   
