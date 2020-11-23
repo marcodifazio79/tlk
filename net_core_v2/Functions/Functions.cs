@@ -148,6 +148,8 @@ namespace Functions
             DB.SaveChanges();
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
+                
             }
     
         }
@@ -193,7 +195,7 @@ namespace Functions
             String command = data.SelectSingleNode(@"/data/command").InnerText;
             RemoteCommand remCom = null;
 
-            if(DB.Machines.Any(y=> y.IpAddress == ipSender))
+            if(DB.Machines.Any(y=> y.Mid == codElettronico))
             {
 
                 remCom = new RemoteCommand { 
@@ -224,6 +226,8 @@ namespace Functions
             }
             DB.SaveChanges();
 
+            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: remcom status"+remCom.Status);              
+
             if(remCom.Status=="Pending")
                 return remCom.Id;
             else 
@@ -232,6 +236,7 @@ namespace Functions
             }catch(Exception e )
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss insertIntoRemoteCommand : ") + e.Message);
+
                 return -1;
             }
         }
