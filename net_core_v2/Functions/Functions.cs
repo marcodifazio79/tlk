@@ -292,7 +292,7 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext (); 
             try
             {
-                string mPacket = DB.MachinesConnectionTrace.Where( k=>k.IdMacchina == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   )
+                string mPacket = DB.MachinesConnectionTrace.Where( k=>k.IdMacchinaNavigation.Id == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   )
                 .OrderByDescending(j=>j.Id).First().SendOrRecv;
                 string[] mPacketArray = mPacket.Split(',');
                 return (Convert.ToInt32(mPacketArray[3]) / Convert.ToInt32( mPacketArray[4]));
