@@ -385,16 +385,17 @@ namespace Functions
         {
             listener_DBContext DB = new listener_DBContext (); 
             try{
-                int t = DB.RemoteCommand.First( h=>h.Id == commandid ).IdMacchinaNavigation.Id;
-                bool isAlive = IsMachineAlive(  t);
+                Machines target = DB.RemoteCommand.Single(h=>h.Id == commandid).IdMacchinaNavigation;
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss TEMPOUTPUT : ") + target.Mid);
+                bool isAlive = IsMachineAlive( target.Id );
                 if(isAlive)
                 {
                     DB.DisposeAsync();
-                    return "<Error>" + DB.RemoteCommand.First( h=>h.Id == commandid ).IdMacchinaNavigation.Mid + " offline</Error>" ;
+                    return "<Error>" + target.Mid + " offline</Error>" ;
                 }
                 else
                 {
-                    int costoDiUnGiro = CalculateCreditForARun(t);
+                    int costoDiUnGiro = CalculateCreditForARun(target.Id);
                     DB.DisposeAsync();
                     if(costoDiUnGiro == -1)
                         return "<Error>Errore nel calcolo del costo in crediti</Error>" ;
