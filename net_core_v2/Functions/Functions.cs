@@ -199,7 +199,7 @@ namespace Functions
             {
 
                 remCom = new RemoteCommand { 
-                    Body = data.ToString(),
+                    Body = content,
                     Sender = ipSender,
                     IdMacchina = DB.Machines.First(   y=> y.Mid == codElettronico    ).Id,
                     Status = "Pending",
@@ -213,7 +213,7 @@ namespace Functions
             else
             {
                 remCom = new RemoteCommand { 
-                    Body = data.ToString(),
+                    Body = content,
                     Sender = ipSender,
                     IdMacchina = null,
                     Status = "Error",
@@ -225,8 +225,6 @@ namespace Functions
                 DB.RemoteCommand.Add( remCom  );
             }
             DB.SaveChanges();
-
-            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: remcom status"+remCom.Status);              
 
             if(remCom.Status=="Pending")
                 return remCom.Id;
