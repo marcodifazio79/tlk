@@ -15,15 +15,14 @@ namespace Functions
     public class DatabaseFunctions
     {
         //static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
-
-        static listener_DBContext DB = new listener_DBContext (); 
-        
-        
+      
+            
         /// <summary>
         ///  
         /// </summary>
         public static void updateModemTableEntry(string ip_addr,  string s)
         {
+            listener_DBContext DB = new listener_DBContext (); 
             try
             {
                 //   s = <MID=1234567890-865291049819286><VER=110>
@@ -45,10 +44,13 @@ namespace Functions
                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                 }
                 DB.SaveChanges();
-
+               
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: " + e.Message);
+            }finally{
+                DB.DisposeAsync();
             }
+            
         }
 
         /// <summary>
@@ -56,6 +58,7 @@ namespace Functions
         /// </summary>
         public static void insertIntoMachinesTable(string ip_addr)
         {
+            listener_DBContext DB = new listener_DBContext (); 
             try
             {
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -74,6 +77,7 @@ namespace Functions
                         });
                 }
                 DB.SaveChanges();
+                
             }
             catch(Exception ex)
             {
@@ -81,7 +85,7 @@ namespace Functions
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertIntoMachinesTable InnerExc: " + ex.InnerException);
             }
             finally{
-                
+                DB.DisposeAsync();
             }
         }
 
@@ -90,6 +94,7 @@ namespace Functions
         /// </summary>
         public static void updateModemlast_connection(string ip_addr)
         {
+            listener_DBContext DB = new listener_DBContext (); 
             try
             {
                 
@@ -111,6 +116,7 @@ namespace Functions
         /// </summary>
         public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
+            listener_DBContext DB = new listener_DBContext ();       
             try
             {
                 if(   DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -151,6 +157,9 @@ namespace Functions
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
                 
             }
+            finally{
+                DB.DisposeAsync();
+            }
     
         }
 
@@ -160,6 +169,8 @@ namespace Functions
         /// </summary>
         public static void insertIntoDB(string dataToInsert)
         {  
+            listener_DBContext DB = new listener_DBContext (); 
+
             try
             {
                 DB.Dump.Add( new Dump { Data = dataToInsert });
@@ -168,6 +179,9 @@ namespace Functions
             catch(Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") + e.Message);
+            }
+            finally{
+                DB.DisposeAsync();
             }
         }
         
@@ -179,6 +193,7 @@ namespace Functions
         /// </summary>
         public static int insertIntoRemoteCommand(string content , string ipSender)
         {
+            listener_DBContext DB = new listener_DBContext (); 
             try{
             //esempio di come dovrebbe essere "data" 
             //
@@ -234,15 +249,19 @@ namespace Functions
             }catch(Exception e )
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss insertIntoRemoteCommand : ") + e.Message);
-
+                
+                DB.DisposeAsync();
+            
                 return -1;
             }
+            finally{DB.DisposeAsync();}
         }
         /// <summary>
         /// Based on the elapsed time between the last communication and the Keep Alive value, estimate if the machines is online
         /// </summary>
         public static bool IsMachineAlive(int machineId)
         {
+            listener_DBContext DB = new listener_DBContext (); 
             try{
                 if(DB.Machines.Any(y=> y.Id == machineId))
                 {
@@ -257,9 +276,10 @@ namespace Functions
                     }   
             }
             }catch(Exception e){
-                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " CalculateCreditForARun: "+e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " CalculateCreditForARun: "+e.Message);
 
             }
+            finally{DB.DisposeAsync();}
             return false;
         }
 
@@ -268,6 +288,7 @@ namespace Functions
         /// </summary>
         public static int CalculateCreditForARun(int machineID)
         {
+            listener_DBContext DB = new listener_DBContext (); 
             try
             {
                 string mPacket = DB.MachinesConnectionTrace.First( k=>k.IdMacchina == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   ).SendOrRecv;
@@ -279,22 +300,33 @@ namespace Functions
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " CalculateCreditForARun: "+e.Message);
                 return -1;
             }
+            finally{DB.DisposeAsync();}
         }   
         /// <summary>
         ///  
         /// </summary>
         public static string checkAnswerToCommand(string modemIp)
         {
-            int Millisec = 15000; // millisecondi in cui aspetto che il modem mi risponda
+            listener_DBContext DB = new listener_DBContext (); 
             string answer = "NoAnswer";
-            Thread.Sleep(10000);
-            MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
-                .OrderByDescending(z=>z.time_stamp)
-                .First(l => l.IpAddress == modemIp);
-            double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
-            if(secondsFromLastPacket > Millisec)
-                answer = lastReceivedFromModem.TransferredData;
+            try{
             
+                int Millisec = 15000; // millisecondi in cui aspetto che il modem mi risponda
+                
+                Thread.Sleep(10000);
+                MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
+                    .OrderByDescending(z=>z.time_stamp)
+                    .First(l => l.IpAddress == modemIp);
+                double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
+                if(secondsFromLastPacket > Millisec)
+                    answer = lastReceivedFromModem.TransferredData;
+            }
+            catch(Exception e){
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " checkAnswerToCommand: "+e.Message);
+            }
+            finally{
+                DB.DisposeAsync();
+            }
             return answer;
         }
 
@@ -310,6 +342,7 @@ namespace Functions
             //  [1] =  ip of the target machine 
             //  [2] =  command 
             //
+            listener_DBContext DB = new listener_DBContext (); 
             try
             {
                 RemoteCommand commandToExecute = DB.RemoteCommand.First(  y=>y.Id == targetMachinesId  );
@@ -339,6 +372,9 @@ namespace Functions
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss FetchRemoteCommand : ") + e.Message);
                 return new string[] { };   
             }
+            finally{
+                DB.DisposeAsync();
+                }
         }
             
         /// <summary>
@@ -346,14 +382,17 @@ namespace Functions
         /// </summary>
         public static string IsAliveAnswer( int machineId )
         {
+            listener_DBContext DB = new listener_DBContext (); 
             bool isAlive = IsMachineAlive(machineId);
             if(isAlive)
             {
+                DB.DisposeAsync();
                 return "<Error>" + DB.Machines.Last(y=>y.Id == machineId).Mid + " offline</Error>" ;
             }
             else
             {
                 int costoDiUnGiro = CalculateCreditForARun(machineId);
+                DB.DisposeAsync();
                 if(costoDiUnGiro == -1)
                     return "<Error>Errore nel calcolo del costo in crediti</Error>" ;
                 return  "<CreditsForARun>"+ costoDiUnGiro.ToString()+"</CreditsForARun>";
