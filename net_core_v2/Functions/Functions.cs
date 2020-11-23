@@ -243,18 +243,22 @@ namespace Functions
         /// </summary>
         public static bool IsMachineAlive(int machineId)
         {
-
-            if(DB.Machines.Any(y=> y.Id == machineId))
-            {
-                Machines m = DB.Machines.First(y=> y.Id == machineId);
-                if(m.KalValue!=null)
+            try{
+                if(DB.Machines.Any(y=> y.Id == machineId))
                 {
-                    double miutesFromLastKalorPacket = (  DateTime.Now - DateTime.Parse( m.last_communication.ToString())).TotalMinutes;
-                    if (m.KalValue >= miutesFromLastKalorPacket )
+                    Machines m = DB.Machines.First(y=> y.Id == machineId);
+                    if(m.KalValue!=null)
                     {
-                        return true;
+                        double miutesFromLastKalorPacket = (  DateTime.Now - DateTime.Parse( m.last_communication.ToString())).TotalMinutes;
+                        if (m.KalValue >= miutesFromLastKalorPacket )
+                        {
+                            return true;
+                        }   
                     }   
-                }   
+            }
+            }catch(Exception e){
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " CalculateCreditForARun: "+e.Message);
+
             }
             return false;
         }
@@ -272,6 +276,7 @@ namespace Functions
             }
             catch(Exception e)
             {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " CalculateCreditForARun: "+e.Message);
                 return -1;
             }
         }   
