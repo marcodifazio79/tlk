@@ -271,6 +271,7 @@ namespace Functions
                         double miutesFromLastKalorPacket = (  DateTime.Now - DateTime.Parse( m.last_communication.ToString())).TotalMinutes;
                         if (m.KalValue >= miutesFromLastKalorPacket )
                         {
+                            DB.DisposeAsync();
                             return true;
                         }   
                     }   
@@ -380,18 +381,20 @@ namespace Functions
         /// <summary>
         /// Return the coin need to play if alive, else return Mid+OFFLINE
         /// </summary>
-        public static string IsAliveAnswer( int machineId )
+        public static string IsAliveAnswer( int commandid )
         {
             listener_DBContext DB = new listener_DBContext (); 
-            bool isAlive = IsMachineAlive(machineId);
+
+            Machines t = DB.RemoteCommand.First( h=>h.Id == commandid ).IdMacchinaNavigation;
+            bool isAlive = IsMachineAlive(  t.Id);
             if(isAlive)
             {
                 DB.DisposeAsync();
-                return "<Error>" + DB.Machines.Last(y=>y.Id == machineId).Mid + " offline</Error>" ;
+                return "<Error>" + t.Mid + " offline</Error>" ;
             }
             else
             {
-                int costoDiUnGiro = CalculateCreditForARun(machineId);
+                int costoDiUnGiro = CalculateCreditForARun(t.Id);
                 DB.DisposeAsync();
                 if(costoDiUnGiro == -1)
                     return "<Error>Errore nel calcolo del costo in crediti</Error>" ;
