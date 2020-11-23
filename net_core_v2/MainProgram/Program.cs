@@ -199,7 +199,7 @@ public class AsynchronousSocketListener {
                             Thread t = new Thread(()=>Send (
                             ModemsSocketList.Find(      Soc =>
                                 ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == remoteComm[1]
-                                ), remoteComm[2]));
+                                ),  "PWD123456"+ remoteComm[2]));
                             t.Start();
                             answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
                             Thread answerCheck = new Thread( () => {
@@ -414,7 +414,7 @@ public class AsynchronousSocketListener {
             } 
         } finally {
             
-            //Thread t = new Thread(()=>Send (handler, "#PSW123456"));
+            //Thread t = new Thread(()=>Send (handler, "#PWD123456"));
             //t.Start();
                 
         }  

@@ -356,10 +356,10 @@ namespace Functions
                         return new string[] {   "ComandoDaEseguire" , "" , ""   };
                     
                     case "PlayTheGame":
-                        return new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#PSW123456#PU1"   };
+                        return new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#PU1"   };
                     
                     case "Cassa":
-                        return new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#PSW123456#CAS?"   };
+                        return new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#CAS?"   };
                     
 
                     default:
