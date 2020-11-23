@@ -291,7 +291,8 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext (); 
             try
             {
-                string mPacket = DB.MachinesConnectionTrace.First( k=>k.IdMacchina == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   ).SendOrRecv;
+                string mPacket = DB.MachinesConnectionTrace.Where( k=>k.IdMacchina == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   )
+                .OrderByDescending(j=>j.Id).First().SendOrRecv;
                 string[] mPacketArray = mPacket.Split(',');
                 return (Convert.ToInt32(mPacketArray[3]) / Convert.ToInt32( mPacketArray[4]));
             }
@@ -312,7 +313,6 @@ namespace Functions
             try{
             
                 int Millisec = 15000; // millisecondi in cui aspetto che il modem mi risponda
-                
                 Thread.Sleep(10000);
                 MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
                     .OrderByDescending(z=>z.time_stamp)
