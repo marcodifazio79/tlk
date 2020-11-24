@@ -293,7 +293,7 @@ namespace Functions
             try
             {
                 string mPacket = DB.MachinesConnectionTrace.Where( k=>k.IdMacchinaNavigation.Id == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   )
-                .OrderByDescending(j=>j.Id).First().SendOrRecv;
+                .OrderByDescending(j=>j.Id).First().TransferredData;
                 string[] mPacketArray = mPacket.Split(',');
                 return (Convert.ToInt32(mPacketArray[3]) / Convert.ToInt32( mPacketArray[4]));
             }
@@ -385,11 +385,9 @@ namespace Functions
         {
             listener_DBContext DB = new listener_DBContext (); 
             try{
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss TEMPOUTPUT commandid : ") + commandid);
                 Machines target =  DB.Machines.Single(       
                     h=> h.Id  ==   DB.RemoteCommand.Single(m=>m.Id == commandid).IdMacchina
                       );
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss TEMPOUTPUT : ") + target.Mid);
                 bool isAlive = IsMachineAlive( target.Id );
                 if(isAlive)
                 {
