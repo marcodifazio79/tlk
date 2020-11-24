@@ -201,13 +201,9 @@ public class AsynchronousSocketListener {
                                 ((IPEndPoint)Soc.RemoteEndPoint).Address.ToString() == remoteComm[1]
                                 ),  "#PWD123456"+ remoteComm[2]));
                             t.Start();
-                            answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
-                            Thread answerCheck = new Thread( () => {
-                                
-                                string responseFromModem = Functions.DatabaseFunctions.checkAnswerToCommand(((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
-                                Thread responseFromModemToBackendThred = new Thread(()=>
-                                    Send (  handler   ,  responseFromModem  ));
-                            });
+                            //answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
+                            answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1]);
+                            
                         break;
                         case "ComandoDaEseguire":
                             answerToBackend = Functions.DatabaseFunctions.IsAliveAnswer(command_id);

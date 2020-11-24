@@ -313,13 +313,16 @@ namespace Functions
             string answer = "NoAnswer";
             try{
             
-                int Millisec = 15000; // millisecondi in cui aspetto che il modem mi risponda
-                Thread.Sleep(10000);
+                int Seconds = 8; // secondi in cui aspetto che il modem mi risponda
+                Thread.Sleep(8000);
+
                 MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
                     .OrderByDescending(z=>z.time_stamp)
                     .First(l => l.IpAddress == modemIp);
                 double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
-                if(secondsFromLastPacket > Millisec)
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " secondsFromLastPacket: "+secondsFromLastPacket);
+
+                if(secondsFromLastPacket < Seconds)
                     answer = lastReceivedFromModem.TransferredData;
             }
             catch(Exception e){
