@@ -386,7 +386,9 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext (); 
             try{
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss TEMPOUTPUT commandid : ") + commandid);
-                Machines target =  DB.RemoteCommand.First(h=>h.Id == commandid).IdMacchinaNavigation;
+                Machines target =  DB.Machines.Single(       
+                    h=> h.Id  ==   DB.RemoteCommand.Single(m=>m.Id == commandid).IdMacchina
+                      );
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss TEMPOUTPUT : ") + target.Mid);
                 bool isAlive = IsMachineAlive( target.Id );
                 if(isAlive)
