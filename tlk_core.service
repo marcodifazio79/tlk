@@ -1,0 +1,16 @@
+# tlk_core.service
+
+[Unit] 
+Description= tlk_core server, the modems listener.
+Documentation= https://versioning.dedemapp.com/fdifazio/tlk_python/blob/master/readme.md
+
+[Service] 
+Type= simple 
+WorkingDirectory= /home/kdl_admin/tlk/MainProgram/bin/netcoreapp3.1/linux-x64/publish
+ExecStart= /home/kdl_admin/tlk/MainProgram/bin/netcoreapp3.1/linux-x64/publish/tlk_core
+TimeoutStopSec= 3
+
+ExecStop= /bin/kill -9 $MAINPID
+
+[Install]
+WantedBy= multi-user.target
