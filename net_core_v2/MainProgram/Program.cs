@@ -179,10 +179,8 @@ public class AsynchronousSocketListener {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
-                //At this point content should look like = <data><targetip>172.16.158.143</targetip><command>#PU1</command></data>
+                //At this point content should look like = <data><codElettronico>9876543210</codElettronico><command>IsAlive</command></data>
                 
-                //String command = "#PWD123456" +  receivedCommand.SelectSingleNode(@"/data/command").InnerText;
-
                 int command_id = Functions.DatabaseFunctions.insertIntoRemoteCommand(  content, ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()  );
                 if(  command_id == -1   )
                     answerToBackend = "<Error>command-error codice elettronico non collegato a una macchina nel db</Error>";
