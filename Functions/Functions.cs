@@ -97,7 +97,6 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext (); 
             try
             {
-                
                 if( DB.Machines.Any(  s=>s.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First(  s=>s.IpAddress == ip_addr );
@@ -129,6 +128,9 @@ namespace Functions
                         TransferredData = transferred_data,
                         IdMacchina = m.Id
                     });
+                    Thread t = new Thread(()=> MachineUpdater( m.Id, transferred_data ));
+                    t.Start();
+                
                 }
                 else
                 {
@@ -152,15 +154,24 @@ namespace Functions
                     }
                 }
             DB.SaveChanges();
-            }catch(Exception e){
+            }catch(Exception e)
+            {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
-                
             }
-            finally{
+            finally
+            {
                 DB.DisposeAsync();
             }
     
+        }
+
+        /// <summary>
+        /// Update Machine values(LGG, KalValue, ...)
+        /// </summary>
+        public static void MachineUpdater(int id_macchina, string data)
+        {
+            
         }
 
 
@@ -397,7 +408,15 @@ namespace Functions
                     case "Cassa":
                         returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#CAS?"   };
                         break;
-
+                    case "KalValue":
+                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#KAL?"   };
+                        break;
+                    case "LggValue":
+                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#LGG?"   };
+                        break;
+                    case "LgaValue":
+                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#LGA?"   };
+                        break;
                     default:
                         returnValues = new string[] {   "ComandoNonRiconosciuto" , "" , ""   };
                         break;
@@ -424,28 +443,43 @@ namespace Functions
         public static string IsAliveAnswer( int commandid )
         {
             listener_DBContext DB = new listener_DBContext (); 
+            bool IsCommandSuccesful = false;
+            string returnValue ="";
             try{
                 Machines target =  DB.Machines.Single(       
                     h=> h.Id  ==   DB.RemoteCommand.Single(m=>m.Id == commandid).IdMacchina);
                 bool isAlive = IsMachineAlive( target.Id );
                 if(isAlive)
                 {
-                    DB.DisposeAsync();
-                    return "<Error>" + target.Mid + " offline</Error>" ;
+                    returnValue= "<Error>" + target.Mid + " offline</Error>" ;
+                    IsCommandSuccesful = false;
                 }
                 else
                 {
                     int costoDiUnGiro = CalculateCreditForARun(target.Id);
-                    DB.DisposeAsync();
                     if(costoDiUnGiro == -1)
-                        return "<Error>Errore nel calcolo del costo in crediti</Error>" ;
-                    return  "<CreditsForARun>"+ costoDiUnGiro.ToString()+"</CreditsForARun>";
+                    {
+                        returnValue= "<Error>Errore nel calcolo del costo in crediti</Error>" ;
+                        IsCommandSuccesful = false;
+                    }
+                    else
+                    {
+                        returnValue=  "<CreditsForARun>"+ costoDiUnGiro.ToString()+"</CreditsForARun>";
+                        IsCommandSuccesful = true;
+                    }
                 }
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss IsAliveAnswer : ") + e.Message);
-                DB.DisposeAsync();
-                return "<Error>Qualcosa non ha funzionato</Error>";
+                returnValue= "<Error>Qualcosa non ha funzionato</Error>";
+                IsCommandSuccesful = false;
             }
+            finally
+            {
+                Thread t = new Thread(()=> updateRemoteCommandStatus( IsCommandSuccesful, commandid ));
+                t.Start();
+            }
+            DB.DisposeAsync();
+            return returnValue;
         }      
 
     }

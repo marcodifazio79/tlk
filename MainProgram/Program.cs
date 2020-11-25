@@ -339,7 +339,7 @@ public class AsynchronousSocketListener {
                         Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                         ModemsSocketList.Remove(  ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  )  );
          
-                        handler.Shutdown(SocketShutdown.Both);  
+                        handler.Shutdown(SocketShutdown.Both);
                         handler.Close();
                         return;
             }

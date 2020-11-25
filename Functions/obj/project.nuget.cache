@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1CAFW4yiw0n0m4bcufHS3WxeYMRLV8Yg+NqQeaKJ1hQqfmWDAcI5eOVGkIw21rA4WnfCvjiX33udCQyc71dH1Q==",
+  "dgSpecHash": "M56WjNlyxyQsY+VKtEr0NP9WZVKBtvmg5wZwUq2pF6/rTknZ2QjVvPUvwaNZz7JqX1PAauiWLO8h5PkUxYt/NQ==",
   "success": true,
-  "projectFilePath": "C:\\tlk\\net_core_v2\\Functions\\Functions.csproj",
+  "projectFilePath": "C:\\tlk\\Functions\\Functions.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\fdifazio\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\google.protobuf\\3.11.4\\google.protobuf.3.11.4.nupkg.sha512",
