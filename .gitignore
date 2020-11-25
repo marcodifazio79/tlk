@@ -1,9 +1,9 @@
 # No one needs precompiled source. #
 ##################################
 
-#net_core_v2/MainProgram/bin/*
-net_core_v2/MainProgram/obj/Debug/*
-net_core_v2/Functions/obj/Debug/*
+#MainProgram/bin/*
+MainProgram/obj/Debug/*
+Functions/obj/Debug/*
 
 # OS generated files #
 ######################

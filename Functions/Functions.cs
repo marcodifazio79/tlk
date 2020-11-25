@@ -171,20 +171,36 @@ namespace Functions
         /// </summary>
         public static void MachineUpdater(int id_macchina, string data)
         {
+            listener_DBContext DB = new listener_DBContext ();
             try
             {
+                
+
+                Machines machinaDaAggiornare = DB.Machines.Single(h=> h.Id == id_macchina);
                 char[] delimiterChars = {'=', '<', '>',' '};
                 string[] mPacketArray = data.Split(delimiterChars);
                 List<string> list = new List<string>(mPacketArray);
-                int kalIndex=list.FindIndex("KAL");
-                int kalValue = list[kalIndex+1];
-
+                if( list.Contains("KAL") )
+                {
+                    machinaDaAggiornare.KalValue = Convert.ToInt32( list[list.IndexOf("KAL") + 1 ]); 
+                }
+                else
+                    if( list.Contains("LGA") )
+                    {
+                        machinaDaAggiornare.LggValue =Convert.ToInt32( list[list.IndexOf("KAL") + 1 ]); 
+                    }
+                    else
+                        if( list.Contains("LGG") )
+                        {
+                            
+                        }
             }
             catch (Exception e)
             {
-                
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss MachineUpdater : ") + e.Message);
             }
-
+            DB.SaveChanges();
+            DB.DisposeAsync();
         }
 
 
