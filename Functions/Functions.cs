@@ -171,7 +171,20 @@ namespace Functions
         /// </summary>
         public static void MachineUpdater(int id_macchina, string data)
         {
-            
+            try
+            {
+                char[] delimiterChars = {'=', '<', '>',' '};
+                string[] mPacketArray = data.Split(delimiterChars);
+                List<string> list = new List<string>(mPacketArray);
+                int kalIndex=list.FindIndex("KAL");
+                int kalValue = list[kalIndex+1];
+
+            }
+            catch (Exception e)
+            {
+                
+            }
+
         }
 
 
