@@ -185,12 +185,12 @@ namespace Functions
                     machinaDaAggiornare.KalValue = Convert.ToInt32( list[list.IndexOf("KAL") + 1 ]); 
                 }
                 else
-                    if( list.Contains("LGA") )
+                    if( list.Contains("LGG") )
                     {
-                        machinaDaAggiornare.LggValue =Convert.ToInt32( list[list.IndexOf("KAL") + 1 ]); 
+                        machinaDaAggiornare.LggValue =Convert.ToInt32( list[list.IndexOf("LGG") + 1 ]); 
                     }
                     else
-                        if( list.Contains("LGG") )
+                        if( list.Contains("LGA") )
                         {
                             
                         }

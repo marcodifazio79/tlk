@@ -74,3 +74,12 @@
         ON DELETE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
 
+
+
+ CREATE TABLE `CommandsMatch` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ModemCommand` varchar(15) NOT NULL,
+  `WebCommand` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
+
