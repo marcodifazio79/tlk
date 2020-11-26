@@ -107,6 +107,7 @@ namespace Functions
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : "+ex.Message);
             }
+            DB.DisposeAsync();
         }
 
 
@@ -130,7 +131,8 @@ namespace Functions
                     });
                     Thread t = new Thread(()=> MachineUpdater( m.Id, transferred_data ));
                     t.Start();
-                
+                    updateModemlast_connection( ip_addr );
+
                 }
                 else
                 {
