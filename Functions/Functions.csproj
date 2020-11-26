@@ -4,9 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <!-- <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies> 
     <OutDir>$(SolutionDir)bin\netcoreapp3.1\</OutDir>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <OutDir>../MainProgram/bin/netcoreapp3.1/linux-x64/publish/</OutDir>
+    <OutDir>..\MainProgram\bin\netcoreapp3.1\linux-x64\publish/</OutDir>-->
   </PropertyGroup>
 
 

@@ -5,6 +5,8 @@
 Da terminale, `dotnet publish tlk_core.csproj --self-contained true -r linux-x64` per compilare. <br/>
 L'output è l'eseguibile /bin/netcoreapp3.1/linux-x64/publish/tlk_core
 
+Per aggiungere una una tabella presente nel db ma non nell'dbcontect: `dotnet ef dbcontext scaffold 'server=10.10.10.71;port=3306;user=bot_user;password=FILLMEWITHPASSWORD;database=listener_DB' MySql.Data.EntityFrameworkCore -o database -f -t TABLEMANE`
+
 ### The server
 Se tlk_core non risulta eseguibile provare `chmod a+x path/to/tlk_core`<br/>
 Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi: 
