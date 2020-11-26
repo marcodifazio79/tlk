@@ -426,30 +426,24 @@ namespace Functions
                 data.LoadXml(commandToExecute.Body);
                 
                 string targetCodElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
-                switch(data.SelectSingleNode(@"/data/command").InnerText)
+                string webCom = data.SelectSingleNode(@"/data/command").InnerText;
+                
+                //match the web command with the 
+                if(DB.CommandsMatch.Where(v=> v.WebCommand == webCom).Count() > 0)
                 {
-                    case "IsAlive":
+                    string commandForModem = DB.CommandsMatch.First(v=> v.WebCommand == webCom).ModemCommand;
+                    returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , commandForModem   };
+                }
+                else{
+                    if(webCom == "IsAlive")
+                    {
                         returnValues = new string[] {   "ComandoDaEseguire" , "" , ""   };
-                        break;
-                    case "PlayTheGame":
-                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#PU1"   };
-                        break;
-                    case "Cassa":
-                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#CAS?"   };
-                        break;
-                    case "KalValue":
-                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#KAL?"   };
-                        break;
-                    case "LggValue":
-                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#LGG?"   };
-                        break;
-                    case "LgaValue":
-                        returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , "#LGA?"   };
-                        break;
-                    default:
+                    }
+                    else
+                    {
                         returnValues = new string[] {   "ComandoNonRiconosciuto" , "" , ""   };
-                        break;
-                } 
+                    }
+                }
             }
             catch(Exception e)
             {

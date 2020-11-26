@@ -5,7 +5,8 @@
 Da terminale, `dotnet publish tlk_core.csproj --self-contained true -r linux-x64` per compilare. <br/>
 L'output è l'eseguibile /bin/netcoreapp3.1/linux-x64/publish/tlk_core
 
-Per aggiungere una una tabella presente nel db ma non nell'dbcontect: `dotnet ef dbcontext scaffold 'server=10.10.10.71;port=3306;user=bot_user;password=FILLMEWITHPASSWORD;database=listener_DB' MySql.Data.EntityFrameworkCore -o database -f -t TABLEMANE`
+Per ricostruire il db context (metti caso che aggiungiamo tabelle), da dentro la certella Functions: `dotnet ef dbcontext scaffold 'server=10.10.10.71;port=3306;user=bot_user;password=FILLMEWITHPASSWORD;database=listener_DB' MySql.Data.EntityFrameworkCore -o database -f`
+NOTA BENE: controllare il risultato! Non sempre lo scaffolding funziona, in base alla versione del server e dell'ef potrebbe ignorare delle colonne nelle tabelle, non traducendole in variabili nell'ef (aggiungerle a mano). Oppure aggiungere `-t TABLEMANE` e cambiare l'output path `-o databaseTemp` per genereare nuovi file da integrare in quelli esistenti. 
 
 ### The server
 Se tlk_core non risulta eseguibile provare `chmod a+x path/to/tlk_core`<br/>
