@@ -466,6 +466,7 @@ public class AsynchronousSocketListener {
         {
             if(! Functions.SocketList.IsConnected(s))
             {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : cleared zombie connection");  
                 ModemsSocketList = Functions.SocketList.removeFromList(s,ModemsSocketList);
             }
             else
