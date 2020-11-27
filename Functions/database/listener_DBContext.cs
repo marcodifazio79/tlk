@@ -29,6 +29,7 @@ namespace Functions.database
         public virtual DbSet<MachinesInMemory> MachinesInMemory { get; set; }
         public virtual DbSet<RemoteCommand> RemoteCommand { get; set; }
         public virtual DbSet<CommandsMatch> CommandsMatch { get; set; }
+        public virtual DbSet<MachineExtendedAttributes> MachineExtendedAttributes { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -202,13 +203,6 @@ namespace Functions.database
                     .HasColumnName("ip_address")
                     .HasMaxLength(15);
 
-                entity.Property(e => e.KalValue)
-                    .HasColumnName("kal_value")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.LggValue)
-                    .HasColumnName("lgg_value")
-                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Mid)
                     .HasColumnName("mid")
@@ -366,6 +360,124 @@ namespace Functions.database
                     .HasMaxLength(30);
             });
 
+            modelBuilder.Entity<MachineExtendedAttributes>(entity =>
+            {
+                entity.HasIndex(e => e.IdMacchina)
+                    .HasName("index_ID_Macchina");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Ch1Value)
+                    .HasColumnName("CH1_Value")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Ch1ValueUpdatedAt)
+                    .HasColumnName("Ch1_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.Ch2Value)
+                    .HasColumnName("CH2_Value")
+                    .HasColumnType("int(11)");
+                entity.Property(e => e.Ch2ValueUpdatedAt)
+                    .HasColumnName("Ch2_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.Ch3Value)
+                    .HasColumnName("CH3_Value")
+                    .HasColumnType("int(11)");
+                
+                entity.Property(e => e.Ch3ValueUpdatedAt)
+                    .HasColumnName("Ch3_Value_Updated_At")
+                    .HasColumnType("timestamp");
+                
+                entity.Property(e => e.Ch4Value)
+                    .HasColumnName("CH4_Value")
+                    .HasColumnType("int(11)");
+                
+                entity.Property(e => e.Ch4ValueUpdatedAt)
+                    .HasColumnName("Ch4_Value_Updated_At")
+                    .HasColumnType("timestamp");
+                
+                entity.Property(e => e.Ch5Value)
+                    .HasColumnName("CH5_Value")
+                    .HasColumnType("int(11)");
+                
+                entity.Property(e => e.Ch5ValueUpdatedAt)
+                    .HasColumnName("Ch5_Value_Updated_At")
+                    .HasColumnType("timestamp");
+                
+                entity.Property(e => e.Ch6Value)
+                    .HasColumnName("CH6_Value")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Ch6ValueUpdatedAt)
+                    .HasColumnName("Ch6_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.Ch7Value)
+                    .HasColumnName("CH7_Value")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Ch7ValueUpdatedAt)
+                    .HasColumnName("Ch7_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.Ch8Value)
+                    .HasColumnName("CH8_Value")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Ch8ValueUpdatedAt)
+                    .HasColumnName("Ch8_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.IdMacchina)
+                    .HasColumnName("id_Macchina")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IsOnline).HasColumnName("is_Online");
+
+                entity.Property(e => e.KalValue)
+                    .HasColumnName("KAL_Value")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.KalValueUpdatedAt)
+                    .HasColumnName("KAL_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.LgaValue)
+                    .HasColumnName("LGA_Value")
+                    .HasColumnType("int(11)");
+                
+                entity.Property(e => e.LgaValueUpdatedAt)
+                    .HasColumnName("LGA_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.LggValue)
+                    .HasColumnName("LGG_Value")
+                    .HasColumnType("int(11)");
+                
+                entity.Property(e => e.LggValueUpdatedAt)
+                    .HasColumnName("LGG_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.MpvValue)
+                    .HasColumnName("MPV_Value")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.MpvValueUpdatedAt)
+                    .HasColumnName("MPV_Value_Updated_At")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.PpcValue)
+                    .HasColumnName("PPC_Value")
+                    .HasColumnType("int(11)");
+                
+                entity.Property(e => e.PpcValueUpdatedAt)
+                    .HasColumnName("PPC_Value_Updated_At")
+                    .HasColumnType("timestamp");
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

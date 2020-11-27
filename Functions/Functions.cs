@@ -64,7 +64,8 @@ namespace Functions
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
-                    updateModemlast_connection(ip_addr);
+                    MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+
                 }
                 else
                 {
@@ -75,6 +76,7 @@ namespace Functions
                         last_communication =null,
                         time_creation =null
                         });
+                    
                 }
                 DB.SaveChanges();
                 
@@ -89,38 +91,17 @@ namespace Functions
             }
         }
 
-        /// <summary>
-        ///  
-        /// </summary>
-        public static void updateModemlast_connection(string ip_addr)
-        {
-            listener_DBContext DB = new listener_DBContext (); 
-            try
-            {
-                if( DB.Machines.Any(  s=>s.IpAddress == ip_addr ))
-                {
-                    Machines m = DB.Machines.First(  s=>s.IpAddress == ip_addr );
-                    m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemlast_connection : "+ip_addr);
-                    DB.SaveChanges();
-                }
-            }catch (Exception ex)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : "+ex.Message);
-            }
-            DB.DisposeAsync();
-        }
-
+        
 
         /// <summary>
         ///  
         /// </summary>
         public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
-            listener_DBContext DB = new listener_DBContext ();       
+            listener_DBContext DB = new listener_DBContext ();
             try
             {
-                if(   DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
+                if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y=> y.IpAddress == ip_addr );
                     DB.MachinesConnectionTrace.Add(new MachinesConnectionTrace 
@@ -130,9 +111,9 @@ namespace Functions
                         TransferredData = transferred_data,
                         IdMacchina = m.Id
                     });
-                    Thread t = new Thread(()=> MachineUpdater( m.Id, transferred_data ));
+                    Thread t = new Thread(()=> MachineExtendedAttributeUpdater( m.Id, transferred_data ));
                     t.Start();
-                    updateModemlast_connection( ip_addr );
+                    m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
 
                 }
                 else
@@ -156,8 +137,9 @@ namespace Functions
                         });
                     }
                 }
-            DB.SaveChanges();
-            }catch(Exception e)
+                DB.SaveChanges();
+            }
+            catch(Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
@@ -172,7 +154,7 @@ namespace Functions
         /// <summary>
         /// Update Machine values(LGG, KalValue, ...)
         /// </summary>
-        public static void MachineUpdater(int id_macchina, string data)
+        public static void MachineExtendedAttributeUpdater(int id_macchina, string data)
         {
             listener_DBContext DB = new listener_DBContext ();
             try
@@ -183,24 +165,25 @@ namespace Functions
                 char[] delimiterChars = {'=', '<', '>',' '};
                 string[] mPacketArray = data.Split(delimiterChars);
                 List<string> list = new List<string>(mPacketArray);
-                if( list.Contains("KAL") )
-                {
-                    machinaDaAggiornare.KalValue = Convert.ToInt32( list[list.IndexOf("KAL") + 1 ]); 
-                }
-                else
-                    if( list.Contains("LGG") )
-                    {
-                        machinaDaAggiornare.LggValue =Convert.ToInt32( list[list.IndexOf("LGG") + 1 ]); 
-                    }
-                    else
-                        if( list.Contains("LGA") )
-                        {
+
+                // if( list.Contains("KAL") )
+                // {
+                //     machinaDaAggiornare.KalValue = Convert.ToInt32( list[list.IndexOf("KAL") + 1 ]); 
+                // }
+                // else
+                //     if( list.Contains("LGG") )
+                //     {
+                //         machinaDaAggiornare.LggValue =Convert.ToInt32( list[list.IndexOf("LGG") + 1 ]); 
+                //     }
+                //     else
+                //         if( list.Contains("LGA") )
+                //         {
                             
-                        }
+                //         }
             }
             catch (Exception e)
             {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss MachineUpdater : ") + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss MachineExtendedAttributeUpdater : ") + e.Message);
             }
             DB.SaveChanges();
             DB.DisposeAsync();
@@ -309,15 +292,15 @@ namespace Functions
                 if(DB.Machines.Any(y=> y.Id == machineId))
                 {
                     Machines m = DB.Machines.First(y=> y.Id == machineId);
-                    if(m.KalValue!=null)
-                    {
-                        double miutesFromLastKalorPacket = (  DateTime.Now - DateTime.Parse( m.last_communication.ToString())).TotalMinutes;
-                        if (m.KalValue >= miutesFromLastKalorPacket )
-                        {
-                            DB.DisposeAsync();
-                            return true;
-                        }   
-                    }   
+                    // if(m.KalValue!=null)
+                    // {
+                    //     double miutesFromLastKalorPacket = (  DateTime.Now - DateTime.Parse( m.last_communication.ToString())).TotalMinutes;
+                    //     if (m.KalValue >= miutesFromLastKalorPacket )
+                    //     {
+                    //         DB.DisposeAsync();
+                    //         return true;
+                    //     }   
+                    // }   
             }
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " CalculateCreditForARun: "+e.Message);
@@ -518,13 +501,14 @@ namespace Functions
         
         public static List<Socket> removeFromList(Socket SocketToRemove, List<Socket> SocketList)
         {
-            
             if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
             {
-                SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );
+                SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );                
             }
             return SocketList;
         }
+
+
         /// <summary>
         /// Controllare se funziona,
         /// il checkalive su tcp è bacato di natura.
