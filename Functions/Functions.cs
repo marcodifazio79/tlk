@@ -548,27 +548,25 @@ namespace Functions
         /// <returns>True on connected. False on disconnected.</returns>
         public static bool IsConnected(Socket SocketToCheck)
         {
-            if (SocketToCheck.Connected)
+            try
             {
-                if ((SocketToCheck.Poll(0, SelectMode.SelectWrite)) && (!SocketToCheck.Poll(0, SelectMode.SelectError)))
+                if (SocketToCheck.Connected)
                 {
-                    byte[] buffer = new byte[1];
-                    if (SocketToCheck.Receive(buffer, SocketFlags.Peek) == 0)
-                    {
+                    bool part1 = SocketToCheck.Poll(1000, SelectMode.SelectRead);
+                    bool part2 = (SocketToCheck.Available == 0);
+                    if (part1 && part2)
                         return false;
-                    }
                     else
-                    {
                         return true;
-                    }
                 }
                 else
                 {
                     return false;
                 }
             }
-            else
+            catch(Exception e)
             {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss IsConnected : ") + e.Message);
                 return false;
             }
         }
