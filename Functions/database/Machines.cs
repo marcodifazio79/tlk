@@ -17,7 +17,7 @@ namespace Functions.database
         public long? Imei { get; set; }
         public string Mid { get; set; }
         public string Version { get; set; }
-        public bool? IsOnline { get; set; }
+        public bool IsOnline { get; set; }
 
         public DateTime? last_communication { get; set; }
         public DateTime? time_creation { get; set; }

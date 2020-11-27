@@ -283,33 +283,7 @@ namespace Functions
             }
             finally{DB.DisposeAsync();}
         }
-        /// <summary>
-        /// Based on the elapsed time between the last communication and the Keep Alive value, estimate if the machines is online
-        /// </summary>
-        public static bool IsMachineAlive(int machineId)
-        {
-            listener_DBContext DB = new listener_DBContext (); 
-            try{
-                if(DB.Machines.Any(y=> y.Id == machineId))
-                {
-                    Machines m = DB.Machines.First(y=> y.Id == machineId);
-                    // if(m.KalValue!=null)
-                    // {
-                    //     double miutesFromLastKalorPacket = (  DateTime.Now - DateTime.Parse( m.last_communication.ToString())).TotalMinutes;
-                    //     if (m.KalValue >= miutesFromLastKalorPacket )
-                    //     {
-                    //         DB.DisposeAsync();
-                    //         return true;
-                    //     }   
-                    // }   
-            }
-            }catch(Exception e){
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " CalculateCreditForARun: "+e.Message);
-
-            }
-            finally{DB.DisposeAsync();}
-            return false;
-        }
+        
 
         /// <summary>
         /// Check the last M1 packet for the machine with Machine ID = machineID and return the credits needed for a run
@@ -456,9 +430,8 @@ namespace Functions
             bool IsCommandSuccesful = false;
             string returnValue ="";
             try{
-                Machines target =  DB.Machines.Single(       
-                    h=> h.Id  ==   DB.RemoteCommand.Single(m=>m.Id == commandid).IdMacchina);
-                bool isAlive = IsMachineAlive( target.Id );
+                Machines target =  DB.Machines.Single(h=> h.Id  ==   DB.RemoteCommand.Single(m=>m.Id == commandid).IdMacchina);
+                bool isAlive = target.IsOnline;
                 if(isAlive)
                 {
                     returnValue= "<Error>" + target.Mid + " offline</Error>" ;
