@@ -546,7 +546,7 @@ namespace Functions
         /// Checks the connection state
         /// </summary>
         /// <returns>True on connected. False on disconnected.</returns>
-        static bool IsConnected(Socket SocketToCheck)
+        public static bool IsConnected(Socket SocketToCheck)
         {
             if (SocketToCheck.Connected)
             {

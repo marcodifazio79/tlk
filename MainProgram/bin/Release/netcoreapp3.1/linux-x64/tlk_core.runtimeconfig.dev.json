@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "/home/fdifazio/.dotnet/store/|arch|/|tfm|",
+      "/home/fdifazio/.nuget/packages"
+    ]
+  }
+}

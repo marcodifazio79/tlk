@@ -445,18 +445,46 @@ public class AsynchronousSocketListener {
                 !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                    &
                 !string.IsNullOrEmpty(Configuration["Port:Backend"])    
             ){
-                // ...start Listening (for connection), it's hard to comment on this one.
-                StartListening(); 
+
+            Thread checherThread = new Thread(()=>connectionCheck());
+            checherThread.Start();
+            
+            // ...start Listening (for connection), it's hard to comment on this one.
+            StartListening(); 
+
             }else{
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Parameters missing in appsettings.json file, startup cancelled.");  
             }
-            
-             
         }
         else{
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": appsettings.json is missing, startup cancelled.");  
         }  
         return 0;  
     
+    }
+
+    static public void connectionCheck()
+    {
+        int checkedSockets = 0, deadConnection = 0;
+        Thread.Sleep(30000);
+        foreach( Socket s in ModemsSocketList )
+        {
+            try
+            {
+                if(! Functions.SocketList.IsConnected(s))
+                {
+                    deadConnection ++;  
+                    ModemsSocketList = Functions.SocketList.removeFromList(s,ModemsSocketList);
+                }
+                checkedSockets++;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+e.Message);  
+            }
+        }
+        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck done, " + deadConnection + "/"+checkedSockets +" dead");
+        Thread checherThread = new Thread(()=>connectionCheck());
+        checherThread.Start();
     }  
 }
