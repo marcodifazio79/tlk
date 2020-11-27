@@ -101,6 +101,7 @@ namespace Functions
                 {
                     Machines m = DB.Machines.First(  s=>s.IpAddress == ip_addr );
                     m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemlast_connection : "+ip_addr);
                     DB.SaveChanges();
                 }
             }catch (Exception ex)
@@ -516,22 +517,24 @@ namespace Functions
         
         
         public static List<Socket> removeFromList(Socket SocketToRemove, List<Socket> SocketList)
-        {      
+        {
             
             if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
             {
                 SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );
             }
-
             return SocketList;
         }
-
+        /// <summary>
+        /// Controllare se funziona,
+        /// il checkalive su tcp è bacato di natura.
+        /// </summary>
         public static List<Socket> checkIfAlive(Socket SocketToCheck, List<Socket> SocketList)
         {      
 
             if( !((SocketToCheck.Poll(1200, SelectMode.SelectRead) && (SocketToCheck.Available == 0)) || !SocketToCheck.Connected))
             {
-                return SocketList;    
+                return SocketList;
             }
             else
             {
