@@ -130,13 +130,12 @@ public class AsynchronousSocketListener {
             allDoneModem.Set();  
             
             //add the connection to the list, but first remove it, just in case
-            
-            //ModemsSocketList.Remove(ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  ));
-            //ModemsSocketList.Add(handler);
-
             ModemsSocketList = Functions.SocketList.removeFromList(handler, ModemsSocketList);
             ModemsSocketList = Functions.SocketList.addToList(handler, ModemsSocketList);
-
+            
+            //let's keep an eye on the socket, hopefully we'll notice forcefull disconnection
+            Thread checherThread = new Thread(()=>connectionCheck(handler));
+            checherThread.Start();
             
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
             Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()); //,(((IPEndPoint)handler.RemoteEndPoint).Port));
@@ -446,9 +445,6 @@ public class AsynchronousSocketListener {
                 !string.IsNullOrEmpty(Configuration["Port:Backend"])    
             ){
 
-            Thread checherThread = new Thread(()=>connectionCheck());
-            checherThread.Start();
-            
             // ...start Listening (for connection), it's hard to comment on this one.
             StartListening(); 
 
@@ -463,28 +459,25 @@ public class AsynchronousSocketListener {
     
     }
 
-    static public void connectionCheck()
+    static public void connectionCheck(Socket s)
     {
-        int checkedSockets = 0, deadConnection = 0;
         Thread.Sleep(30000);
-        foreach( Socket s in ModemsSocketList )
+        try
         {
-            try
+            if(! Functions.SocketList.IsConnected(s))
             {
-                if(! Functions.SocketList.IsConnected(s))
-                {
-                    deadConnection ++;  
-                    ModemsSocketList = Functions.SocketList.removeFromList(s,ModemsSocketList);
-                }
-                checkedSockets++;
+                ModemsSocketList = Functions.SocketList.removeFromList(s,ModemsSocketList);
             }
-            catch(Exception e)
+            else
             {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+e.Message);  
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+ ((IPEndPoint)s.RemoteEndPoint).Address.ToString()  +" UP!");  
+                Thread checherThread = new Thread(()=>connectionCheck(s));
+                checherThread.Start();
             }
         }
-        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck done, " + deadConnection + "/"+checkedSockets +" dead");
-        Thread checherThread = new Thread(()=>connectionCheck());
-        checherThread.Start();
+        catch(Exception e)
+        {
+            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+e.Message);  
+        }
     }  
 }
