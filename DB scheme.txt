@@ -7,6 +7,7 @@
   `version` varchar(10) DEFAULT NULL,
   `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
   `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `IsOnline` BOOLEAN NOT NULL DEFAULT true,
   PRIMARY KEY (`id`),
   KEY `index_ip_mid` (`ip_address`,`mid`),
   KEY `index_mid` (`mid`),
@@ -81,45 +82,30 @@
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
 
+ CREATE TABLE `Attr` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  `Comment` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)  
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
- CREATE TABLE `MachineExtendedAttributes` (
+
+ CREATE TABLE `MachinesAttributes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_Macchina` int(11) NOT NULL,
-  `is_Online`  BOOLEAN,
-  `LGG_Value` int DEFAULT NULL,
-  `LGG_Value_Updated_At` datetime DEFAULT NULL,
-  `LGA_Value` int DEFAULT NULL,
-  `LGA_Value_Updated_At` datetime DEFAULT NULL,
-  `KAL_Value` int DEFAULT NULL,
-  `KAL_Value_Updated_At` datetime DEFAULT NULL,
-  `MPV_Value` int DEFAULT NULL,
-  `MPV_Value_Updated_At` datetime DEFAULT NULL,
-  `PPC_Value` int DEFAULT NULL,
-  `PPC_Value_Updated_At` datetime DEFAULT NULL,
-  `CH1_Value` int DEFAULT NULL,
-  `CH1_Value_Updated_At` datetime DEFAULT NULL,
-  `CH2_Value` int DEFAULT NULL,
-  `CH2_Value_Updated_At` datetime DEFAULT NULL,
-  `CH3_Value` int DEFAULT NULL,
-  `CH3_Value_Updated_At` datetime DEFAULT NULL,
-  `CH4_Value` int DEFAULT NULL,
-  `CH4_Value_Updated_At` datetime DEFAULT NULL,
-  `CH5_Value` int DEFAULT NULL,
-  `CH5_Value_Updated_At` datetime DEFAULT NULL,
-  `CH6_Value` int DEFAULT NULL,
-  `CH6_Value_Updated_At` datetime DEFAULT NULL,
-  `CH7_Value` int DEFAULT NULL,
-  `CH7_Value_Updated_At` datetime DEFAULT NULL,
-  `CH8_Value` int DEFAULT NULL,
-  `CH8_Value_Updated_At` datetime DEFAULT NULL,
-  
-  KEY `index_ID_Macchina` (`id_Macchina`),
+  `id_Attribute` int(11) NOT NULL,
+  `CreatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Value` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
+  FOREIGN KEY (`id_Attribute`)
+        REFERENCES Attr(id)
+        ON DELETE NO ACTION,
     FOREIGN KEY (`id_Macchina`)
         REFERENCES Machines(id)
         ON DELETE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
-create trigger Machines_Ext_trig after insert on Machines
-for each row
-insert into MachineExtendedAttributes (id_Macchina, is_Online) values (new.id, TRUE);
+
+
+
+

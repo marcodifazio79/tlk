@@ -23,13 +23,15 @@ namespace Functions.database
         public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Dump> Dump { get; set; }
+        public virtual DbSet<Attr> Attr { get; set; }
+        public virtual DbSet<MachinesAttributes> MachinesAttributes { get; set; }
+
         public virtual DbSet<EfmigrationsHistory> EfmigrationsHistory { get; set; }
         public virtual DbSet<Machines> Machines { get; set; }
         public virtual DbSet<MachinesConnectionTrace> MachinesConnectionTrace { get; set; }
         public virtual DbSet<MachinesInMemory> MachinesInMemory { get; set; }
         public virtual DbSet<RemoteCommand> RemoteCommand { get; set; }
         public virtual DbSet<CommandsMatch> CommandsMatch { get; set; }
-        public virtual DbSet<MachineExtendedAttributes> MachineExtendedAttributes { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -212,6 +214,10 @@ namespace Functions.database
                     .HasColumnName("version")
                     .HasMaxLength(10);
 
+                entity.Property(e => e.IsOnline)
+                    .IsRequired()
+                    .HasDefaultValueSql("'1'");
+                    
                 entity.Property(e => e.last_communication)
                     .HasColumnName("last_communication")
                     .HasColumnType("timestamp");
@@ -360,124 +366,59 @@ namespace Functions.database
                     .HasMaxLength(30);
             });
 
-            modelBuilder.Entity<MachineExtendedAttributes>(entity =>
+           
+
+            modelBuilder.Entity<Attr>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Comment).HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+             modelBuilder.Entity<MachinesAttributes>(entity =>
+            {
+                entity.HasIndex(e => e.IdAttribute)
+                    .HasName("id_Attribute");
+
                 entity.HasIndex(e => e.IdMacchina)
-                    .HasName("index_ID_Macchina");
+                    .HasName("id_Macchina");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.Ch1Value)
-                    .HasColumnName("CH1_Value")
+                entity.Property(e => e.IdAttribute)
+                    .HasColumnName("id_Attribute")
                     .HasColumnType("int(11)");
-
-                entity.Property(e => e.Ch1ValueUpdatedAt)
-                    .HasColumnName("Ch1_Value_Updated_At")
-                    .HasColumnType("timestamp");
-
-                entity.Property(e => e.Ch2Value)
-                    .HasColumnName("CH2_Value")
-                    .HasColumnType("int(11)");
-                entity.Property(e => e.Ch2ValueUpdatedAt)
-                    .HasColumnName("Ch2_Value_Updated_At")
-                    .HasColumnType("timestamp");
-
-                entity.Property(e => e.Ch3Value)
-                    .HasColumnName("CH3_Value")
-                    .HasColumnType("int(11)");
-                
-                entity.Property(e => e.Ch3ValueUpdatedAt)
-                    .HasColumnName("Ch3_Value_Updated_At")
-                    .HasColumnType("timestamp");
-                
-                entity.Property(e => e.Ch4Value)
-                    .HasColumnName("CH4_Value")
-                    .HasColumnType("int(11)");
-                
-                entity.Property(e => e.Ch4ValueUpdatedAt)
-                    .HasColumnName("Ch4_Value_Updated_At")
-                    .HasColumnType("timestamp");
-                
-                entity.Property(e => e.Ch5Value)
-                    .HasColumnName("CH5_Value")
-                    .HasColumnType("int(11)");
-                
-                entity.Property(e => e.Ch5ValueUpdatedAt)
-                    .HasColumnName("Ch5_Value_Updated_At")
-                    .HasColumnType("timestamp");
-                
-                entity.Property(e => e.Ch6Value)
-                    .HasColumnName("CH6_Value")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.Ch6ValueUpdatedAt)
-                    .HasColumnName("Ch6_Value_Updated_At")
-                    .HasColumnType("timestamp");
-
-                entity.Property(e => e.Ch7Value)
-                    .HasColumnName("CH7_Value")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.Ch7ValueUpdatedAt)
-                    .HasColumnName("Ch7_Value_Updated_At")
-                    .HasColumnType("timestamp");
-
-                entity.Property(e => e.Ch8Value)
-                    .HasColumnName("CH8_Value")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.Ch8ValueUpdatedAt)
-                    .HasColumnName("Ch8_Value_Updated_At")
-                    .HasColumnType("timestamp");
 
                 entity.Property(e => e.IdMacchina)
                     .HasColumnName("id_Macchina")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.IsOnline).HasColumnName("is_Online");
+                entity.Property(e => e.Value)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.KalValue)
-                    .HasColumnName("KAL_Value")
-                    .HasColumnType("int(11)");
+                entity.HasOne(d => d.IdAttributeNavigation)
+                    .WithMany(p => p.MachinesAttributes)
+                    .HasForeignKey(d => d.IdAttribute)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("MachinesAttributes_ibfk_1");
 
-                entity.Property(e => e.KalValueUpdatedAt)
-                    .HasColumnName("KAL_Value_Updated_At")
-                    .HasColumnType("timestamp");
+                entity.HasOne(d => d.IdMacchinaNavigation)
+                    .WithMany(p => p.MachinesAttributes)
+                    .HasForeignKey(d => d.IdMacchina)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("MachinesAttributes_ibfk_2");
+            }); 
 
-                entity.Property(e => e.LgaValue)
-                    .HasColumnName("LGA_Value")
-                    .HasColumnType("int(11)");
-                
-                entity.Property(e => e.LgaValueUpdatedAt)
-                    .HasColumnName("LGA_Value_Updated_At")
-                    .HasColumnType("timestamp");
 
-                entity.Property(e => e.LggValue)
-                    .HasColumnName("LGG_Value")
-                    .HasColumnType("int(11)");
-                
-                entity.Property(e => e.LggValueUpdatedAt)
-                    .HasColumnName("LGG_Value_Updated_At")
-                    .HasColumnType("timestamp");
-
-                entity.Property(e => e.MpvValue)
-                    .HasColumnName("MPV_Value")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.MpvValueUpdatedAt)
-                    .HasColumnName("MPV_Value_Updated_At")
-                    .HasColumnType("timestamp");
-
-                entity.Property(e => e.PpcValue)
-                    .HasColumnName("PPC_Value")
-                    .HasColumnType("int(11)");
-                
-                entity.Property(e => e.PpcValueUpdatedAt)
-                    .HasColumnName("PPC_Value_Updated_At")
-                    .HasColumnType("timestamp");
-            });
             OnModelCreatingPartial(modelBuilder);
         }
 

@@ -7,6 +7,7 @@ namespace Functions.database
     {
         public Machines()
         {
+            MachinesAttributes = new HashSet<MachinesAttributes>();
             MachinesConnectionTrace = new HashSet<MachinesConnectionTrace>();
             RemoteCommand = new HashSet<RemoteCommand>();
         }
@@ -16,12 +17,13 @@ namespace Functions.database
         public long? Imei { get; set; }
         public string Mid { get; set; }
         public string Version { get; set; }
+        public bool? IsOnline { get; set; }
 
         public DateTime? last_communication { get; set; }
         public DateTime? time_creation { get; set; }
 
-
         public virtual ICollection<MachinesConnectionTrace> MachinesConnectionTrace { get; set; }
         public virtual ICollection<RemoteCommand> RemoteCommand { get; set; }
+        public virtual ICollection<MachinesAttributes> MachinesAttributes { get; set; }
     }
 }

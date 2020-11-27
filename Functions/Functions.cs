@@ -148,7 +148,6 @@ namespace Functions
             {
                 DB.DisposeAsync();
             }
-    
         }
 
         /// <summary>
@@ -165,6 +164,8 @@ namespace Functions
                 char[] delimiterChars = {'=', '<', '>',' '};
                 string[] mPacketArray = data.Split(delimiterChars);
                 List<string> list = new List<string>(mPacketArray);
+
+
 
                 // if( list.Contains("KAL") )
                 // {
@@ -495,38 +496,83 @@ namespace Functions
 
     //la lista non tiene conto degli accentratori: comefunziona con n kiddie sotto un solo modem? indagare.
 
-    public class SocketListFunctions
+    public class SocketList
     {
-        
-        
         public static List<Socket> removeFromList(Socket SocketToRemove, List<Socket> SocketList)
         {
-            if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
+            try
             {
-                SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );                
+                //controllare se funziona il .Contains invece di .Exist, al momento non funziona intellisense e non mi va di scapocciarci.
+                if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
+                {
+                    SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );                
+                }
+                try
+                {
+                    listener_DBContext DB = new listener_DBContext (); 
+                    DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString() ).IsOnline = false;
+                    DB.SaveChanges();
+                    DB.DisposeAsync();
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList2 : ") + e.Message);
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList : ") + e.Message);
             }
             return SocketList;
         }
 
-
-        /// <summary>
-        /// Controllare se funziona,
-        /// il checkalive su tcp è bacato di natura.
-        /// </summary>
-        public static List<Socket> checkIfAlive(Socket SocketToCheck, List<Socket> SocketList)
-        {      
-
-            if( !((SocketToCheck.Poll(1200, SelectMode.SelectRead) && (SocketToCheck.Available == 0)) || !SocketToCheck.Connected))
+        public static List<Socket> addToList(Socket SocketToAdd, List<Socket> SocketList)
+        {
+            try
             {
-                return SocketList;
+                SocketList.Add(  SocketToAdd  ); 
+                listener_DBContext DB = new listener_DBContext (); 
+                DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToAdd.RemoteEndPoint).Address.ToString() ).IsOnline = true;
+                DB.SaveChanges();
+                DB.DisposeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss addToList : ") + e.Message);
+            }
+            return SocketList;
+        }
+        /// <summary>
+        /// Checks the connection state
+        /// </summary>
+        /// <returns>True on connected. False on disconnected.</returns>
+        static bool IsConnected(Socket SocketToCheck)
+        {
+            if (SocketToCheck.Connected)
+            {
+                if ((SocketToCheck.Poll(0, SelectMode.SelectWrite)) && (!SocketToCheck.Poll(0, SelectMode.SelectError)))
+                {
+                    byte[] buffer = new byte[1];
+                    if (SocketToCheck.Receive(buffer, SocketFlags.Peek) == 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
-                SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToCheck.RemoteEndPoint).Address  )  );
-                return SocketList;
+                return false;
             }
-                
         }
+
     }
 
     
