@@ -11,6 +11,6 @@ ExecStart= /home/kdl_admin/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/p
 TimeoutStopSec= 3
 
 ExecStop= /bin/kill -9 $MAINPID
-
+ExecStop=/home/kdl_admin/tlk/MainProgram/setMachinesOffline
 [Install]
 WantedBy= multi-user.target
