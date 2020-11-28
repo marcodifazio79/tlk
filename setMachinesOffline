@@ -1,0 +1,5 @@
+#!/bin/bash
+mysql -u bot_user -pQwert@#!99 <<MY_QUERY
+USE listener_DB;
+UPDATE Machines SET IsOnline = 0;
+MY_QUERY
