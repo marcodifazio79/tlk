@@ -320,6 +320,7 @@ namespace Functions
                     Thread.Sleep(2000);
                 
                     MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
+                        .Where(j => j.SendOrRecv == "RECV")
                         .OrderByDescending(z=>z.time_stamp)
                         .First(l => l.IpAddress == modemIp);
                     double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
