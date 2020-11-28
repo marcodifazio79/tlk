@@ -315,22 +315,25 @@ namespace Functions
             bool IsCommandSuccesful = false;
             try{
             
-                int Seconds = 8; // secondi in cui aspetto che il modem mi risponda
-                Thread.Sleep(8000);
+                int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
+                for(int i=0; i < (Seconds/2); i++){
+                    Thread.Sleep(2000);
+                
+                    MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
+                        .OrderByDescending(z=>z.time_stamp)
+                        .First(l => l.IpAddress == modemIp);
+                    double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
 
-                MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
-                    .OrderByDescending(z=>z.time_stamp)
-                    .First(l => l.IpAddress == modemIp);
-                double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
-
-                if(secondsFromLastPacket < Seconds)
-                {
-                    answer = lastReceivedFromModem.TransferredData;
-                    IsCommandSuccesful = true;
-                }
-                else
-                {
-                    IsCommandSuccesful = false;
+                    if(secondsFromLastPacket < Seconds)
+                    {
+                        answer = lastReceivedFromModem.TransferredData;
+                        IsCommandSuccesful = true;
+                        break;
+                    }
+                    else
+                    {
+                        IsCommandSuccesful = false;
+                    }
                 }
             }
             catch(Exception e)
