@@ -436,7 +436,7 @@ namespace Functions
             try{
                 Machines target =  DB.Machines.Single(h=> h.Id  ==   DB.RemoteCommand.Single(m=>m.Id == commandid).IdMacchina);
                 bool isAlive = target.IsOnline;
-                if(isAlive)
+                if(!isAlive)
                 {
                     returnValue= "<Error>" + target.Mid + " offline</Error>" ;
                     IsCommandSuccesful = false;
