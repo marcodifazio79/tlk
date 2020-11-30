@@ -525,44 +525,23 @@ namespace Functions
         /// Checks the connection state
         /// </summary>
         /// <returns>True on connected. False on disconnected.</returns>
-        public static bool IsConnected(Socket SocketToCheck)
+        public static bool IsConnected(Socket s)
         {
-            bool blockingState = SocketToCheck.Blocking;
             try
             {
-                if (SocketToCheck.Connected)
-                {
-                    byte[] tmp = new byte[1];
-                    SocketToCheck.Blocking = false;
-                    SocketToCheck.Send(tmp, 0, 0);
-                    return true;
-                }
-                else
-                {
+               bool part1 = s.Poll(1000, SelectMode.SelectRead);
+                bool part2 = (s.Available == 0);
+                if (part1 && part2)
                     return false;
-                }
-            }
-            catch (SocketException e)
-            {
-                // 10035 == WSAEWOULDBLOCK
-                if (e.NativeErrorCode.Equals(10035))
-                {
-                    return true;
-                }
                 else
-                {
-                    return false;
-                }
+                    return true;
             }
             catch(Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss IsConnected : ") + e.Message);
                 return false;
             }
-            finally
-            {
-                SocketToCheck.Blocking = blockingState;
-            }
+            
         }
         
     }
