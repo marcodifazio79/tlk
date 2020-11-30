@@ -471,7 +471,7 @@ public class AsynchronousSocketListener {
             }
             else
             {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+ ((IPEndPoint)s.RemoteEndPoint).Address.ToString()  +" UP!");  
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+ ((IPEndPoint)s.RemoteEndPoint).Address.ToString()  +" UP! 1 test byte sent.");  
                 Thread checherThread = new Thread(()=>connectionCheck(s));
                 checherThread.Start();
             }

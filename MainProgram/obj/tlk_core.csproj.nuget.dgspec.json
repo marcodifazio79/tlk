@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\marco\\Source\\Repos\\tlk\\MainProgram\\tlk_core.csproj": {}
+    "C:\\tlk\\MainProgram\\tlk_core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\marco\\Source\\Repos\\tlk\\Functions\\Functions.csproj": {
+    "C:\\tlk\\Functions\\Functions.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marco\\Source\\Repos\\tlk\\Functions\\Functions.csproj",
+        "projectUniqueName": "C:\\tlk\\Functions\\Functions.csproj",
         "projectName": "Functions",
-        "projectPath": "C:\\Users\\marco\\Source\\Repos\\tlk\\Functions\\Functions.csproj",
-        "packagesPath": "C:\\Users\\marco\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\marco\\Source\\Repos\\tlk\\Functions\\obj\\",
+        "projectPath": "C:\\tlk\\Functions\\Functions.csproj",
+        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
+        "outputPath": "C:\\tlk\\Functions\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\marco\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -90,11 +90,11 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-              "version": "[3.1.1, 3.1.1]"
+              "version": "[3.1.9, 3.1.9]"
             },
             {
               "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-              "version": "[3.1.1, 3.1.1]"
+              "version": "[3.1.9, 3.1.9]"
             }
           ],
           "frameworkReferences": {
@@ -102,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
@@ -111,17 +111,17 @@
         }
       }
     },
-    "C:\\Users\\marco\\Source\\Repos\\tlk\\MainProgram\\tlk_core.csproj": {
+    "C:\\tlk\\MainProgram\\tlk_core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marco\\Source\\Repos\\tlk\\MainProgram\\tlk_core.csproj",
+        "projectUniqueName": "C:\\tlk\\MainProgram\\tlk_core.csproj",
         "projectName": "tlk_core",
-        "projectPath": "C:\\Users\\marco\\Source\\Repos\\tlk\\MainProgram\\tlk_core.csproj",
-        "packagesPath": "C:\\Users\\marco\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\marco\\Source\\Repos\\tlk\\MainProgram\\obj\\",
+        "projectPath": "C:\\tlk\\MainProgram\\tlk_core.csproj",
+        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
+        "outputPath": "C:\\tlk\\MainProgram\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\marco\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -134,8 +134,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\marco\\Source\\Repos\\tlk\\Functions\\Functions.csproj": {
-                "projectPath": "C:\\Users\\marco\\Source\\Repos\\tlk\\Functions\\Functions.csproj"
+              "C:\\tlk\\Functions\\Functions.csproj": {
+                "projectPath": "C:\\tlk\\Functions\\Functions.csproj"
               }
             }
           }
@@ -201,15 +201,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-              "version": "[3.1.1, 3.1.1]"
+              "version": "[3.1.9, 3.1.9]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[3.1.1, 3.1.1]"
+              "version": "[3.1.9, 3.1.9]"
             },
             {
               "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-              "version": "[3.1.1, 3.1.1]"
+              "version": "[3.1.9, 3.1.9]"
             }
           ],
           "frameworkReferences": {
@@ -217,7 +217,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
