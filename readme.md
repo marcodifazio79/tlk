@@ -9,6 +9,13 @@ Per ricostruire il db context (metti caso che aggiungiamo tabelle), da dentro la
 NOTA BENE: controllare il risultato! Non sempre lo scaffolding funziona, in base alla versione del server e dell'ef potrebbe ignorare delle colonne nelle tabelle, non traducendole in variabili nell'ef (aggiungerle a mano). Oppure aggiungere `-t TABLEMANE` e cambiare l'output path `-o databaseTemp` per genereare nuovi file da integrare in quelli esistenti. 
 
 ### The server
+Fondamentale è abbassare i parametri del keepalive per il tcp del server: <br/>modificare i singoli socket aperti dall'applicazione non è efficace. Quindi: <br/>
+addiungere a /etc/sysctl.conf <br/>
+`net.ipv4.tcp_keepalive_time = 60` <br/>
+`net.ipv4.tcp_keepalive_intvl = 10` <br/>
+`net.ipv4.tcp_keepalive_probes = 6` <br/>
+i parametri sopra sono di riferimento, con questi una disconnessione viene riconosciuta in circa 2 minuti al massimo. Va fatto un po' di studio per tunarli bene.
+
 Se tlk_core non risulta eseguibile provare `chmod a+x path/to/tlk_core`<br/>
 Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi: 
 `sudo systemctl stop tlk_core.service` per stoppare, <br/>
@@ -17,6 +24,7 @@ Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi:
 `sudo systemctl disable tlk_core.service` per disabilitare l'avvio automatico. <br/>
 `sudo systemctl status tlk_core.service` per controllare lo status e <br/>
 `sudo journalctl -u tlk_core.service` per leggere l'output dell'eseguibile <br/>
+
 
 
 ~~La ruote sul server è da rivedere, perde la configurazione dopo ogni reboot.
