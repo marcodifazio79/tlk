@@ -11,7 +11,7 @@ NOTA BENE: controllare il risultato! Non sempre lo scaffolding funziona, in base
 ### The server
 Fondamentale è abbassare i parametri del keepalive per il tcp del server: <br/>modificare i singoli socket aperti dall'applicazione non è efficace. Quindi: <br/>
 addiungere a /etc/sysctl.conf <br/>
-`net.ipv4.tcp_keepalive_time = 60` <br/>
+`net.ipv4.tcp_keepalive_time = 30` <br/>
 `net.ipv4.tcp_keepalive_intvl = 10` <br/>
 `net.ipv4.tcp_keepalive_probes = 6` <br/>
 i parametri sopra sono di riferimento, con questi una disconnessione viene riconosciuta in circa 2 minuti al massimo. Va fatto un po' di studio per tunarli bene.
