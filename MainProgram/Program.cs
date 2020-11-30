@@ -145,7 +145,10 @@ public class AsynchronousSocketListener {
             state.workSocket = handler;
             
             //set the keep alive values for the socket
-            state.workSocket = Functions.SocketExtensions.SetSocketKeepAliveValues(state.workSocket,2000, 1000);
+            state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 5);
+            state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 16);
+
 
             handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
      
