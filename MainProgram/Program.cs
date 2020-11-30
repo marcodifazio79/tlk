@@ -134,8 +134,8 @@ public class AsynchronousSocketListener {
             ModemsSocketList = Functions.SocketList.addToList(handler, ModemsSocketList);
             
             //let's keep an eye on the socket, hopefully we'll notice forcefull disconnection
-            Thread checherThread = new Thread(()=>connectionCheck(handler));
-            checherThread.Start();
+            //Thread checherThread = new Thread(()=>connectionCheck(handler));
+            //checherThread.Start();
             
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
             Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()); //,(((IPEndPoint)handler.RemoteEndPoint).Port));
