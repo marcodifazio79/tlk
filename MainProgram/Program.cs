@@ -142,7 +142,11 @@ public class AsynchronousSocketListener {
 
             // Create the state object.  
             StateObject state = new StateObject();  
-            state.workSocket = handler;  
+            state.workSocket = handler;
+            
+            //set the keep alive values for the socket
+            state.workSocket = Functions.SocketExtensions.SetSocketKeepAliveValues(state.workSocket,2000, 1000);
+
             handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
      
         }
@@ -471,7 +475,7 @@ public class AsynchronousSocketListener {
             }
             else
             {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+ ((IPEndPoint)s.RemoteEndPoint).Address.ToString()  +" UP! 1 test byte sent.");  
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " connectionCheck : "+ ((IPEndPoint)s.RemoteEndPoint).Address.ToString()  +" UP!");  
                 Thread checherThread = new Thread(()=>connectionCheck(s));
                 checherThread.Start();
             }
