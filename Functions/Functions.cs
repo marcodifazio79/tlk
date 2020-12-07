@@ -310,13 +310,16 @@ namespace Functions
         /// <summary>
         ///  
         /// </summary>
-        public static string checkAnswerToCommand(string modemIp, int command_id )
+        public static string checkAnswerToCommand(string modemIp, int command_id , string commandtext)
         {
             listener_DBContext DB = new listener_DBContext (); 
+            
             string answer = "NoAnswer";
+            string expectedAnswer = "";
             bool IsCommandSuccesful = false;
             try{
-            
+                expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand == commandtext).expectedAnswer;
+                
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++){
                     Thread.Sleep(2000);
@@ -325,18 +328,26 @@ namespace Functions
                         .Where(j => j.SendOrRecv == "RECV")
                         .OrderByDescending(z=>z.time_stamp)
                         .First(l => l.IpAddress == modemIp);
+                    
                     double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
-
                     if(secondsFromLastPacket < Seconds)
                     {
-                        answer = lastReceivedFromModem.TransferredData;
-                        IsCommandSuccesful = true;
-                        break;
+                        if(lastReceivedFromModem.TransferredData.Contains(expectedAnswer))
+                        {       
+                            answer = lastReceivedFromModem.TransferredData;
+                            IsCommandSuccesful = true;
+                            break;
+                        }
+                        else
+                        {
+                            IsCommandSuccesful = false;
+                        }
                     }
                     else
                     {
                         IsCommandSuccesful = false;
                     }
+                    
                 }
             }
             catch(Exception e)

@@ -8,5 +8,7 @@ namespace Functions.database
         public int Id { get; set; }
         public string ModemCommand { get; set; }
         public string WebCommand { get; set; }
+        public string expectedAnswer { get; set; }
+
     }
 }

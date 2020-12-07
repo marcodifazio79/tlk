@@ -78,6 +78,7 @@
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ModemCommand` varchar(100) NOT NULL,
   `WebCommand` varchar(30) NOT NULL,
+  `expectedAnswer` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
 

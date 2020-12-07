@@ -364,6 +364,9 @@ namespace Functions.database
                 entity.Property(e => e.WebCommand)
                     .IsRequired()
                     .HasMaxLength(30);
+                entity.Property(e => e.expectedAnswer)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
            
