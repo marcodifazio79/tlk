@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\tlk\\Functions\\Functions.csproj": {}
+    "/home/fdifazio/Documents/tlk/Functions/Functions.csproj": {}
   },
   "projects": {
-    "C:\\tlk\\Functions\\Functions.csproj": {
+    "/home/fdifazio/Documents/tlk/Functions/Functions.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\tlk\\Functions\\Functions.csproj",
+        "projectUniqueName": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj",
         "projectName": "Functions",
-        "projectPath": "C:\\tlk\\Functions\\Functions.csproj",
-        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
-        "outputPath": "C:\\tlk\\Functions\\obj\\",
+        "projectPath": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj",
+        "packagesPath": "/home/fdifazio/.nuget/packages/",
+        "outputPath": "/home/fdifazio/Documents/tlk/Functions/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -72,6 +70,22 @@
               "target": "Package",
               "version": "[8.0.22, )"
             },
+            "System.ServiceModel.Duplex": {
+              "target": "Package",
+              "version": "[4.6.*, )"
+            },
+            "System.ServiceModel.Http": {
+              "target": "Package",
+              "version": "[4.6.*, )"
+            },
+            "System.ServiceModel.NetTcp": {
+              "target": "Package",
+              "version": "[4.6.*, )"
+            },
+            "System.ServiceModel.Security": {
+              "target": "Package",
+              "version": "[4.6.*, )"
+            },
             "System.Threading.ThreadPool": {
               "target": "Package",
               "version": "[4.3.0, )"
@@ -90,11 +104,11 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-              "version": "[3.1.9, 3.1.9]"
+              "version": "[3.1.7, 3.1.7]"
             },
             {
               "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-              "version": "[3.1.9, 3.1.9]"
+              "version": "[3.1.7, 3.1.7]"
             }
           ],
           "frameworkReferences": {
@@ -102,7 +116,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/3.1.107/RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {

@@ -160,29 +160,33 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {
+                // Machines machinaDaAggiornare = DB.Machines.Single(h=> h.Id == id_macchina);
+                // char[] delimiterChars = {'=', '<', '>',' '};
+                // string[] mPacketArray = data.Split(delimiterChars);
+                // List<string> list = new List<string>(mPacketArray);
+
+                //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
+                //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
+                if(data.Contains("LGG"))
+                {
+                    if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina))
+                    {
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina)
+                        .Value = data.Substring(data.IndexOf("LGG=")+1,data.IndexOf("LGG=") + 5   );
+                    }
+                    else
+                    {
+                        DB.MachinesAttributes.Add( 
+                            new MachinesAttributes {
+                                IdMacchina = id_macchina,
+                                IdAttribute = DB.Attr.Single(l=>l.Name == "LGG").Id
+                            }
+                          );
+                    }
+                }
+                
                 
 
-                Machines machinaDaAggiornare = DB.Machines.Single(h=> h.Id == id_macchina);
-                char[] delimiterChars = {'=', '<', '>',' '};
-                string[] mPacketArray = data.Split(delimiterChars);
-                List<string> list = new List<string>(mPacketArray);
-
-
-
-                // if( list.Contains("KAL") )
-                // {
-                //     machinaDaAggiornare.KalValue = Convert.ToInt32( list[list.IndexOf("KAL") + 1 ]); 
-                // }
-                // else
-                //     if( list.Contains("LGG") )
-                //     {
-                //         machinaDaAggiornare.LggValue =Convert.ToInt32( list[list.IndexOf("LGG") + 1 ]); 
-                //     }
-                //     else
-                //         if( list.Contains("LGA") )
-                //         {
-                            
-                //         }
             }
             catch (Exception e)
             {
