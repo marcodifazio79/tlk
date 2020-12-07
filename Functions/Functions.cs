@@ -167,7 +167,7 @@ namespace Functions
 
                 //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
                 //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
-                if(data.Contains("LGG"))
+                if(data.Contains("LGG="))
                 {
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina))
                     {
@@ -179,7 +179,9 @@ namespace Functions
                         DB.MachinesAttributes.Add( 
                             new MachinesAttributes {
                                 IdMacchina = id_macchina,
-                                IdAttribute = DB.Attr.Single(l=>l.Name == "LGG").Id
+                                IdAttribute = DB.Attr.Single(l=>l.Name == "LGG").Id,
+                                Value = data.Substring(data.IndexOf("LGG=")+1,data.IndexOf("LGG=") + 5   )
+                                
                             }
                           );
                     }
