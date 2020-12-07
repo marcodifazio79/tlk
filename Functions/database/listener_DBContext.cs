@@ -408,6 +408,11 @@ namespace Functions.database
                     .IsRequired()
                     .HasMaxLength(50);
 
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("CreatedAt")
+                    .HasColumnType("timestamp");
+
                 entity.HasOne(d => d.IdAttributeNavigation)
                     .WithMany(p => p.MachinesAttributes)
                     .HasForeignKey(d => d.IdAttribute)

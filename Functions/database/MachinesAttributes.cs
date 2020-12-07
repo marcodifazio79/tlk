@@ -10,6 +10,8 @@ namespace Functions.database
         public int IdAttribute { get; set; }
         public string Value { get; set; }
 
+        public DateTime? CreatedAt { get; set; }
+
         public virtual Attr IdAttributeNavigation { get; set; }
         public virtual Machines IdMacchinaNavigation { get; set; }
     }

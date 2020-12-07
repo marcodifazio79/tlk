@@ -173,6 +173,8 @@ namespace Functions
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina)
                         .Value = data.Substring(data.IndexOf("LGG=")+4,   5);
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina)
+                        .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                     else
                     {
@@ -192,6 +194,8 @@ namespace Functions
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGA" && h.IdMacchina == id_macchina)
                         .Value = data.Substring(data.IndexOf("LGA=")+4,   5);
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGA" && h.IdMacchina == id_macchina)
+                        .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                     else
                     {
@@ -211,6 +215,8 @@ namespace Functions
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="KAL" && h.IdMacchina == id_macchina)
                         .Value = data.Substring(data.IndexOf("KAL=")+4,   5);
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="KAL" && h.IdMacchina == id_macchina)
+                       .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                     else
                     {
@@ -230,6 +236,9 @@ namespace Functions
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="CSQ" && h.IdMacchina == id_macchina)
                         .Value = data.Substring(data.IndexOf("CSQ:")+4,   5);
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="CSQ" && h.IdMacchina == id_macchina)
+                        .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+
                     }
                     else
                     {
