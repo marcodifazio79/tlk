@@ -1,0 +1,62 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.0.2",
+  "options": {
+    "inputs": [
+      "http://disp.servicesdedem.it/sap/bc/srt/wsdl/flv_10002A111AD1/bndg_url/sap/bc/srt/rfc/sap/zpm_rfc_consumi_telemetria_400/001/zpm_rfc_consumi_telemetria_400/zpm_rfc_consumi_telemetria_400?sap-client=001"
+    ],
+    "namespaceMappings": [
+      "*, ServiceReference"
+    ],
+    "outputFile": "Reference.cs",
+    "references": [
+      "BouncyCastle.Crypto, {BouncyCastle.NetCore, 1.8.3}",
+      "dotnet-ef, {Microsoft.EntityFrameworkCore.Tools.DotNet, 2.0.3}",
+      "Google.Protobuf, {Google.Protobuf, 3.11.4}",
+      "K4os.Compression.LZ4, {K4os.Compression.LZ4, 1.1.11}",
+      "K4os.Compression.LZ4.Streams, {K4os.Compression.LZ4.Streams, 1.1.11}",
+      "K4os.Hash.xxHash, {K4os.Hash.xxHash, 1.0.6}",
+      "Microsoft.Bcl.AsyncInterfaces, {Microsoft.Bcl.AsyncInterfaces, 1.1.0}",
+      "Microsoft.Bcl.HashCode, {Microsoft.Bcl.HashCode, 1.1.0}",
+      "Microsoft.Data.SqlClient, {Microsoft.Data.SqlClient, 1.0.19269.1}",
+      "Microsoft.EntityFrameworkCore, {Microsoft.EntityFrameworkCore, 3.1.1}",
+      "Microsoft.EntityFrameworkCore.Abstractions, {Microsoft.EntityFrameworkCore.Abstractions, 3.1.1}",
+      "Microsoft.EntityFrameworkCore.Relational, {Microsoft.EntityFrameworkCore.Relational, 3.1.1}",
+      "Microsoft.EntityFrameworkCore.SqlServer, {Microsoft.EntityFrameworkCore.SqlServer, 3.1.1}",
+      "Microsoft.Extensions.Caching.Abstractions, {Microsoft.Extensions.Caching.Abstractions, 3.1.1}",
+      "Microsoft.Extensions.Caching.Memory, {Microsoft.Extensions.Caching.Memory, 3.1.1}",
+      "Microsoft.Extensions.Configuration, {Microsoft.Extensions.Configuration, 3.1.8}",
+      "Microsoft.Extensions.Configuration.Abstractions, {Microsoft.Extensions.Configuration.Abstractions, 3.1.8}",
+      "Microsoft.Extensions.Configuration.Binder, {Microsoft.Extensions.Configuration.Binder, 3.1.1}",
+      "Microsoft.Extensions.Configuration.CommandLine, {Microsoft.Extensions.Configuration.CommandLine, 3.1.8}",
+      "Microsoft.Extensions.Configuration.EnvironmentVariables, {Microsoft.Extensions.Configuration.EnvironmentVariables, 3.1.8}",
+      "Microsoft.Extensions.Configuration.FileExtensions, {Microsoft.Extensions.Configuration.FileExtensions, 3.1.8}",
+      "Microsoft.Extensions.Configuration.Json, {Microsoft.Extensions.Configuration.Json, 3.1.8}",
+      "Microsoft.Extensions.DependencyInjection, {Microsoft.Extensions.DependencyInjection, 3.1.1}",
+      "Microsoft.Extensions.DependencyInjection.Abstractions, {Microsoft.Extensions.DependencyInjection.Abstractions, 3.1.1}",
+      "Microsoft.Extensions.FileProviders.Abstractions, {Microsoft.Extensions.FileProviders.Abstractions, 3.1.8}",
+      "Microsoft.Extensions.FileProviders.Physical, {Microsoft.Extensions.FileProviders.Physical, 3.1.8}",
+      "Microsoft.Extensions.FileSystemGlobbing, {Microsoft.Extensions.FileSystemGlobbing, 3.1.8}",
+      "Microsoft.Extensions.Logging, {Microsoft.Extensions.Logging, 3.1.1}",
+      "Microsoft.Extensions.Logging.Abstractions, {Microsoft.Extensions.Logging.Abstractions, 3.1.1}",
+      "Microsoft.Extensions.Options, {Microsoft.Extensions.Options, 3.1.1}",
+      "Microsoft.Extensions.Primitives, {Microsoft.Extensions.Primitives, 3.1.8}",
+      "MySql.Data, {MySql.Data, 8.0.22}",
+      "MySql.Data.EntityFrameworkCore, {MySql.Data.EntityFrameworkCore, 8.0.22}",
+      "Newtonsoft.Json, {Newtonsoft.Json, 10.0.1}",
+      "Renci.SshNet, {SSH.NET, 2016.1.0}",
+      "SshNet.Security.Cryptography, {SshNet.Security.Cryptography, 1.2.0}",
+      "System.Configuration.ConfigurationManager, {System.Configuration.ConfigurationManager, 4.5.0}",
+      "System.Security.AccessControl, {System.Security.AccessControl, 4.7.0}",
+      "System.Security.Permissions, {System.Security.Permissions, 4.7.0}",
+      "System.Security.Principal.Windows, {System.Security.Principal.Windows, 4.7.0}",
+      "System.Text.Encoding.CodePages, {System.Text.Encoding.CodePages, 4.5.0}",
+      "System.Windows.Extensions, {System.Windows.Extensions, 4.7.0}",
+      "System.Xml.XPath.XmlDocument, {System.Xml.XPath.XmlDocument, 4.0.1}",
+      "Ubiety.Dns.Core, {MySql.Data, 8.0.22}",
+      "Zstandard.Net, {MySql.Data, 8.0.22}"
+    ],
+    "targetFramework": "netcoreapp3.1",
+    "typeReuseMode": "All"
+  }
+}
