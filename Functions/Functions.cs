@@ -172,7 +172,7 @@ namespace Functions
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina))
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina)
-                        .Value = data.Substring(data.IndexOf("LGG=")+1,data.IndexOf("LGG=") + 5   );
+                        .Value = data.Substring(data.IndexOf("LGG=")+4,   5);
                     }
                     else
                     {
@@ -180,13 +180,69 @@ namespace Functions
                             new MachinesAttributes {
                                 IdMacchina = id_macchina,
                                 IdAttribute = DB.Attr.Single(l=>l.Name == "LGG").Id,
-                                Value = data.Substring(data.IndexOf("LGG=")+1,data.IndexOf("LGG=") + 5   )
+                                Value = data.Substring(data.IndexOf("LGG=")+4,  5   )
                                 
                             }
                           );
                     }
                 }
-                
+                if(data.Contains("LGA="))
+                {
+                    if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGA" && h.IdMacchina == id_macchina))
+                    {
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGA" && h.IdMacchina == id_macchina)
+                        .Value = data.Substring(data.IndexOf("LGA=")+4,   5);
+                    }
+                    else
+                    {
+                        DB.MachinesAttributes.Add( 
+                            new MachinesAttributes {
+                                IdMacchina = id_macchina,
+                                IdAttribute = DB.Attr.Single(l=>l.Name == "LGA").Id,
+                                Value = data.Substring(data.IndexOf("LGA=")+4,  5   )
+                                
+                            }
+                          );
+                    }
+                }
+                if(data.Contains("KAL="))
+                {
+                    if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="KAL" && h.IdMacchina == id_macchina))
+                    {
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="KAL" && h.IdMacchina == id_macchina)
+                        .Value = data.Substring(data.IndexOf("KAL=")+4,   5);
+                    }
+                    else
+                    {
+                        DB.MachinesAttributes.Add( 
+                            new MachinesAttributes {
+                                IdMacchina = id_macchina,
+                                IdAttribute = DB.Attr.Single(l=>l.Name == "KAL").Id,
+                                Value = data.Substring(data.IndexOf("KAL=")+4,  5   )
+                                
+                            }
+                          );
+                    }
+                }
+                if(data.Contains("+CSQ"))
+                {
+                    if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="CSQ" && h.IdMacchina == id_macchina))
+                    {
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="CSQ" && h.IdMacchina == id_macchina)
+                        .Value = data.Substring(data.IndexOf("CSQ:")+4,   5);
+                    }
+                    else
+                    {
+                        DB.MachinesAttributes.Add( 
+                            new MachinesAttributes {
+                                IdMacchina = id_macchina,
+                                IdAttribute = DB.Attr.Single(l=>l.Name == "CSQ").Id,
+                                Value = data.Substring(data.IndexOf("CSQ:")+4,  5   )
+                                
+                            }
+                          );
+                    }
+                }
                 
 
             }
