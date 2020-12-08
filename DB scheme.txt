@@ -107,5 +107,30 @@
 
 
 
+CREATE TABLE `CashTransaction` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`ODM` varchar(50) NOT NULL,
+`ID_Machines` int(11) NOT NULL,
+`ID_MachinesConnectionTrace` int(11) NOT NULL,
+`Status` varchar(50) NOT NULL,
+`DataCreazione` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`DataInvioRichiesta` datetime DEFAULT NULL,
+`DataPacchettoRicevuto` datetime DEFAULT NULL,
+`DataSincronizzazione` datetime DEFAULT NULL,
+`TentativiAutomaticiEseguiti` int(11) DEFAULT 0,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`ID_Machines`)
+        REFERENCES Machines(id)
+        ON DELETE NO ACTION,
+FOREIGN KEY (`ID_MachinesConnectionTrace`)
+        REFERENCES MachinesConnectionTrace(id)
+        ON DELETE NO ACTION,
+KEY `index_ODM` (`ODM`),
+KEY `index_DataCreazione` (`DataCreazione`),
+KEY `index_DataInvioRichiesta` (`DataInvioRichiesta`),
+KEY `index_DataPacchettoRicevuto` (`DataPacchettoRicevuto`),
+KEY `index_DataSincronizzazione` (`DataSincronizzazione`),
+KEY `index_ID_Machines` (`ID_Machines`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
