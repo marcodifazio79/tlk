@@ -183,7 +183,7 @@ namespace Functions
                                 IdMacchina = id_macchina,
                                 IdAttribute = DB.Attr.Single(l=>l.Name == "LGG").Id,
                                 Value = data.Substring(data.IndexOf("LGG=")+4,  5   )
-                                
+                                ,CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"))
                             }
                           );
                     }
@@ -204,7 +204,7 @@ namespace Functions
                                 IdMacchina = id_macchina,
                                 IdAttribute = DB.Attr.Single(l=>l.Name == "LGA").Id,
                                 Value = data.Substring(data.IndexOf("LGA=")+4,  5   )
-                                
+                                ,CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"))
                             }
                           );
                     }
@@ -225,7 +225,7 @@ namespace Functions
                                 IdMacchina = id_macchina,
                                 IdAttribute = DB.Attr.Single(l=>l.Name == "KAL").Id,
                                 Value = data.Substring(data.IndexOf("KAL=")+4,  5   )
-                                
+                                ,CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"))
                             }
                           );
                     }
@@ -247,7 +247,7 @@ namespace Functions
                                 IdMacchina = id_macchina,
                                 IdAttribute = DB.Attr.Single(l=>l.Name == "CSQ").Id,
                                 Value = data.Substring(data.IndexOf("CSQ:")+4,  5   )
-                                
+                                ,CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"))
                             }
                           );
                     }

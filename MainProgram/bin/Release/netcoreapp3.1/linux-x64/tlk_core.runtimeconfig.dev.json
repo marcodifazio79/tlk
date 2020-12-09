@@ -2,7 +2,8 @@
   "runtimeOptions": {
     "additionalProbingPaths": [
       "/home/fdifazio/.dotnet/store/|arch|/|tfm|",
-      "/home/fdifazio/.nuget/packages"
+      "/home/fdifazio/.nuget/packages",
+      "/usr/share/dotnet/sdk/NuGetFallbackFolder"
     ]
   }
 }

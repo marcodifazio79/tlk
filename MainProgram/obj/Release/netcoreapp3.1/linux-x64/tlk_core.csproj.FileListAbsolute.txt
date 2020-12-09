@@ -774,3 +774,5 @@ C:/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.genruntimeconfig
 /home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.csproj.CopyComplete
 /home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.dll
 /home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.pdb
+/home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.csproj.CoreCompileInputs.cache
+/home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.genruntimeconfig.cache
