@@ -356,17 +356,19 @@ namespace Functions.database
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
-
                 entity.Property(e => e.ModemCommand)
                     .IsRequired()
                     .HasMaxLength(15);
-
                 entity.Property(e => e.WebCommand)
                     .IsRequired()
                     .HasMaxLength(30);
                 entity.Property(e => e.expectedAnswer)
                     .IsRequired()
                     .HasMaxLength(50);
+                entity.Property(e => e.IsParameterizable)
+                    .HasColumnName("IsParameterizable")
+                    .IsRequired()
+                    .HasDefaultValueSql("'0'");
             });
 
            

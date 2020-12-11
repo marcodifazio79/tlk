@@ -10,5 +10,7 @@ namespace Functions.database
         public string WebCommand { get; set; }
         public string expectedAnswer { get; set; }
 
+        public bool IsParameterizable { get; set; }
+
     }
 }

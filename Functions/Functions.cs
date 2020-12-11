@@ -480,7 +480,11 @@ namespace Functions
                 //match the web command with the 
                 if(DB.CommandsMatch.Where(v=> v.WebCommand == webCom).Count() > 0)
                 {
-                    string commandForModem = DB.CommandsMatch.First(v=> v.WebCommand == webCom).ModemCommand;
+                    CommandsMatch CM = DB.CommandsMatch.First(v=> v.WebCommand == webCom);
+                    string commandForModem = CM.ModemCommand;
+                    //se il comando è parametrizzadile (quindi impostare un valore sul modem, cerco il valore da impostare)
+                    if(CM.IsParameterizable)
+                        commandForModem = commandForModem + data.SelectSingleNode(@"/data/value").InnerText;
                     returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , commandForModem   };
                 }
                 else{
