@@ -389,7 +389,8 @@ namespace Functions
             string expectedAnswer = "";
             bool IsCommandSuccesful = false;
             try{
-                expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand == commandtext).expectedAnswer;
+                
+                expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand.StartsWith( commandtext )).expectedAnswer;
                 
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++){

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ErsO+SmML+okQ244I325TLz8aIvPWV9fZW1fKIiM9h0VUwaPiNzEO2ZuinDya1Agqc3uQ3Msc7mml2vzbt1Igw==",
+  "dgSpecHash": "VvIz+Y4UNxUKeFM/5zW0X8oUp4q+31j1NyFJMfwhZnKadfcGSNAwcWc85KX1Anre2hdzXt6PcrrEzfhg5x8XiA==",
   "success": true,
   "projectFilePath": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
   "expectedPackageFiles": [
@@ -155,10 +155,10 @@
     "/home/fdifazio/.nuget/packages/system.security.cryptography.algorithms/4.2.0/system.security.cryptography.algorithms.4.2.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.cng/4.5.0/system.security.cryptography.cng.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.encoding/4.0.0/system.security.cryptography.encoding.4.0.0.nupkg.sha512",
-    "/usr/share/dotnet/sdk/NuGetFallbackFolder/system.security.cryptography.pkcs/4.5.0/system.security.cryptography.pkcs.4.5.0.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/system.security.cryptography.pkcs/4.5.0/system.security.cryptography.pkcs.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.primitives/4.3.0/system.security.cryptography.primitives.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.protecteddata/4.5.0/system.security.cryptography.protecteddata.4.5.0.nupkg.sha512",
-    "/usr/share/dotnet/sdk/NuGetFallbackFolder/system.security.cryptography.xml/4.5.0/system.security.cryptography.xml.4.5.0.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/system.security.cryptography.xml/4.5.0/system.security.cryptography.xml.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.permissions/4.7.0/system.security.permissions.4.7.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.principal.windows/4.7.0/system.security.principal.windows.4.7.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.securestring/4.3.0/system.security.securestring.4.3.0.nupkg.sha512",
@@ -184,8 +184,10 @@
     "/home/fdifazio/.nuget/packages/system.xml.xmlserializer/4.3.0/system.xml.xmlserializer.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.xml.xpath/4.0.1/system.xml.xpath.4.0.1.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.xml.xpath.xmldocument/4.0.1/system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/3.1.10/microsoft.netcore.app.runtime.linux-x64.3.1.10.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/3.1.10/microsoft.aspnetcore.app.runtime.linux-x64.3.1.10.nupkg.sha512"
+    "/home/fdifazio/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/3.1.7/microsoft.netcore.app.runtime.linux-x64.3.1.7.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/microsoft.netcore.app.host.linux-x64/3.1.7/microsoft.netcore.app.host.linux-x64.3.1.7.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.ref/3.1.2/microsoft.aspnetcore.app.ref.3.1.2.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/3.1.2/microsoft.aspnetcore.app.runtime.linux-x64.3.1.2.nupkg.sha512"
   ],
   "logs": []
 }
