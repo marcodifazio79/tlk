@@ -389,8 +389,9 @@ namespace Functions
             string expectedAnswer = "";
             bool IsCommandSuccesful = false;
             try{
-                
-                expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand.StartsWith( commandtext )).expectedAnswer;
+                //if the command is like LGA600 or KAL500, whe must remove the param or get fucked. 
+                char[] MyChar = {'1','2','3','4','5','6','7','8','9','0'};
+                expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand == commandtext.Trim(MyChar) ).expectedAnswer;
                 
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++){

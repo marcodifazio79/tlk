@@ -211,7 +211,7 @@ public class AsynchronousSocketListener {
                                 ),  "#PWD123456"+ remoteComm[2]));
                             t.Start();
                             //answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
-                            answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1] , command_id,  remoteComm[2] );
+                            answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1] , command_id,  remoteComm[2]  );
                             
                         break;
                         case "ComandoDaEseguire":
