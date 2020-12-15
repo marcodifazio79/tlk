@@ -16,8 +16,13 @@ namespace Functions
     
     public class DatabaseFunctions
     {
-        //static string myConnectionString = "Server=10.10.10.71;Database=listener_DB;Uid=bot_user;Pwd=Qwert@#!99;";
-      
+        public static SignalRSender sender;
+
+        public DatabaseFunctions()
+        {
+            sender = new SignalRSender();
+        }
+        
             
         /// <summary>
         ///  
@@ -101,18 +106,20 @@ namespace Functions
         public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             listener_DBContext DB = new listener_DBContext ();
+            MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y=> y.IpAddress == ip_addr );
-                    DB.MachinesConnectionTrace.Add(new MachinesConnectionTrace 
+                    MachineTraceToAdd = new MachinesConnectionTrace 
                     {
                         IpAddress = m.IpAddress,
                         SendOrRecv = send_or_recv,
                         TransferredData = transferred_data,
                         IdMacchina = m.Id
-                    });
+                    };
+                    DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
                     Thread t = new Thread(()=> MachineExtendedAttributeUpdater( m.Id, transferred_data ));
                     t.Start();
                     m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
@@ -131,15 +138,19 @@ namespace Functions
                     }
                     else
                     {
-                        DB.MachinesConnectionTrace.Add(new MachinesConnectionTrace 
+                        MachineTraceToAdd = new MachinesConnectionTrace 
                         {
                             IpAddress = ip_addr,
                             SendOrRecv = send_or_recv,
                             TransferredData = transferred_data
-                        });
+                        };
+                        DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
                     }
                 }
                 DB.SaveChanges();
+                if(MachineTraceToAdd!= null)
+                    Functions.DatabaseFunctions.sender.sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id);
+
             }
             catch(Exception e)
             {

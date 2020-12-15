@@ -7,6 +7,7 @@ using System.Threading;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using System.Xml;
+
 using Functions;
 
 //using System.Collections.Generic;
@@ -20,7 +21,7 @@ public class StateObject {
     public byte[] buffer = new byte[BufferSize];  
     // Received data string.  
     public StringBuilder sb = new StringBuilder();    
-}  
+}
 
   
 public class AsynchronousSocketListener {  
@@ -40,7 +41,7 @@ public class AsynchronousSocketListener {
     }  
   
     public static void StartListening() {  
-
+        
         // Establish the local endpoint for the socket.  
         IPAddress ipAddress = IPAddress.Parse(  Configuration["LocalAddressForConnections"].ToString()); 
         

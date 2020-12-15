@@ -535,7 +535,6 @@ C:/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.genruntimeconfig
 /home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.Extensions.Caching.Memory.dll
 /home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.Extensions.Configuration.dll
 /home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.Extensions.Configuration.Abstractions.dll
-/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.Extensions.Configuration.Binder.dll
 /home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.Extensions.Configuration.CommandLine.dll
 /home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.Extensions.Configuration.EnvironmentVariables.dll
 /home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.Extensions.Configuration.FileExtensions.dll
@@ -776,3 +775,12 @@ C:/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.genruntimeconfig
 /home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.pdb
 /home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.csproj.CoreCompileInputs.cache
 /home/fdifazio/Documents/tlk/MainProgram/obj/Release/netcoreapp3.1/linux-x64/tlk_core.genruntimeconfig.cache
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.Connections.Abstractions.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.Http.Connections.Client.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.Http.Connections.Common.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.Http.Features.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.SignalR.Client.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.SignalR.Client.Core.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.SignalR.Common.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+/home/fdifazio/Documents/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/System.IO.Pipelines.dll
