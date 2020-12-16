@@ -144,8 +144,8 @@ namespace Functions
                 DB.SaveChanges();
                 if(MachineTraceToAdd!= null)
                 {
-                    sender = new SignalRSender();
-                    sender.sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id);
+                    //sender = new SignalRSender();
+                    //sender.sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id);
                 }
             }
             catch(Exception e)
