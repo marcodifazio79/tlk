@@ -11,13 +11,13 @@ using System.Linq;
 
 using System.Runtime.InteropServices;
 
+using Microsoft.AspNetCore.SignalR.Client;
+
 namespace Functions
 {
     
     public class DatabaseFunctions
-    {
-        public static SignalRSender sender;
-        
+    {        
         /// <summary>
         ///  
         /// </summary>
@@ -144,8 +144,10 @@ namespace Functions
                 DB.SaveChanges();
                 if(MachineTraceToAdd!= null)
                 {
-                    //sender = new SignalRSender();
-                    //sender.sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id);
+                    Thread relo = new Thread(()=> 
+                        reloadTheBastard(MachineTraceToAdd.Id)
+                    );
+                    relo.Start();
                 }
             }
             catch(Exception e)
@@ -158,7 +160,26 @@ namespace Functions
                 DB.DisposeAsync();
             }
         }
+        public static async void reloadTheBastard(int i)
+        {
+            HubConnection connection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5000/MainHub")
+                .WithAutomaticReconnect()
+                .Build();
 
+                try
+                {
+                    connection.StartAsync().Wait();
+                    await connection.InvokeAsync("AskToReloadMachConnTrace", i);
+                    //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
+                    connection.DisposeAsync();
+                }
+                catch (System.Exception e)
+                {
+                    
+                    //throw;
+                }
+        }
         /// <summary>
         /// Update Machine values(LGG, KalValue, ...)
         /// </summary>
