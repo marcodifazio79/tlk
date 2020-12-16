@@ -144,10 +144,7 @@ namespace Functions
                 DB.SaveChanges();
                 if(MachineTraceToAdd!= null)
                 {
-                    Thread sendSign = new Thread(()=>
-                        new SignalRSender().sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id)
-                    );
-                    sendSign.Start();
+                    
                 }
             }
             catch(Exception e)
