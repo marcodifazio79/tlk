@@ -149,13 +149,15 @@ namespace Functions
                 }
                 DB.SaveChanges();
                 if(MachineTraceToAdd!= null)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: ID value = "+MachineTraceToAdd.Id);
                     Functions.DatabaseFunctions.sender.sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id);
-
+                }
             }
             catch(Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
+                //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
             }
             finally
             {
