@@ -26,6 +26,7 @@ C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Data.DataSet
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Data.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Diagnostics.Contracts.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Diagnostics.Debug.dll
+C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Diagnostics.DiagnosticSource.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Diagnostics.FileVersionInfo.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Diagnostics.Process.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Diagnostics.StackTrace.dll
@@ -132,7 +133,9 @@ C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encodin
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encoding.Extensions.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encoding.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encodings.Web.dll
+C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Json.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.RegularExpressions.dll
+C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Channels.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Overlapped.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Tasks.Dataflow.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Tasks.Extensions.dll
@@ -208,6 +211,7 @@ C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extension
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extensions.Caching.Memory.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extensions.Configuration.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extensions.Configuration.Binder.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extensions.Configuration.CommandLine.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extensions.Configuration.EnvironmentVariables.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Microsoft.Extensions.Configuration.FileExtensions.dll
@@ -234,7 +238,6 @@ C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.ComponentMod
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\Renci.SshNet.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\SshNet.Security.Cryptography.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Configuration.ConfigurationManager.dll
-C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Diagnostics.DiagnosticSource.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Drawing.Common.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.IO.Pipelines.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Private.ServiceModel.dll
@@ -249,8 +252,6 @@ C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceModel
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceModel.Primitives.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceModel.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceModel.Security.dll
-C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Json.dll
-C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Channels.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Windows.Extensions.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\System.Xml.XPath.XmlDocument.dll
 C:\tlk\Functions\bin\Release\netcoreapp3.1\linux-x64\publish\libsos.so

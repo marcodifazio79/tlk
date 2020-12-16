@@ -2360,7 +2360,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
-          "Microsoft.AspNetCore.SignalR.Client": "5.0.1",
+          "Microsoft.AspNetCore.SignalR.Client": "3.1.8",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1",
           "Microsoft.EntityFrameworkCore.Tools.DotNet": "2.0.3",
           "Microsoft.Extensions.Configuration": "3.1.8",
@@ -5173,7 +5173,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
-          "Microsoft.AspNetCore.SignalR.Client": "5.0.1",
+          "Microsoft.AspNetCore.SignalR.Client": "3.1.8",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1",
           "Microsoft.EntityFrameworkCore.Tools.DotNet": "2.0.3",
           "Microsoft.Extensions.Configuration": "3.1.8",
