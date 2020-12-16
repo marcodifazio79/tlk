@@ -17,7 +17,10 @@ namespace Functions
     public class DatabaseFunctions
     {
         public static SignalRSender sender;
-    
+        public DatabaseFunctions(){
+            sender = new SignalRSender();
+        }
+
         /// <summary>
         ///  
         /// </summary>
@@ -144,7 +147,7 @@ namespace Functions
                 DB.SaveChanges();
                 if(MachineTraceToAdd!= null)
                 {
-                    
+                    sender.sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id);
                 }
             }
             catch(Exception e)

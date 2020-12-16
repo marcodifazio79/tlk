@@ -6,12 +6,13 @@ namespace Functions
 {
     public class SignalRSender
     {
-        public static HubConnection connection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:5001/MainHub")
-            .WithAutomaticReconnect()
-            .Build();
+        public static HubConnection connection;
         public SignalRSender()
         {
+            connection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5000/MainHub")
+                .WithAutomaticReconnect()
+                .Build();
             try
             {
                 connection.Closed += async (error) =>
@@ -23,12 +24,19 @@ namespace Functions
             }
             catch(Exception e)
             {
-
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " SignalRSender: "+e.Message);
             }
         }
         public async void sendReloadSignalForMachinesConnectionTrace(int id)
         {
-            await connection.InvokeAsync("AskToReloadMachConnTrace", id);
+            try
+            {
+                await connection.InvokeAsync("AskToReloadMachConnTrace", id);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " sendReloadSignalForMachinesConnectionTrace: "+e.Message);
+            }
         }
     } 
 }
