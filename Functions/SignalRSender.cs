@@ -20,20 +20,15 @@ namespace Functions
                     await connection.StartAsync();
                 };
                 connection.StartAsync().Wait();
-
             }
             catch(Exception e)
             {
 
             }
         }
-
         public async void sendReloadSignalForMachinesConnectionTrace(int id)
         {
             await connection.InvokeAsync("AskToReloadMachConnTrace", id);
         }
-
-        
-
     } 
 }

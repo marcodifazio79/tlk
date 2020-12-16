@@ -17,13 +17,7 @@ namespace Functions
     public class DatabaseFunctions
     {
         public static SignalRSender sender;
-
-        public DatabaseFunctions()
-        {
-            sender = new SignalRSender();
-        }
-        
-            
+    
         /// <summary>
         ///  
         /// </summary>
@@ -150,8 +144,10 @@ namespace Functions
                 DB.SaveChanges();
                 if(MachineTraceToAdd!= null)
                 {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: ID value = "+MachineTraceToAdd.Id);
-                    Functions.DatabaseFunctions.sender.sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id);
+                    Thread sendSign = new Thread(()=>
+                        new SignalRSender().sendReloadSignalForMachinesConnectionTrace(MachineTraceToAdd.Id)
+                    );
+                    sendSign.Start();
                 }
             }
             catch(Exception e)
