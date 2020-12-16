@@ -42,7 +42,7 @@
           "dependencies": {
             "Microsoft.AspNetCore.SignalR.Client": {
               "target": "Package",
-              "version": "[5.0.1, )"
+              "version": "[3.1.10, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
@@ -113,14 +113,6 @@
             {
               "name": "Microsoft.AspNetCore.App.Ref",
               "version": "[3.1.10, 3.1.10]"
-            },
-            {
-              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-              "version": "[3.1.10, 3.1.10]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-              "version": "[3.1.10, 3.1.10]"
             }
           ],
           "frameworkReferences": {
@@ -129,11 +121,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     }
