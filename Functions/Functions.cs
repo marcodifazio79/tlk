@@ -151,7 +151,7 @@ namespace Functions
                         new Thread(()=>
                             //Functions.SignalRSender.AskToReloadMachConnTrace (MachID  ) 
                             Functions.ShellHelper.Bash("dotnet /home/kdl_admin/tlk/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll AskToReloadMachConnTrace " 
-                            + MachID.ToString();
+                            + MachID.ToString()
                             )
                         ).Start();                        
                     }
