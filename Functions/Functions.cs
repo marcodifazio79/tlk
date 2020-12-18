@@ -147,7 +147,7 @@ namespace Functions
                 if(MachineTraceToAdd!= null)
                 {
                     try{
-                        string commands = "AskToReloadMachConnTrace " + MachID.ToString();
+                        string commands = " AskToReloadMachConnTrace " + MachID.ToString();
                         new Thread(()=>
                             //Functions.SignalRSender.AskToReloadMachConnTrace (MachID  ) 
                             Functions.ShellHelper.Bash(commands)
