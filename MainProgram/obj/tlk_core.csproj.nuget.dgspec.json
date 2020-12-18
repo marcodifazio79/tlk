@@ -115,6 +115,14 @@
             {
               "name": "Microsoft.AspNetCore.App.Ref",
               "version": "[3.1.8, 3.1.8]"
+            },
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[3.1.9, 3.1.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "[3.1.9, 3.1.9]"
             }
           ],
           "frameworkReferences": {
@@ -123,6 +131,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.100/RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     },
@@ -164,10 +177,6 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
-            "Microsoft.AspNetCore.SignalR.Client": {
-              "target": "Package",
-              "version": "[3.1.8, )"
-            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[3.1.1, )"
@@ -223,7 +232,15 @@
               "version": "[3.1.8, 3.1.8]"
             },
             {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[3.1.9, 3.1.9]"
+            },
+            {
               "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[3.1.9, 3.1.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
               "version": "[3.1.9, 3.1.9]"
             }
           ],
@@ -233,6 +250,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.100/RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }

@@ -25,7 +25,6 @@ namespace Functions
                     CreateNoWindow = true,
                 }
             };
-            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " ShellHelper: " + );
 
             process.Start();
             string result = process.StandardOutput.ReadToEnd();
