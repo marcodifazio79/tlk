@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\tlk\\MainProgram\\tlk_core.csproj": {}
+    "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj": {}
   },
   "projects": {
-    "C:\\tlk\\Functions\\Functions.csproj": {
+    "/home/fdifazio/Documents/tlk/Functions/Functions.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\tlk\\Functions\\Functions.csproj",
+        "projectUniqueName": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj",
         "projectName": "Functions",
-        "projectPath": "C:\\tlk\\Functions\\Functions.csproj",
-        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
-        "outputPath": "C:\\tlk\\Functions\\obj\\",
+        "projectPath": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj",
+        "packagesPath": "/home/fdifazio/.nuget/packages/",
+        "outputPath": "/home/fdifazio/Documents/tlk/Functions/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -116,7 +114,7 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.10, 3.1.10]"
+              "version": "[3.1.8, 3.1.8]"
             }
           ],
           "frameworkReferences": {
@@ -124,36 +122,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.100/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\tlk\\MainProgram\\tlk_core.csproj": {
+    "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\tlk\\MainProgram\\tlk_core.csproj",
+        "projectUniqueName": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
         "projectName": "tlk_core",
-        "projectPath": "C:\\tlk\\MainProgram\\tlk_core.csproj",
-        "packagesPath": "C:\\Users\\fdifazio\\.nuget\\packages\\",
-        "outputPath": "C:\\tlk\\MainProgram\\obj\\",
+        "projectPath": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
+        "packagesPath": "/home/fdifazio/.nuget/packages/",
+        "outputPath": "/home/fdifazio/Documents/tlk/MainProgram/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\fdifazio\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\tlk\\Functions\\Functions.csproj": {
-                "projectPath": "C:\\tlk\\Functions\\Functions.csproj"
+              "/home/fdifazio/Documents/tlk/Functions/Functions.csproj": {
+                "projectPath": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj"
               }
             }
           }
@@ -170,7 +166,7 @@
           "dependencies": {
             "Microsoft.AspNetCore.SignalR.Client": {
               "target": "Package",
-              "version": "[5.0.1, )"
+              "version": "[3.1.8, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
@@ -224,11 +220,11 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.10, 3.1.10]"
+              "version": "[3.1.8, 3.1.8]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.1.10, 3.1.10]"
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[3.1.9, 3.1.9]"
             }
           ],
           "frameworkReferences": {
@@ -236,7 +232,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.100/RuntimeIdentifierGraph.json"
         }
       }
     }
