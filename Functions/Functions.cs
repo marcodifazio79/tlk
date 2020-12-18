@@ -17,7 +17,13 @@ namespace Functions
 {
     
     public class DatabaseFunctions
-    {        
+    {   
+        public DatabaseFunctions()
+        {
+            
+        }
+
+
         /// <summary>
         ///  
         /// </summary>
@@ -144,7 +150,12 @@ namespace Functions
                 DB.SaveChanges();
                 if(MachineTraceToAdd!= null)
                 {
-                    
+                    try{
+                        reloadTheBastard();
+                    }
+                    catch(Exception exc){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " miao: "+exc.Message);
+                    }
                 }
             }
             catch(Exception e)
@@ -157,7 +168,26 @@ namespace Functions
                 DB.DisposeAsync();
             }
         }
-        
+        public static async void reloadTheBastard()
+        {
+            HubConnection connection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5000/MainHub")
+                .WithAutomaticReconnect()
+                .Build();
+
+                try
+                {
+                    connection.StartAsync().Wait();
+                    await connection.InvokeAsync("AskToReloadMachConnTrace", 24);
+                    //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "reloadTheBastard: "+e.Message);
+
+                    //throw;
+                }
+        }
         /// <summary>
         /// Update Machine values(LGG, KalValue, ...)
         /// </summary>

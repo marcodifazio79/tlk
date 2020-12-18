@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/MainProgram/bin/netcoreapp3.1/linux-x64/publish/tlk_core",
+            "program": "${workspaceFolder}/MainProgram/bin/Debug/netcoreapp3.1/tlk_core",
             "args": [],
-            "cwd": "${workspaceFolder}/MainProgram/bin/netcoreapp3.1/linux-x64/publish/",
+            "cwd": "${workspaceFolder}/MainProgram/bin/Debug/netcoreapp3.1/",
             "console": "internalConsole",
             "stopAtEntry": false
         },

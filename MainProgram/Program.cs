@@ -41,9 +41,14 @@ public class AsynchronousSocketListener {
     }  
   
     public static void StartListening() {  
-        
-        // Establish the local endpoint for the socket.  
-        IPAddress ipAddress = IPAddress.Parse(  Configuration["LocalAddressForConnections"].ToString()); 
+        //Establish the local endpoint for the socket.  
+        #if DEBUG
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+        #else
+            IPAddress ipAddress = IPAddress.Parse(  Configuration["LocalAddressForConnections"].ToString()); 
+        #endif
+
         
         //endpoint per i modem
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress,Convert.ToInt32( Configuration["Port:Modem"]));
