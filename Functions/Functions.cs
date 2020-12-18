@@ -151,7 +151,10 @@ namespace Functions
                 if(MachineTraceToAdd!= null)
                 {
                     try{
-                        reloadWebPageMachineConnectionTrace( MachineTraceToAdd.Id );                        
+                        new Thread(()=>
+                            reloadWebPageMachineConnectionTrace( MachineTraceToAdd.Id )                      
+                        ).Start();
+                        
                     }
                     catch(Exception exc){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " miao: "+exc.Message);
@@ -585,7 +588,7 @@ namespace Functions
             {
                 HubConnection connection = new HubConnectionBuilder()
                     .WithUrl("http://localhost:5000/MainHub")
-                    .WithAutomaticReconnect()
+                    //.WithAutomaticReconnect()
                     .Build();
 
                 connection.StartAsync().Wait();
@@ -603,12 +606,17 @@ namespace Functions
             try{
                 HubConnection connection =  connectToTheHub();
                 if(connection != null)
-                    await connection.InvokeAsync("AskToReloadMachConnTrace", id);
+                {
+                    connection.InvokeAsync("AskToReloadMachConnTrace", id).Wait();
                     //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
+                    connection.DisposeAsync().Wait();
+                }
+
             }catch (System.Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "reloadWebPageMachineConnectionTrace: "+e.Message);
             }
+            
         }
 
 
