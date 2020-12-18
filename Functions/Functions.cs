@@ -152,13 +152,13 @@ namespace Functions
                 if(MachineTraceToAdd!= null)
                 {
                     try{
-                    
+                        
                         new Thread(()=>
-                            reloadWebPageMachineConnectionTrace(MachID  )                      
+                            Functions.SignalRSender.AskToReloadMachConnTrace (MachID  )                      
                         ).Start();                        
                     }
                     catch(Exception exc){
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " miao: "+exc.Message);
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachConnTrace: "+exc.Message);
                     }
                 }
             }
@@ -580,46 +580,6 @@ namespace Functions
             DB.DisposeAsync();
             return returnValue;
         }
-
-
-
-        public static HubConnection connectToTheHub()
-        {
-            try
-            {
-                HubConnection connection = new HubConnectionBuilder()
-                    .WithUrl("http://localhost:5000/MainHub")
-                    //.WithAutomaticReconnect()
-                    .Build();
-
-                connection.StartAsync().Wait();
-                return connection;
-                
-            }
-            catch (System.Exception e)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "connectToTheHub: "+e.Message);
-                return null;
-            }
-        }
-        public static async void reloadWebPageMachineConnectionTrace(int id)
-        {
-            try{
-                HubConnection connection =  connectToTheHub();
-                if(connection != null)
-                {
-                    connection.InvokeAsync("AskToReloadMachConnTrace", id).Wait();
-                    //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
-                    connection.StopAsync().Wait();
-                }
-
-            }catch (System.Exception e)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "reloadWebPageMachineConnectionTrace: "+e.Message);
-            }
-            
-        }
-
 
     }
 
