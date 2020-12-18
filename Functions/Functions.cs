@@ -151,7 +151,7 @@ namespace Functions
                 if(MachineTraceToAdd!= null)
                 {
                     try{
-                        reloadTheBastard();
+                        reloadWebPageMachineConnectionTrace( MachineTraceToAdd.Id );                        
                     }
                     catch(Exception exc){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " miao: "+exc.Message);
@@ -168,25 +168,8 @@ namespace Functions
                 DB.DisposeAsync();
             }
         }
-        public static async void reloadTheBastard()
-        {
-            try
-            {
-                HubConnection connection = new HubConnectionBuilder()
-                    .WithUrl("http://localhost:5000/MainHub")
-                    .WithAutomaticReconnect()
-                    .Build();
+        
 
-                connection.StartAsync().Wait();
-                await connection.InvokeAsync("AskToReloadMachConnTrace", 24);
-                //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
-            }
-            catch (System.Exception e)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "reloadTheBastard: "+e.Message);
-                   //throw;
-            }
-        }
         /// <summary>
         /// Update Machine values(LGG, KalValue, ...)
         /// </summary>
@@ -592,7 +575,42 @@ namespace Functions
             }
             DB.DisposeAsync();
             return returnValue;
-        }      
+        }
+
+
+
+        public static HubConnection connectToTheHub()
+        {
+            try
+            {
+                HubConnection connection = new HubConnectionBuilder()
+                    .WithUrl("http://localhost:5000/MainHub")
+                    .WithAutomaticReconnect()
+                    .Build();
+
+                connection.StartAsync().Wait();
+                return connection;
+                
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "connectToTheHub: "+e.Message);
+                return null;
+            }
+        }
+        public static async void reloadWebPageMachineConnectionTrace(int id)
+        {
+            try{
+                HubConnection connection =  connectToTheHub();
+                if(connection != null)
+                    await connection.InvokeAsync("AskToReloadMachConnTrace", id);
+                    //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
+            }catch (System.Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "reloadWebPageMachineConnectionTrace: "+e.Message);
+            }
+        }
+
 
     }
 
