@@ -4,14 +4,9 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Xml;
 using System.Threading;
-
 using Functions.database;
 
 using System.Linq;
-
-using System.Runtime.InteropServices;
-
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Functions
 {
@@ -154,7 +149,8 @@ namespace Functions
                     try{
                         
                         new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachConnTrace (MachID  )                      
+                            //Functions.SignalRSender.AskToReloadMachConnTrace (MachID  ) 
+                            Functions.ShellHelper.Bash("dotnet /home/kdl_admin/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll")
                         ).Start();                        
                     }
                     catch(Exception exc){
@@ -173,6 +169,7 @@ namespace Functions
             }
         }
         
+       
 
         /// <summary>
         /// Update Machine values(LGG, KalValue, ...)
