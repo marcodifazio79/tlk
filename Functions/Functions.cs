@@ -152,15 +152,19 @@ namespace Functions
                 if(MachineTraceToAdd!= null)
                 {
                     try{
+                        Console.WriteLine("The quick ");
                          HubConnection connection = new HubConnectionBuilder()
                         .WithUrl("http://localhost:5000/MainHub")
-                        .WithAutomaticReconnect()
                         .Build();
+                        Console.WriteLine("brown fox");
 
                         try
                         {
+                            Console.WriteLine("jump on");
                             connection.StartAsync().Wait();
+                            Console.WriteLine("the lazy");
                             connection.InvokeAsync("AskToReloadMachConnTrace", MachID);
+                            Console.WriteLine("white dog");
                             //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
                         }
                         catch (System.Exception e)
