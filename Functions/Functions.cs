@@ -148,12 +148,28 @@ namespace Functions
                     }
                 }
                 DB.SaveChanges();
+                int MachID = MachineTraceToAdd.Id;
                 if(MachineTraceToAdd!= null)
                 {
                     try{
-                        new Thread(()=>
-                            reloadWebPageMachineConnectionTrace( MachineTraceToAdd.Id )                      
-                        ).Start();
+                         HubConnection connection = new HubConnectionBuilder()
+                        .WithUrl("http://localhost:5000/MainHub")
+                        .WithAutomaticReconnect()
+                        .Build();
+
+                        try
+                        {
+                            connection.StartAsync().Wait();
+                            connection.InvokeAsync("AskToReloadMachConnTrace", MachID);
+                            //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
+                        }
+                        catch (System.Exception e)
+                        {
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " "+e.Message);
+                        }
+                        //new Thread(()=>
+                        //    reloadWebPageMachineConnectionTrace(MachID  )                      
+                        //).Start();
                         
                     }
                     catch(Exception exc){
@@ -609,7 +625,7 @@ namespace Functions
                 {
                     connection.InvokeAsync("AskToReloadMachConnTrace", id).Wait();
                     //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
-                    connection.DisposeAsync().Wait();
+                    //connection.StopAsync().Wait();
                 }
 
             }catch (System.Exception e)
