@@ -152,23 +152,10 @@ namespace Functions
                 if(MachineTraceToAdd!= null)
                 {
                     try{
-                         HubConnection connection = new HubConnectionBuilder()
-                        .WithUrl("http://localhost:5000/MainHub")
-                        .Build();
-
-                        try
-                        {
-                            connection.StartAsync().Wait();
-                            connection.InvokeAsync("AskToReloadMachConnTrace", MachID);
-                            //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
-                        }
-                        catch (System.Exception e)
-                        {
-                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " "+e.Message);
-                        }
-                        //new Thread(()=>
-                        //    reloadWebPageMachineConnectionTrace(MachID  )                      
-                        //).Start();                        
+                    
+                        new Thread(()=>
+                            reloadWebPageMachineConnectionTrace(MachID  )                      
+                        ).Start();                        
                     }
                     catch(Exception exc){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " miao: "+exc.Message);
@@ -621,9 +608,13 @@ namespace Functions
                 HubConnection connection =  connectToTheHub();
                 if(connection != null)
                 {
+                    Console.WriteLine("connection not null");
                     connection.InvokeAsync("AskToReloadMachConnTrace", id).Wait();
+                    Console.WriteLine("AskToReloadMachConnTrace done");
                     //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
-                    //connection.StopAsync().Wait();
+                    connection.DisposeAsync().Wait();
+                    Console.WriteLine("Disposing done");
+
                 }
 
             }catch (System.Exception e)
