@@ -612,7 +612,7 @@ namespace Functions
                     connection.InvokeAsync("AskToReloadMachConnTrace", id).Wait();
                     Console.WriteLine("AskToReloadMachConnTrace done");
                     //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
-                    connection.DisposeAsync().Wait();
+                    connection.StopAsync().Wait();
                     Console.WriteLine("Disposing done");
 
                 }
