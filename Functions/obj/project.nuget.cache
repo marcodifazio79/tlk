@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "iSZ423uXeZqnW6X+VftRxtf9KGOV3d5AM3JzjPRiE69KJVL5kg5H9vXVwIhwzDj1CuLLSm1esMgIrYk6tN5BAg==",
+  "dgSpecHash": "eGwrRSu0mup9aqkapiIevGXt6FT8qCdmaJQEA6tWg615jlFkjG0qEvh6TlldqKCDYx4xJaT4O6808Eq96X63kg==",
   "success": true,
   "projectFilePath": "C:\\tlk\\Functions\\Functions.csproj",
   "expectedPackageFiles": [
@@ -179,6 +179,7 @@
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.text.encoding.codepages\\4.5.0\\system.text.encoding.codepages.4.5.0.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.text.encoding.extensions\\4.3.0\\system.text.encoding.extensions.4.3.0.nupkg.sha512",
+    "C:\\Users\\fdifazio\\.nuget\\packages\\system.text.encodings.web\\5.0.0\\system.text.encodings.web.5.0.0.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.text.regularexpressions\\4.3.0\\system.text.regularexpressions.4.3.0.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.threading\\4.3.0\\system.threading.4.3.0.nupkg.sha512",
     "C:\\Users\\fdifazio\\.nuget\\packages\\system.threading.channels\\4.7.1\\system.threading.channels.4.7.1.nupkg.sha512",

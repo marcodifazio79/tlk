@@ -133,7 +133,6 @@ C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServicePro
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encoding.CodePages.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encoding.Extensions.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encoding.dll
-C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encodings.Web.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.RegularExpressions.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Overlapped.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Tasks.Dataflow.dll
@@ -251,6 +250,7 @@ C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceMod
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceModel.Primitives.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceModel.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.ServiceModel.Security.dll
+C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Encodings.Web.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Text.Json.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Threading.Channels.dll
 C:\tlk\MainProgram\bin\Release\netcoreapp3.1\linux-x64\publish\System.Windows.Extensions.dll
