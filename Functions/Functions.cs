@@ -608,13 +608,9 @@ namespace Functions
                 HubConnection connection =  connectToTheHub();
                 if(connection != null)
                 {
-                    Console.WriteLine("connection not null");
                     connection.InvokeAsync("AskToReloadMachConnTrace", id).Wait();
-                    Console.WriteLine("AskToReloadMachConnTrace done");
                     //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
                     connection.StopAsync().Wait();
-                    Console.WriteLine("Disposing done");
-
                 }
 
             }catch (System.Exception e)
