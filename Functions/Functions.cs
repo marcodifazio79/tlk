@@ -147,12 +147,10 @@ namespace Functions
                 if(MachineTraceToAdd!= null)
                 {
                     try{
-                        
+                        string commands = "AskToReloadMachConnTrace " + MachID.ToString();
                         new Thread(()=>
                             //Functions.SignalRSender.AskToReloadMachConnTrace (MachID  ) 
-                            Functions.ShellHelper.Bash("dotnet /home/kdl_admin/tlk/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll AskToReloadMachConnTrace " 
-                            + MachID.ToString()
-                            )
+                            Functions.ShellHelper.Bash(commands)
                         ).Start();                        
                     }
                     catch(Exception exc){
