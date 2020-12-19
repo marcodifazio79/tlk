@@ -370,11 +370,11 @@ namespace Functions
             DB.SaveChanges();
 
             //reload the web page
-            if(remCom!= null)
+            if(remCom.IdMacchina!= null)
                 {              
                     try{
                         new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachCommandTable ( ) 
+                            Functions.SignalRSender.AskToReloadMachCommandTable ( remCom.IdMacchina ) 
                         ).Start();
                     }
                     catch(Exception exc){
