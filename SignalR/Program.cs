@@ -37,7 +37,7 @@ namespace SignalR_
                             break;
 
                         case "AskToReloadMachinesTable":
-                            await connection.InvokeAsync("AskToReloadMachinesTable", id);
+                            await connection.InvokeAsync("AskToReloadMachinesTable");
                             break;
                             
                         default:

@@ -358,14 +358,14 @@ namespace Functions
                 DB.RemoteCommand.Add( remCom  );
             }
             DB.SaveChanges();
-            
+
             //reload the web page
             if(remCom!= null)
                 {              
                     try{
                         new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachCommandTable ((int)remCom.IdMacchina  ) 
-                        ).Start();                        
+                            Functions.SignalRSender.AskToReloadMachinesTable ( ) 
+                        ).Start();
                     }
                     catch(Exception exc){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
