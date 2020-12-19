@@ -50,7 +50,7 @@ namespace Functions
                 //reload web page
                 try{
                     new Thread(()=>
-                        Functions.SignalRSender.AskToReloadMachinesTable () 
+                        Functions.SignalRSender.AskToReloadMachinesTable() 
                     ).Start();                        
                 }
                 catch(Exception exc){
@@ -92,6 +92,15 @@ namespace Functions
                 }
                 DB.SaveChanges();
                 
+                //reload web page
+                try{
+                    new Thread(()=>
+                        Functions.SignalRSender.AskToReloadMachinesTable() 
+                    ).Start();                        
+                }
+                catch(Exception exc){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
+                }
             }
             catch(Exception ex)
             {
@@ -371,16 +380,16 @@ namespace Functions
 
             //reload the web page
             if(remCom.IdMacchina!= null)
-                {              
-                    try{
-                        new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachCommandTable ( (int)remCom.IdMacchina ) 
-                        ).Start();
-                    }
-                    catch(Exception exc){
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
-                    }
+            {              
+                try{
+                    new Thread(()=>
+                        Functions.SignalRSender.AskToReloadMachCommandTable ( (int)remCom.IdMacchina ) 
+                    ).Start();
                 }
+                catch(Exception exc){
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
+                }
+            }
 
             if(remCom.Status=="Pending")
                 return remCom.Id;
@@ -625,7 +634,7 @@ namespace Functions
                     //reload web page
                     try{
                         new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachinesTable () 
+                            Functions.SignalRSender.AskToReloadMachinesTable() 
                         ).Start();                        
                     }
                     catch(Exception exc){
@@ -657,7 +666,7 @@ namespace Functions
                 //reload web page
                 try{
                     new Thread(()=>
-                        Functions.SignalRSender.AskToReloadMachinesTable () 
+                        Functions.SignalRSender.AskToReloadMachinesTable() 
                     ).Start();                        
                 }
                 catch(Exception exc){
