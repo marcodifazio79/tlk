@@ -41,5 +41,24 @@ namespace Functions
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " "+e.Message);
                 }
         }
+
+        public static async void AskToReloadMachinesTable()
+        {
+            try
+                {
+                HubConnection connection = new HubConnectionBuilder()
+                    .WithUrl("http://localhost:5000/MainHub")
+                    .WithAutomaticReconnect()
+                    .Build();
+                
+                    connection.StartAsync().Wait();
+                    await connection.InvokeAsync("ReloadMachinesTable");
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " "+e.Message);
+                }
+        }
+
     }
 }
