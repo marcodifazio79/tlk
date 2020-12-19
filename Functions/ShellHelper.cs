@@ -9,7 +9,7 @@ namespace Functions
 {
     public static class ShellHelper
     {
-        public static string Bash(this string cmd)
+        public static void Bash(this string cmd)
         {
             //var escapedArgs = cmd.Replace("\"", "\\\"");
             
@@ -17,7 +17,7 @@ namespace Functions
             // {
             //     StartInfo = new ProcessStartInfo
             //     {
-            //         FileName = "dotnet",
+            //         FileName = "\bin\bash",
             //         //Arguments = $"-c \"{escapedArgs}\"",
             //         Arguments = " /home/kdl_admin/tlk/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll " + cmd ,
             //         RedirectStandardOutput = true,
@@ -34,7 +34,7 @@ namespace Functions
                 new ProcessStartInfo
                 {
                     FileName = "dotnet",
-                    ArgumentList = { "/home/kdl_admin/tlk/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll " + cmd }
+                    Arguments =  " /home/kdl_admin/tlk/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll " + cmd 
                 });
             process.WaitForExit();
         }

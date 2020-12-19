@@ -143,7 +143,7 @@ namespace Functions
                     }
                 }
                 DB.SaveChanges();
-                int MachID = MachineTraceToAdd.Id;
+                int MachID = MachineTraceToAdd.IdMacchina;
                 if(MachineTraceToAdd!= null)
                 {
                     try{
