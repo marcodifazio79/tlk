@@ -143,13 +143,13 @@ namespace Functions
                     }
                 }
                 DB.SaveChanges();
+
+                //reload the web page
                 if(MachineTraceToAdd.IdMacchina!= null)
                 {              
                     try{
-                        //string commands = " AskToReloadMachConnTrace " + MachineTraceToAdd.IdMacchina.ToString();
                         new Thread(()=>
                             Functions.SignalRSender.AskToReloadMachConnTrace ((int)MachineTraceToAdd.IdMacchina  ) 
-                            //Functions.ShellHelper.Bash(commands)
                         ).Start();                        
                     }
                     catch(Exception exc){
@@ -358,6 +358,19 @@ namespace Functions
                 DB.RemoteCommand.Add( remCom  );
             }
             DB.SaveChanges();
+            
+            //reload the web page
+            if(remCom!= null)
+                {              
+                    try{
+                        new Thread(()=>
+                            Functions.SignalRSender.AskToReloadMachCommandTable ((int)remCom.IdMacchina  ) 
+                        ).Start();                        
+                    }
+                    catch(Exception exc){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
+                    }
+                }
 
             if(remCom.Status=="Pending")
                 return remCom.Id;

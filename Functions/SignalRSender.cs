@@ -14,18 +14,31 @@ namespace Functions
                     .WithUrl("http://localhost:5000/MainHub")
                     .WithAutomaticReconnect()
                     .Build();
-
                 
                     connection.StartAsync().Wait();
                     await connection.InvokeAsync("AskToReloadMachConnTrace", id);
-                    //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
-                    //connection.Stop();
                 }
                 catch (System.Exception e)
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " "+e.Message);
+                }
+        }
 
-                    //throw;
+        public static async void AskToReloadMachCommandTable(int id)
+        {
+            try
+                {
+                HubConnection connection = new HubConnectionBuilder()
+                    .WithUrl("http://localhost:5000/MainHub")
+                    .WithAutomaticReconnect()
+                    .Build();
+                
+                    connection.StartAsync().Wait();
+                    await connection.InvokeAsync("AskToReloadMachCommandTable", id);
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " "+e.Message);
                 }
         }
     }
