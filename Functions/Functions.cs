@@ -374,7 +374,7 @@ namespace Functions
                 {              
                     try{
                         new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachCommandTable ( remCom.IdMacchina ) 
+                            Functions.SignalRSender.AskToReloadMachCommandTable ( (int)remCom.IdMacchina ) 
                         ).Start();
                     }
                     catch(Exception exc){
