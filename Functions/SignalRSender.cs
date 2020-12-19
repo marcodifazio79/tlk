@@ -52,7 +52,7 @@ namespace Functions
                     .Build();
                 
                     connection.StartAsync().Wait();
-                    await connection.InvokeAsync("ReloadMachinesTable");
+                    await connection.InvokeAsync("AskToReloadMachinesTable");
                 }
                 catch (System.Exception e)
                 {
