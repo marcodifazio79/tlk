@@ -19,6 +19,7 @@ namespace Functions
                     connection.StartAsync().Wait();
                     await connection.InvokeAsync("AskToReloadMachConnTrace", id);
                     //await connection.InvokeAsync("AskToReloadMachCommandTable", 24);
+                    //connection.Stop();
                 }
                 catch (System.Exception e)
                 {

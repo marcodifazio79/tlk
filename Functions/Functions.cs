@@ -146,10 +146,10 @@ namespace Functions
                 if(MachineTraceToAdd.IdMacchina!= null)
                 {              
                     try{
-                        string commands = " AskToReloadMachConnTrace " + MachineTraceToAdd.IdMacchina.ToString();
+                        //string commands = " AskToReloadMachConnTrace " + MachineTraceToAdd.IdMacchina.ToString();
                         new Thread(()=>
-                            //Functions.SignalRSender.AskToReloadMachConnTrace (MachID  ) 
-                            Functions.ShellHelper.Bash(commands)
+                            Functions.SignalRSender.AskToReloadMachConnTrace (MachineTraceToAdd.IdMacchina  ) 
+                            //Functions.ShellHelper.Bash(commands)
                         ).Start();                        
                     }
                     catch(Exception exc){
