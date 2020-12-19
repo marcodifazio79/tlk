@@ -18,7 +18,7 @@ namespace Functions
                     connection.StartAsync().Wait();
                     await connection.InvokeAsync("AskToReloadMachConnTrace", id);
                     connection.StopAsync();
-                    connection..DisposeAsync);
+                    connection.DisposeAsync());
                 }
                 catch (System.Exception e)
                 {
@@ -38,7 +38,7 @@ namespace Functions
                     connection.StartAsync().Wait();
                     await connection.InvokeAsync("AskToReloadMachCommandTable", id);
                     connection.StopAsync();
-                    connection..DisposeAsync);
+                    connection.DisposeAsync());
                 }
                 catch (System.Exception e)
                 {
@@ -58,7 +58,7 @@ namespace Functions
                     connection.StartAsync().Wait();
                     await connection.InvokeAsync("AskToReloadMachinesTable");
                     connection.StopAsync();
-                    connection..DisposeAsync);
+                    connection.DisposeAsync());
                 }
                 catch (System.Exception e)
                 {
