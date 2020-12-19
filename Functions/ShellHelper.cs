@@ -17,9 +17,9 @@ namespace Functions
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "/bin/bash",
+                    FileName = "dotnet",
                     //Arguments = $"-c \"{escapedArgs}\"",
-                    Arguments = " -c \'dotnet /home/kdl_admin/tlk/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll " + cmd + "\'",
+                    Arguments = " /home/kdl_admin/tlk/SignalR/bin/Release/net5.0/linux-x64/publish/SignalR_.dll " + cmd ,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
