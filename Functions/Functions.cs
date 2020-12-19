@@ -47,6 +47,16 @@ namespace Functions
                 }
                 DB.SaveChanges();
                
+                //reload web page
+                try{
+                    new Thread(()=>
+                        Functions.SignalRSender.AskToReloadMachinesTable () 
+                    ).Start();                        
+                }
+                catch(Exception exc){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
+                }
+
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: " + e.Message);
             }finally{
@@ -364,7 +374,7 @@ namespace Functions
                 {              
                     try{
                         new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachinesTable ( ) 
+                            Functions.SignalRSender.AskToReloadMachCommandTable ( ) 
                         ).Start();
                     }
                     catch(Exception exc){
@@ -611,6 +621,16 @@ namespace Functions
                     DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString() ).IsOnline = false;
                     DB.SaveChanges();
                     DB.DisposeAsync();
+
+                    //reload web page
+                    try{
+                        new Thread(()=>
+                            Functions.SignalRSender.AskToReloadMachinesTable () 
+                        ).Start();                        
+                    }
+                    catch(Exception exc){
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
+                    }
                 }
                 catch(Exception e)
                 {
@@ -633,6 +653,17 @@ namespace Functions
                 DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToAdd.RemoteEndPoint).Address.ToString() ).IsOnline = true;
                 DB.SaveChanges();
                 DB.DisposeAsync();
+
+                //reload web page
+                try{
+                    new Thread(()=>
+                        Functions.SignalRSender.AskToReloadMachinesTable () 
+                    ).Start();                        
+                }
+                catch(Exception exc){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
+                }
+
             }
             catch(Exception e)
             {
