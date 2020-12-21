@@ -163,7 +163,7 @@ namespace Functions
                 }
                 DB.SaveChanges();
 
-                //reload the web page
+                //reload the web pages
                 if(MachineTraceToAdd.IdMacchina!= null)
                 {              
                     try{
@@ -174,6 +174,15 @@ namespace Functions
                     catch(Exception exc){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachConnTrace: "+exc.Message);
                     }
+                    try{
+                        new Thread(()=>
+                            Functions.SignalRSender.AskToReloadMachinesTable ( ) 
+                        ).Start();                        
+                    }
+                    catch(Exception exc){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
+                    }
+                
                 }
             }
             catch(Exception e)
