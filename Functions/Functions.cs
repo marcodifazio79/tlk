@@ -91,16 +91,7 @@ namespace Functions
                     
                 }
                 DB.SaveChanges();
-                
-                //reload web page
-                try{
-                    new Thread(()=>
-                        Functions.SignalRSender.AskToReloadMachinesTable() 
-                    ).Start();                        
-                }
-                catch(Exception exc){
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
-                }
+               
             }
             catch(Exception ex)
             {
