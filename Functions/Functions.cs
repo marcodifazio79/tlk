@@ -443,6 +443,8 @@ namespace Functions
                 char[] MyChar = {'1','2','3','4','5','6','7','8','9','0'};
                 expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand == commandtext.Trim(MyChar) ).expectedAnswer;
                 
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " commandtext value: "+commandtext);
+        
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++){
                     Thread.Sleep(2000);
