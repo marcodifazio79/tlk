@@ -439,10 +439,15 @@ namespace Functions
             string expectedAnswer = "";
             bool IsCommandSuccesful = false;
             try{
-                //if the command is like LGA600 or KAL500, whe must remove the param or get fucked. 
+                // if the command is like LGA600 or KAL500, whe must remove the param or get fucked. 
+                // but removing the numbers from commands broke #PU1, so #PU1 get a special case,
+                // becouse i cannot think of anything better at the moment
                 char[] MyChar = {'1','2','3','4','5','6','7','8','9','0'};
                 
-                expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand.StartsWith( commandtext.Trim(MyChar) )).expectedAnswer;        
+                if(commandtext == "#PU1")
+                    expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand.StartsWith( commandtext.Trim(MyChar) )).expectedAnswer;        
+                else
+                    expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand == commandtext.Trim(MyChar) ).expectedAnswer;        
                 
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++){
