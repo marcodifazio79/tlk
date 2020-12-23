@@ -625,15 +625,18 @@ namespace Functions
         {
             try
             {
-                //controllare se funziona il .Contains invece di .Exist, al momento non funziona intellisense e non mi va di scapocciarci.
-                if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
-                {
-                    SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );                
-                }
+                
                 try
                 {
                     listener_DBContext DB = new listener_DBContext (); 
-                    DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString() ).IsOnline = false;
+                    
+                    //controllare se funziona il .Contains invece di .Exist, al momento non funziona intellisense e non mi va di scapocciarci.
+                    if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
+                    {
+                        DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString() ).IsOnline = false;
+                        SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );                
+                    }
+
                     DB.SaveChanges();
                     DB.DisposeAsync();
 

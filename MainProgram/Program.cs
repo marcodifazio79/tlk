@@ -386,12 +386,12 @@ public class AsynchronousSocketListener {
     }    
 
     public static void Send(Socket handler, String data) {  
-        
+        StateObject state = new StateObject();
         try{  
             //byte[] byteData = Encoding.ASCII.GetBytes(data);
             // Begin sending the data to the remote device.
 
-            StateObject state = new StateObject();
+            
             state.workSocket = handler;
             state.sb = new StringBuilder(data, data.Length);
             state.buffer = Encoding.ASCII.GetBytes(data);
@@ -399,6 +399,12 @@ public class AsynchronousSocketListener {
             handler.BeginSend(state.buffer, 0, state.buffer.Length, 0, new AsyncCallback(SendCallback), state);
             
         }catch(Exception e) {
+            if(e is System.Net.Sockets.SocketException)
+            {
+                //the modem get stucked in "send mode" from time to time. If this happens, 
+                // trying to send to the modem cause a SocketException, i'll reset the connection if this occur
+                ModemsSocketList = Functions.SocketList.removeFromList(state.workSocket,  ModemsSocketList);
+            }
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Begin send error: " + e.ToString());
             Functions.DatabaseFunctions.insertIntoDB("begin send error.");
         }
