@@ -507,6 +507,18 @@ namespace Functions
             else
                 commandToUpdate.Status = "Error";
             DB.SaveChanges();
+
+            try{
+                //let's reload the machcommandstable
+                new Thread(()=>
+                    Functions.SignalRSender.AskToReloadMachCommandTable ( command_id ) 
+                ).Start();
+                }
+            catch(Exception exc){
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
+            }
+
+
             DB.DisposeAsync();
         }
 
