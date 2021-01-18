@@ -346,6 +346,7 @@ public class AsynchronousSocketListener {
                 else 
                 {  
                     // Not all data received. Get more.  
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data..");
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
                     new AsyncCallback(ReadOtherCallback), state);
                 }     
