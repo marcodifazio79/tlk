@@ -204,6 +204,8 @@ namespace Functions
 
                 //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
                 //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
+
+
                 if(data.Contains("LGG="))
                 {
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina))
@@ -290,6 +292,23 @@ namespace Functions
                     }
                 }
                 
+                if(data.StartsWith("<TPK="))
+                {
+                    //let's make sure we are working on ONE packet (from time to time two packet get aggregated)
+                    data = data.Substring(  0 , data.IndexOf(">") );
+                    string[] mPacketArray = data.Split(',');
+                    if(mPacketArray.Length == 40)
+                    {
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss MachineExtendedAttributeUpdater : ") + "TPK packet wrong size (" + 
+                        mPacketArray.Length.ToString() + ")");
+
+                    }
+                }
+
 
             }
             catch (Exception e)
