@@ -42,6 +42,7 @@ namespace Functions
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr );
                     MachineToUpdate.Imei =  Convert.ToInt64(imei);
                     MachineToUpdate.Mid = mid;
+                    MachineToUpdate.IsOnline = true;
                     MachineToUpdate.Version = version;
                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                 }
@@ -299,11 +300,11 @@ namespace Functions
                     string[] mPacketArray = data.Split(',');
                     if(mPacketArray.Length == 40)
                     {
-                        
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +" ");
                     }
                     else
                     {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss MachineExtendedAttributeUpdater : ") + "TPK packet wrong size (" + 
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachineExtendedAttributeUpdater : TPK packet wrong size (" + 
                         mPacketArray.Length.ToString() + ")");
 
                     }
