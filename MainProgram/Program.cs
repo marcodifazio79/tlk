@@ -253,43 +253,51 @@ public class AsynchronousSocketListener {
             if (bytesRead > 0) {
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
-
-                content = state.sb.ToString();  
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
-                //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
-                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
-                if(content.Contains("<MID")){
-                    //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
-                    //nell forma     <MID=1234567890-865291049819286><VER=110>
-                    Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
-                }
-                string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
-
-                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                char checksum = '0';
-                var stringChars = new char[6];
-                var random = new Random();
-                for (int i = 0; i < stringChars.Length; i++)
+                content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
+                if (content.IndexOf("<VER=") > -1) 
                 {
-                    stringChars[i] = chars[random.Next(chars.Length)];
-                    if (i == 0)
-                        checksum = stringChars[i];
-                    else
-                        checksum ^= stringChars[i];
-                }
-                //de2BUl48  gQkjsp34 examples.
-                //response << boost::format("%02X") % (int)checksum;
-  
-                byte b = Convert.ToByte(checksum);
-                String hex = b.ToString("X");
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
+                    //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
+                    Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                    if(content.Contains("<MID")){
+                        //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
+                        //nell forma     <MID=1234567890-865291049819286><VER=110>
+                        Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
+                    }
+                    string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
-                if (hex.Length < 2)
-                    hex = '0' + hex;
-                var finalString = new String(stringChars);
-                finalString = finalString + hex;
-                Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
-                t.Start();
-                
+                    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                    char checksum = '0';
+                    var stringChars = new char[6];
+                    var random = new Random();
+                    for (int i = 0; i < stringChars.Length; i++)
+                    {
+                        stringChars[i] = chars[random.Next(chars.Length)];
+                        if (i == 0)
+                            checksum = stringChars[i];
+                        else
+                            checksum ^= stringChars[i];
+                    }
+                    //de2BUl48  gQkjsp34 examples.
+                    //response << boost::format("%02X") % (int)checksum;
+    
+                    byte b = Convert.ToByte(checksum);
+                    String hex = b.ToString("X");
+
+                    if (hex.Length < 2)
+                        hex = '0' + hex;
+                    var finalString = new String(stringChars);
+                    finalString = finalString + hex;
+                    Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
+                    t.Start();
+                }
+                else 
+                {  
+                    // Not all data received. Get more.  
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data..");
+                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
+                    new AsyncCallback(ReadCallback), state);
+                }    
             }
             else 
                 if(bytesRead == 0){
