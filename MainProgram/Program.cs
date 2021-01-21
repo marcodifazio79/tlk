@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Sockets;  
 using System.Text;  
 using System.Threading;
+using System.Threading.Tasks;
+
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using System.Xml;
@@ -238,7 +240,7 @@ public class AsynchronousSocketListener {
             responseToBackendThred.Start();
         }
     }
-    public static void ReadCallback(IAsyncResult ar) {
+    public static async void ReadCallback(IAsyncResult ar) {
         String content = String.Empty;  
   
         // Retrieve the state object and the handler socket  
@@ -288,15 +290,28 @@ public class AsynchronousSocketListener {
                         hex = '0' + hex;
                     var finalString = new String(stringChars);
                     finalString = finalString + hex;
-                    Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
-                    t.Start();
+                    //Thread t = new Thread(()=>Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
+                    //t.Start();
+                    await Task.Run(() => Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
+                    
+                    try{
+                        StateObject stateN = new StateObject();  
+                        stateN.workSocket = ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  );
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+                        Thread th = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
+                        th.Start();
+                    }catch(Exception e){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Something went wrong while reopening the connection " + e.Message);
+                    }
+                        
+
                 }
                 else 
                 {  
                     // Not all data received. Get more.  
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data..");
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
-                    new AsyncCallback(ReadCallback), state);
+                        new AsyncCallback(ReadCallback), state);
                 }    
             }
             else 
@@ -318,19 +333,6 @@ public class AsynchronousSocketListener {
         catch(Exception e){
             Console.WriteLine(e.ToString());  
             isAlive = false;
-        }finally {
-            if(isAlive)
-            {
-                try{
-                    StateObject stateN = new StateObject();  
-                    stateN.workSocket = ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  );
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
-                    Thread t = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
-                    t.Start();
-                }catch(Exception e){
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Something went wrong while reopening the connection " + e.Message);
-                }
-            }
         }
     }
     public static void ReadOtherCallback(IAsyncResult ar) {
@@ -394,7 +396,7 @@ public class AsynchronousSocketListener {
         //t.Start();
     }    
 
-    public static void Send(Socket handler, String data) {  
+    public static async Task Send(Socket handler, String data) {  
         StateObject state = new StateObject();
         try{  
             //byte[] byteData = Encoding.ASCII.GetBytes(data);
