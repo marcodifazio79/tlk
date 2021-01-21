@@ -293,7 +293,7 @@ namespace Functions
                     }
                 }
                 //the TPK package contains various machine details, i'll use it to update the various field here.
-                if(data.StartsWith("<TPK="))
+                if(data.StartsWith("<TPK=$M1"))
                 {
                     //let's make sure we are working on ONE packet (from time to time two packet get aggregated)
                     data = data.Substring(  0 , data.IndexOf(">") );
@@ -304,7 +304,7 @@ namespace Functions
                         //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
                         MachineExtendedAttributeUpdater(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ));
                         MachineExtendedAttributeUpdater(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ));
-                        MachineExtendedAttributeUpdater(id_macchina, "+CSQ:" + mPacketArray[32].PadLeft(  5, '0' ));
+                        MachineExtendedAttributeUpdater(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ));
                     }
                     else
                     {
