@@ -212,9 +212,9 @@ namespace Functions
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina))
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina)
-                        .Value = data.Substring(data.IndexOf("LGG=")+4,   5);
+                            .Value = data.Substring(data.IndexOf("LGG=")+4,   5);
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina)
-                        .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                     else
                     {
@@ -233,9 +233,9 @@ namespace Functions
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGA" && h.IdMacchina == id_macchina))
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGA" && h.IdMacchina == id_macchina)
-                        .Value = data.Substring(data.IndexOf("LGA=")+4,   5);
+                            .Value = data.Substring(data.IndexOf("LGA=")+4,   5);
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="LGA" && h.IdMacchina == id_macchina)
-                        .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                     else
                     {
@@ -254,9 +254,9 @@ namespace Functions
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="KAL" && h.IdMacchina == id_macchina))
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="KAL" && h.IdMacchina == id_macchina)
-                        .Value = data.Substring(data.IndexOf("KAL=")+4,   5);
+                            .Value = data.Substring(data.IndexOf("KAL=")+4,   5);
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="KAL" && h.IdMacchina == id_macchina)
-                       .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                     else
                     {
@@ -275,9 +275,9 @@ namespace Functions
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="CSQ" && h.IdMacchina == id_macchina))
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="CSQ" && h.IdMacchina == id_macchina)
-                        .Value = data.Substring(data.IndexOf("CSQ:")+4,   5);
+                            .Value = data.Substring(data.IndexOf("CSQ:")+4,   5);
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="CSQ" && h.IdMacchina == id_macchina)
-                        .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
 
                     }
                     else
@@ -292,7 +292,7 @@ namespace Functions
                           );
                     }
                 }
-                
+                //the TPK package contains various machine details, i'll use it to update the various field here.
                 if(data.StartsWith("<TPK="))
                 {
                     //let's make sure we are working on ONE packet (from time to time two packet get aggregated)
@@ -300,13 +300,16 @@ namespace Functions
                     string[] mPacketArray = data.Split(',');
                     if(mPacketArray.Length == 40)
                     {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +" ");
+                        //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
+                        //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
+                        MachineExtendedAttributeUpdater(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ));
+                        MachineExtendedAttributeUpdater(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ));
+                        MachineExtendedAttributeUpdater(id_macchina, "+CSQ:" + mPacketArray[32].PadLeft(  5, '0' ));
                     }
                     else
                     {
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachineExtendedAttributeUpdater : TPK packet wrong size (" + 
-                        mPacketArray.Length.ToString() + ")");
-
+                            mPacketArray.Length.ToString() + ")");
                     }
                 }
 
