@@ -266,6 +266,17 @@ public class AsynchronousSocketListener {
                         //nell forma     <MID=1234567890-865291049819286><VER=110>
                         Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
                     }
+
+                    if(content.Contains("<VER=500>"))
+                    {
+                        state = new StateObject();
+                        state.workSocket = ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  );
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : test stupid C3 modem, IP :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+                        Thread th = new Thread(()=> handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
+                        th.Start();
+                        return;
+                    }
+
                     string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
                     var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
