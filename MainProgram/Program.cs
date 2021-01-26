@@ -260,7 +260,7 @@ public class AsynchronousSocketListener {
                 
                 Console.WriteLine( "(First connection) partial data: " + content );
 
-                if (content.IndexOf("<VER=") > -1  && !content.EndsWith("^")   ) 
+                if (content.IndexOf("<VER=") > -1  /*&& !content.EndsWith("^") */  ) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
