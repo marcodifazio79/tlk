@@ -320,7 +320,7 @@ public class AsynchronousSocketListener {
                 else 
                 {  
                     // Not all data received. Get more.  
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data..");
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data.. (First connection)");
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
                         new AsyncCallback(ReadCallback), state);
                 }    
@@ -358,6 +358,8 @@ public class AsynchronousSocketListener {
             {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
+                
+                Console.WriteLine( "partial data: " + content );
                 if (content.IndexOf(">") > -1) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
