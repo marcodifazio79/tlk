@@ -253,10 +253,11 @@ public class AsynchronousSocketListener {
             int bytesRead = handler.EndReceive(ar);
             
             if (bytesRead > 0) {
-                Console.WriteLine( "(First connection) partial data: " + content );
-
+                
                 // There  might be more data, so store the data received so far.
-                state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
+                state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead)); 
+                Console.WriteLine( "(First connection) partial data: " + content );
+ 
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
                 if (content.IndexOf("<VER=") > -1  && !content.EndsWith("^")   ) 
                 {
