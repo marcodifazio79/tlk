@@ -18,7 +18,6 @@ namespace Functions
             
         }
 
-
         /// <summary>
         ///  
         /// </summary>
@@ -509,9 +508,16 @@ namespace Functions
             }
             finally
             {
-                Thread t = new Thread(()=> updateRemoteCommandStatus( IsCommandSuccesful, command_id ));
-                t.Start();
-                DB.DisposeAsync();
+                try{
+                    Thread t = new Thread(()=> updateRemoteCommandStatus( IsCommandSuccesful, command_id ));
+                    t.Start();
+                    DB.DisposeAsync();
+                }catch(Exception e)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " debug: "+e.Message);
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " debug: "+e.InnerException);
+                    
+                }
             }
             return answer;
         }

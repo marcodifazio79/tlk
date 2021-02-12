@@ -76,6 +76,10 @@
               "target": "Package",
               "version": "[8.0.22, )"
             },
+            "System.Data.Entity": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
             "System.Data.Entity.Repository": {
               "target": "Package",
               "version": "[2.0.0.1, )"
@@ -105,20 +109,12 @@
               "version": "[3.1.10, 3.1.10]"
             },
             {
-              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-              "version": "[3.1.12, 3.1.12]"
-            },
-            {
               "name": "Microsoft.NETCore.App.Host.linux-x64",
               "version": "[3.1.12, 3.1.12]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
               "version": "[3.1.0, 3.1.0]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-              "version": "[3.1.12, 3.1.12]"
             }
           ],
           "frameworkReferences": {
@@ -127,11 +123,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.103/RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     }
