@@ -225,6 +225,9 @@ public class AsynchronousSocketListener {
                         case "ComandoDaEseguire":
                             answerToBackend = Functions.DatabaseFunctions.IsAliveAnswer(command_id);
                         break;
+                        case "ComandoDaScartare":
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Comando ignorato, controllare i parametri");
+                        break;
                     }
                 }
             }
@@ -258,8 +261,6 @@ public class AsynchronousSocketListener {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
                 
-                Console.WriteLine( "(First connection) partial data: " + content );
-
                 if (content.IndexOf("<VER=") > -1  /*&& !content.EndsWith("^") */  ) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);

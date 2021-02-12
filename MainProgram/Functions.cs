@@ -523,7 +523,7 @@ namespace Functions
         public static void updateRemoteCommandStatus(   bool IsCommandSuccesful, int command_id   )
         {
             listener_DBContext DB = new listener_DBContext (); 
-            RemoteCommand commandToUpdate = DB.RemoteCommand.First(l => l.Id == command_id );
+            RemoteCommand commandToUpdate = DB.RemoteCommand.Include(j=>j.IdMacchinaNavigation).First(l => l.Id == command_id );
             commandToUpdate.AnsweredAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
             if(IsCommandSuccesful)
             {
@@ -597,7 +597,22 @@ namespace Functions
                     string commandForModem = CM.ModemCommand;
                     //se il comando è parametrizzadile (quindi impostare un valore sul modem, cerco il valore da impostare)
                     if(CM.IsParameterizable)
+                    {
                         commandForModem = commandForModem + data.SelectSingleNode(@"/data/value").InnerText;
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+// Il comando MHD imposta il MID del modem, è MOLTO brutto averne due con lo stesso mid. Quindi controllo se il comando è MHD, nel caso controllo il
+// parametro (il nuovo mid) e se già presente nel db non invio il comando
+                    }if( commandForModem == "#MHD" ){
+                        if(DB.Machines.Select( j => j.Mid ==  data.SelectSingleNode(@"/data/value").InnerText).Count() > 0)
+                        {
+                            returnValues = new string[] {"ComandoDaScartare","",""}; 
+                            return returnValues;
+                        }
+                    }
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+
                     returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , commandForModem   };
                 }
                 else{
