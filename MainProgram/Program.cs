@@ -253,10 +253,14 @@ public class AsynchronousSocketListener {
             int bytesRead = handler.EndReceive(ar);
             
             if (bytesRead > 0) {
+                
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
-                if (content.IndexOf("<VER=") > -1  && !content.EndsWith("^")   ) 
+                
+                Console.WriteLine( "(First connection) partial data: " + content );
+
+                if (content.IndexOf("<VER=") > -1  /*&& !content.EndsWith("^") */  ) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
@@ -266,6 +270,17 @@ public class AsynchronousSocketListener {
                         //nell forma     <MID=1234567890-865291049819286><VER=110>
                         Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
                     }
+
+                    if(content.Contains("<VER=500>"))
+                    {
+                        state = new StateObject();
+                        state.workSocket = ModemsSocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)handler.RemoteEndPoint).Address  );
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : test stupid C3 modem, IP :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+                        Thread th = new Thread(()=> handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
+                        th.Start();
+                        return;
+                    }
+
                     string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
                     var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -309,7 +324,7 @@ public class AsynchronousSocketListener {
                 else 
                 {  
                     // Not all data received. Get more.  
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data..");
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data.. (First connection)");
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
                         new AsyncCallback(ReadCallback), state);
                 }    
@@ -347,6 +362,8 @@ public class AsynchronousSocketListener {
             {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
+                
+                Console.WriteLine( "(otherCallback) partial data: " + content );
                 if (content.IndexOf(">") > -1) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
