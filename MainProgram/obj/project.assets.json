@@ -7930,7 +7930,7 @@
       "Microsoft.Extensions.Configuration.EnvironmentVariables >= 3.1.8",
       "Microsoft.Extensions.Configuration.Json >= 3.1.8",
       "MySql.Data.EntityFrameworkCore >= 8.0.22",
-      "System.Data.Entity >= 4.0.0",
+      "System.Data.Entity",
       "System.Data.Entity.Repository >= 2.0.0.1",
       "System.Text.Encodings.Web >= 5.0.0",
       "System.Threading.ThreadPool >= 4.3.0"
@@ -8013,7 +8013,7 @@
           },
           "System.Data.Entity": {
             "target": "Package",
-            "version": "[4.0.0, )"
+            "version": "(, )"
           },
           "System.Data.Entity.Repository": {
             "target": "Package",
@@ -8062,6 +8062,16 @@
     }
   },
   "logs": [
+    {
+      "code": "NU1604",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Project dependency System.Data.Entity does not contain an inclusive lower bound. Include a lower bound in the dependency version to ensure consistent restore results.",
+      "libraryId": "System.Data.Entity",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
     {
       "code": "NU1101",
       "level": "Error",

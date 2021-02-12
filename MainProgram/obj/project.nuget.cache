@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "pyc6zZIetd5OXWk1OAN7O37ELhR6/CVFgsazOx9seDZGpARkk920o9GPdH7B5upmXi3+sdLt5G/CEdecP7U6Vg==",
+  "dgSpecHash": "QjD4XA9oS74dvm2AtmPjmryrkr9LuLkJWP4asrI2jCPPkhU6/FOD3ZCWyN8P4qEyGtOWdCHkNFhEuYIufe2rJg==",
   "success": false,
   "projectFilePath": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
   "expectedPackageFiles": [
@@ -152,6 +152,16 @@
     "/home/fdifazio/.nuget/packages/microsoft.netcore.app.host.linux-x64/3.1.12/microsoft.netcore.app.host.linux-x64.3.1.12.nupkg.sha512"
   ],
   "logs": [
+    {
+      "code": "NU1604",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Project dependency System.Data.Entity does not contain an inclusive lower bound. Include a lower bound in the dependency version to ensure consistent restore results.",
+      "libraryId": "System.Data.Entity",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
     {
       "code": "NU1101",
       "level": "Error",

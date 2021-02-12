@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Threading;
 using Functions.database;
-using System.Data.Entity;
+
 using System.Linq;
 
 namespace Functions
@@ -508,16 +508,9 @@ namespace Functions
             }
             finally
             {
-                try{
-                    Thread t = new Thread(()=> updateRemoteCommandStatus( IsCommandSuccesful, command_id ));
-                    t.Start();
-                    DB.DisposeAsync();
-                }catch(Exception e)
-                {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " debug: "+e.Message);
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " debug: "+e.InnerException);
-                    
-                }
+                Thread t = new Thread(()=> updateRemoteCommandStatus( IsCommandSuccesful, command_id ));
+                t.Start();
+                DB.DisposeAsync();
             }
             return answer;
         }
@@ -529,7 +522,7 @@ namespace Functions
         public static void updateRemoteCommandStatus(   bool IsCommandSuccesful, int command_id   )
         {
             listener_DBContext DB = new listener_DBContext (); 
-            RemoteCommand commandToUpdate = DB.RemoteCommand.Include(j=>j.IdMacchinaNavigation).First(l => l.Id == command_id );
+            RemoteCommand commandToUpdate = DB.RemoteCommand.First(l => l.Id == command_id );
             commandToUpdate.AnsweredAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
             if(IsCommandSuccesful)
             {
@@ -544,7 +537,7 @@ namespace Functions
                         XmlDocument data = new XmlDocument();
                         data.LoadXml(commandToUpdate.Body);
                         string newMid = data.SelectSingleNode(@"/data/value").InnerText;
-                        commandToUpdate.IdMacchinaNavigation.Mid = newMid;
+                        DB.Machines.Single(s=>s.Id == commandToUpdate.IdMacchina).Mid = newMid;
                     }
                     catch
                     {

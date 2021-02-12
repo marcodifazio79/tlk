@@ -78,7 +78,7 @@
             },
             "System.Data.Entity": {
               "target": "Package",
-              "version": "[4.0.0, )"
+              "version": "(, )"
             },
             "System.Data.Entity.Repository": {
               "target": "Package",
