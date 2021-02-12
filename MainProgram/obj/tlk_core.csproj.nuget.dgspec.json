@@ -4,18 +4,15 @@
     "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj": {}
   },
   "projects": {
-    "/home/fdifazio/Documents/tlk/Functions/Functions.csproj": {
+    "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj",
-        "projectName": "Functions",
-        "projectPath": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj",
+        "projectUniqueName": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
+        "projectName": "tlk_core",
+        "projectPath": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
         "packagesPath": "/home/fdifazio/.nuget/packages/",
-        "outputPath": "/home/fdifazio/Documents/tlk/Functions/obj/",
+        "outputPath": "/home/fdifazio/Documents/tlk/MainProgram/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
           "/home/fdifazio/.nuget/NuGet/NuGet.Config"
         ],
@@ -27,6 +24,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -38,6 +36,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.AspNetCore.SignalR.Client": {
               "target": "Package",
@@ -77,21 +76,9 @@
               "target": "Package",
               "version": "[8.0.22, )"
             },
-            "System.ServiceModel.Duplex": {
+            "System.Data.Entity.Repository": {
               "target": "Package",
-              "version": "[4.6.*, )"
-            },
-            "System.ServiceModel.Http": {
-              "target": "Package",
-              "version": "[4.6.*, )"
-            },
-            "System.ServiceModel.NetTcp": {
-              "target": "Package",
-              "version": "[4.6.*, )"
-            },
-            "System.ServiceModel.Security": {
-              "target": "Package",
-              "version": "[4.6.*, )"
+              "version": "[2.0.0.1, )"
             },
             "System.Text.Encodings.Web": {
               "target": "Package",
@@ -114,8 +101,20 @@
           "warn": true,
           "downloadDependencies": [
             {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
               "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
               "version": "[3.1.12, 3.1.12]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[3.1.12, 3.1.12]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
             },
             {
               "name": "Microsoft.NETCore.App.Runtime.linux-x64",
@@ -127,119 +126,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.406/RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
-        }
-      }
-    },
-    "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
-        "projectName": "tlk_core",
-        "projectPath": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
-        "packagesPath": "/home/fdifazio/.nuget/packages/",
-        "outputPath": "/home/fdifazio/Documents/tlk/MainProgram/obj/",
-        "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
-        "configFilePaths": [
-          "/home/fdifazio/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "netcoreapp3.1"
-        ],
-        "sources": {
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "netcoreapp3.1": {
-            "projectReferences": {
-              "/home/fdifazio/Documents/tlk/Functions/Functions.csproj": {
-                "projectPath": "/home/fdifazio/Documents/tlk/Functions/Functions.csproj"
-              }
-            }
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        }
-      },
-      "frameworks": {
-        "netcoreapp3.1": {
-          "dependencies": {
-            "Microsoft.EntityFrameworkCore.SqlServer": {
-              "target": "Package",
-              "version": "[3.1.1, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[3.1.1, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools.DotNet": {
-              "target": "Package",
-              "version": "[2.0.3, )"
-            },
-            "Microsoft.Extensions.Configuration": {
-              "target": "Package",
-              "version": "[3.1.8, )"
-            },
-            "Microsoft.Extensions.Configuration.CommandLine": {
-              "target": "Package",
-              "version": "[3.1.8, )"
-            },
-            "Microsoft.Extensions.Configuration.EnvironmentVariables": {
-              "target": "Package",
-              "version": "[3.1.8, )"
-            },
-            "Microsoft.Extensions.Configuration.Json": {
-              "target": "Package",
-              "version": "[3.1.8, )"
-            },
-            "MySql.Data.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[8.0.22, )"
-            },
-            "System.Threading.ThreadPool": {
-              "target": "Package",
-              "version": "[4.3.0, )"
-            }
-          },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-              "version": "[3.1.12, 3.1.12]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-              "version": "[3.1.12, 3.1.12]"
-            }
-          ],
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.406/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.103/RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {

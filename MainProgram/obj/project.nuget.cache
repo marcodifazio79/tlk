@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "C4sSOb6EwJhSDhuen2Ptz+3xo05grKMxh97HqkBRnZ4oAmqCCMB/a+XRlpvDKJK2oU5cRjHkjlh3G1Gk7/iMVQ==",
+  "dgSpecHash": "ruCyHCrCdP0SsO8u9YI0iNz8GjL86SDFe/Co4XDTLypGx2UWlbB/or36RUgUexST5bwfy+U2Ncq9TjpGYb8yhw==",
   "success": true,
   "projectFilePath": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
   "expectedPackageFiles": [
     "/home/fdifazio/.nuget/packages/bouncycastle.netcore/1.8.3/bouncycastle.netcore.1.8.3.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/entityframework/5.0.0/entityframework.5.0.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/google.protobuf/3.11.4/google.protobuf.3.11.4.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/k4os.compression.lz4/1.1.11/k4os.compression.lz4.1.1.11.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/k4os.compression.lz4.streams/1.1.11/k4os.compression.lz4.streams.1.1.11.nupkg.sha512",
@@ -117,6 +118,7 @@
     "/home/fdifazio/.nuget/packages/system.componentmodel.primitives/4.3.0/system.componentmodel.primitives.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.componentmodel.typeconverter/4.3.0/system.componentmodel.typeconverter.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.configuration.configurationmanager/4.5.0/system.configuration.configurationmanager.4.5.0.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/system.data.entity.repository/2.0.0.1/system.data.entity.repository.2.0.0.1.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.diagnostics.debug/4.3.0/system.diagnostics.debug.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.diagnostics.diagnosticsource/5.0.0/system.diagnostics.diagnosticsource.5.0.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.diagnostics.tools/4.3.0/system.diagnostics.tools.4.3.0.nupkg.sha512",
@@ -138,10 +140,8 @@
     "/home/fdifazio/.nuget/packages/system.net.sockets/4.1.0/system.net.sockets.4.1.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.objectmodel/4.3.0/system.objectmodel.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.private.datacontractserialization/4.3.0/system.private.datacontractserialization.4.3.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.private.servicemodel/4.6.0/system.private.servicemodel.4.6.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.private.uri/4.3.0/system.private.uri.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.reflection/4.3.0/system.reflection.4.3.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.reflection.dispatchproxy/4.5.0/system.reflection.dispatchproxy.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.reflection.emit/4.3.0/system.reflection.emit.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.reflection.emit.ilgeneration/4.3.0/system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.reflection.emit.lightweight/4.3.0/system.reflection.emit.lightweight.4.3.0.nupkg.sha512",
@@ -161,20 +161,12 @@
     "/home/fdifazio/.nuget/packages/system.runtime.serialization.primitives/4.3.0/system.runtime.serialization.primitives.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.accesscontrol/4.7.0/system.security.accesscontrol.4.7.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.algorithms/4.2.0/system.security.cryptography.algorithms.4.2.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.security.cryptography.cng/4.5.0/system.security.cryptography.cng.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.encoding/4.0.0/system.security.cryptography.encoding.4.0.0.nupkg.sha512",
-    "/usr/share/dotnet/sdk/NuGetFallbackFolder/system.security.cryptography.pkcs/4.5.0/system.security.cryptography.pkcs.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.primitives/4.3.0/system.security.cryptography.primitives.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.cryptography.protecteddata/4.5.0/system.security.cryptography.protecteddata.4.5.0.nupkg.sha512",
-    "/usr/share/dotnet/sdk/NuGetFallbackFolder/system.security.cryptography.xml/4.5.0/system.security.cryptography.xml.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.permissions/4.7.0/system.security.permissions.4.7.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.principal.windows/4.7.0/system.security.principal.windows.4.7.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.security.securestring/4.3.0/system.security.securestring.4.3.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.servicemodel.duplex/4.6.0/system.servicemodel.duplex.4.6.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.servicemodel.http/4.6.0/system.servicemodel.http.4.6.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.servicemodel.nettcp/4.6.0/system.servicemodel.nettcp.4.6.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.servicemodel.primitives/4.6.0/system.servicemodel.primitives.4.6.0.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/system.servicemodel.security/4.6.0/system.servicemodel.security.4.6.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.text.encoding/4.3.0/system.text.encoding.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.text.encoding.codepages/4.5.0/system.text.encoding.codepages.4.5.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.text.encoding.extensions/4.3.0/system.text.encoding.extensions.4.3.0.nupkg.sha512",
@@ -195,8 +187,32 @@
     "/home/fdifazio/.nuget/packages/system.xml.xmlserializer/4.3.0/system.xml.xmlserializer.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.xml.xpath/4.0.1/system.xml.xpath.4.0.1.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.xml.xpath.xmldocument/4.0.1/system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/microsoft.netcore.app.ref/3.1.0/microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/3.1.12/microsoft.netcore.app.runtime.linux-x64.3.1.12.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/3.1.12/microsoft.aspnetcore.app.runtime.linux-x64.3.1.12.nupkg.sha512"
+    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/3.1.12/microsoft.aspnetcore.app.runtime.linux-x64.3.1.12.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/microsoft.netcore.app.host.linux-x64/3.1.12/microsoft.netcore.app.host.linux-x64.3.1.12.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.ref/3.1.10/microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'EntityFramework 5.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "EntityFramework",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.Data.Entity.Repository 2.0.0.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "System.Data.Entity.Repository",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    }
+  ]
 }
