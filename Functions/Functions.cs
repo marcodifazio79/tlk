@@ -518,7 +518,7 @@ namespace Functions
 
 
         /// <summary>
-        /// update the command status
+        /// update the command status to its final state: Done or Error
         /// </summary>
         public static void updateRemoteCommandStatus(   bool IsCommandSuccesful, int command_id   )
         {
@@ -526,7 +526,27 @@ namespace Functions
             RemoteCommand commandToUpdate = DB.RemoteCommand.First(l => l.Id == command_id );
             commandToUpdate.AnsweredAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
             if(IsCommandSuccesful)
+            {
                 commandToUpdate.Status = "Done";
+
+                //-----------CASO SPECIALE!!!--------------
+                //il comando MHD cambia il mid di una macchina: verrebbe aggiornato nella successiva connessione, ma potrebbe passare del tempo nel quale
+                //la macchina risponderebbe male ai comandi: meglio aggiornarlo ora.
+                if(commandToUpdate.Body.Contains("<command>setMhd</command>"))
+                {
+                    try{
+                        XmlDocument data = new XmlDocument();
+                        data.LoadXml(commandToUpdate.Body);
+                        string newMid = data.SelectSingleNode(@"/data/value").InnerText;
+                        commandToUpdate.IdMacchinaNavigation.Mid = newMid;
+                    }
+                    catch
+                    {
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " catastrofe nell'aggiornare l'mid, remoteCommand id = " + command_id);
+                    }
+                }
+
+            }
             else
                 commandToUpdate.Status = "Error";
             DB.SaveChanges();
@@ -566,7 +586,7 @@ namespace Functions
                 RemoteCommand commandToExecute = DB.RemoteCommand.First(  y=>y.Id == RemoteCommand_ID  );
                 XmlDocument data = new XmlDocument();
                 data.LoadXml(commandToExecute.Body);
-                
+
                 string targetCodElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
                 string webCom = data.SelectSingleNode(@"/data/command").InnerText;
                 

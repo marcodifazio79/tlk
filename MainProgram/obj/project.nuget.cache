@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "FyAYw4aoov+YIH9zzjbXn6fsuI44jW8V+xJHxL8rBkNLylorR2VW77uTA+WU1RB6jW+ib1DgyWvUIcXLaSdCRg==",
+  "dgSpecHash": "C4sSOb6EwJhSDhuen2Ptz+3xo05grKMxh97HqkBRnZ4oAmqCCMB/a+XRlpvDKJK2oU5cRjHkjlh3G1Gk7/iMVQ==",
   "success": true,
   "projectFilePath": "/home/fdifazio/Documents/tlk/MainProgram/tlk_core.csproj",
   "expectedPackageFiles": [
@@ -195,8 +195,8 @@
     "/home/fdifazio/.nuget/packages/system.xml.xmlserializer/4.3.0/system.xml.xmlserializer.4.3.0.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.xml.xpath/4.0.1/system.xml.xpath.4.0.1.nupkg.sha512",
     "/home/fdifazio/.nuget/packages/system.xml.xpath.xmldocument/4.0.1/system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/3.1.11/microsoft.netcore.app.runtime.linux-x64.3.1.11.nupkg.sha512",
-    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/3.1.11/microsoft.aspnetcore.app.runtime.linux-x64.3.1.11.nupkg.sha512"
+    "/home/fdifazio/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/3.1.12/microsoft.netcore.app.runtime.linux-x64.3.1.12.nupkg.sha512",
+    "/home/fdifazio/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/3.1.12/microsoft.aspnetcore.app.runtime.linux-x64.3.1.12.nupkg.sha512"
   ],
   "logs": []
 }

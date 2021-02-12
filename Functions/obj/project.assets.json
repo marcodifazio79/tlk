@@ -12458,11 +12458,11 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-            "version": "[3.1.11, 3.1.11]"
+            "version": "[3.1.12, 3.1.12]"
           },
           {
             "name": "Microsoft.NETCore.App.Runtime.linux-x64",
-            "version": "[3.1.11, 3.1.11]"
+            "version": "[3.1.12, 3.1.12]"
           }
         ],
         "frameworkReferences": {
@@ -12470,7 +12470,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.405/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.406/RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {
