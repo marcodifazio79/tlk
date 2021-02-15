@@ -527,24 +527,6 @@ namespace Functions
             if(IsCommandSuccesful)
             {
                 commandToUpdate.Status = "Done";
-
-                //-----------CASO SPECIALE!!!--------------
-                //il comando MHD cambia il mid di una macchina: verrebbe aggiornato nella successiva connessione, ma potrebbe passare del tempo nel quale
-                //la macchina risponderebbe male ai comandi: meglio aggiornarlo ora.
-                if(commandToUpdate.Body.Contains("<command>setMhd</command>"))
-                {
-                    try{
-                        XmlDocument data = new XmlDocument();
-                        data.LoadXml(commandToUpdate.Body);
-                        string newMid = data.SelectSingleNode(@"/data/value").InnerText;
-                        DB.Machines.Single(s=>s.Id == commandToUpdate.IdMacchina).Mid = newMid;
-                    }
-                    catch
-                    {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " catastrofe nell'aggiornare l'mid, remoteCommand id = " + command_id);
-                    }
-                }
-
             }
             else
                 commandToUpdate.Status = "Error";
@@ -602,11 +584,13 @@ namespace Functions
 //------------------------------------------------------------------------------------------------------------------------------------------
 // Il comando MHD imposta il MID del modem, è MOLTO brutto averne due con lo stesso mid. Quindi controllo se il comando è MHD, nel caso controllo il
 // parametro (il nuovo mid) e se già presente nel db non invio il comando
-                    }if( commandForModem == "#MHD" ){
-                        if(DB.Machines.Select( j => j.Mid ==  data.SelectSingleNode(@"/data/value").InnerText).Count() > 0)
+                        if( commandForModem.Contains( "#MHD") )
                         {
-                            returnValues = new string[] {"ComandoDaScartare","",""}; 
-                            return returnValues;
+                            if(DB.Machines.Select( j => j.Mid ==  data.SelectSingleNode(@"/data/value").InnerText).Count() > 0)
+                            {
+                                returnValues = new string[] {"ComandoDaScartare","",""}; 
+                                return returnValues;
+                            }
                         }
                     }
 //------------------------------------------------------------------------------------------------------------------------------------------
