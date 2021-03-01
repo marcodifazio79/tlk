@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace Functions.database
 {
@@ -33,13 +33,13 @@ namespace Functions.database
         public virtual DbSet<RemoteCommand> RemoteCommand { get; set; }
         public virtual DbSet<CommandsMatch> CommandsMatch { get; set; }
 
+        public IConfiguration Configuration { get; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=10.10.10.71;port=3306;user=bot_user;password=Qwert@#!99;database=listener_DB");
+                optionsBuilder.UseMySQL(Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
             }
         }
 
