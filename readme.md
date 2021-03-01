@@ -2,7 +2,7 @@
 
 ### The code
 ~~La cartella col codice di riferimento attuale del server è net_core_v2.~~ <br/>
-Da terminale, `dotnet publish tlk_core.csproj --self-contained true -r linux-x64` per compilare. <br/>
+Da terminale, `dotnet publish -c Release tlk_core.csproj --self-contained true -r linux-x64` per compilare. <br/>
 L'output è l'eseguibile /bin/netcoreapp3.1/linux-x64/publish/tlk_core
 
 Per ricostruire il db context (metti caso che aggiungiamo tabelle), da dentro la certella Functions: `dotnet ef dbcontext scaffold 'server=10.10.10.71;port=3306;user=bot_user;password=FILLMEWITHPASSWORD;database=listener_DB' MySql.Data.EntityFrameworkCore -o database -f`
