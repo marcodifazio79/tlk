@@ -39,7 +39,8 @@ namespace Functions.database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnection"].ToString());
+                optionsBuilder.UseMySQL("server=10.10.10.71; database=listener_DB; uid=bot_user; pwd=Qwert@#!99;");
+                    //Configuration["ConnectionStrings:DefaultConnection"].ToString());
             }
         }
 
