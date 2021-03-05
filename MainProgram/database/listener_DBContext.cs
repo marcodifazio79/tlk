@@ -39,7 +39,7 @@ namespace Functions.database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL(Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
+                optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnection"].ToString());
             }
         }
 
