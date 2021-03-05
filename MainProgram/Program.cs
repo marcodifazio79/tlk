@@ -372,7 +372,7 @@ public class AsynchronousSocketListener {
                     //send response to modem
                     Thread responseToModemThread = new Thread(()=>Send (  handler   ,  "#TWR"  ));
                     responseToModemThread.Start();
-                    Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"SEND", "#TWR" );
+                
                 }
                 else 
                 {  
