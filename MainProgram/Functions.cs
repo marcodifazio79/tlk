@@ -706,11 +706,17 @@ namespace Functions
                 catch(Exception e)
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList2 : ") + e.Message);
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList2 : ") + e.InnerException);
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList2 : ") + e.StackTrace);
+
+
                 }
             }
             catch(Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList : ") + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList : ") + e.InnerException);
+
             }
             return SocketList;
         }
@@ -739,6 +745,8 @@ namespace Functions
             catch(Exception e)
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss addToList : ") + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss addToList : ") + e.InnerException);
+                
             }
             return SocketList;
         }
