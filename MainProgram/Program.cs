@@ -492,7 +492,8 @@ public class AsynchronousSocketListener {
                 //check if the config file have necessary entries:
                 !string.IsNullOrEmpty(Configuration["LocalAddressForConnections"].ToString())    &
                 !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                    &
-                !string.IsNullOrEmpty(Configuration["Port:Backend"])    
+                !string.IsNullOrEmpty(Configuration["Port:Backend"])                             &
+                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnection"])
             ){
 
             // ...start Listening (for connection), it's hard to comment on this one.
