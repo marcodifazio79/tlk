@@ -239,7 +239,7 @@ public class AsynchronousSocketListener {
         finally
         {
             //response for the backend
-            Thread responseToBackendThred = new Thread(()=>Send (  handler   ,  answerToBackend  ));
+            Thread responseToBackendThred = new Thread(()=> Send (  handler   ,  answerToBackend  ));
             responseToBackendThred.Start();
         }
     }
@@ -367,8 +367,12 @@ public class AsynchronousSocketListener {
                 if (content.IndexOf(">") > -1) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
-                    //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                    
+                    //send response to modem
+                    Thread responseToModemThread = new Thread(()=>Send (  handler   ,  "#TWR"  ));
+                    responseToModemThread.Start();
+                    Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"SEND", "#TWR" );
                 }
                 else 
                 {  
@@ -409,8 +413,7 @@ public class AsynchronousSocketListener {
         state = new StateObject();
         state.workSocket = handler;
         state.workSocket.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state);
-        //Thread t = new Thread(()=> state.workSocket.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state));
-        //t.Start();
+        
     }    
 
     public static async Task Send(Socket handler, String data) {  
