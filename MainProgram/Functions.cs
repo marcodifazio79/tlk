@@ -674,76 +674,36 @@ namespace Functions
 
     public class SocketList
     {
-        public static List<Socket> removeFromList(Socket SocketToRemove, List<Socket> SocketList)
+
+        public static void setModemOffline(IPAddress ip)
         {
-            try
-            {
-                
-                try
-                {
-                    listener_DBContext DB = new listener_DBContext (); 
-                    
-                    //controllare se funziona il .Contains invece di .Exist, al momento non funziona intellisense e non mi va di scapocciarci.
-                    if (SocketList.Exists(  x=>((IPEndPoint)x.RemoteEndPoint).Address.ToString() == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString()  ))
-                    {
-                        DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address.ToString() ).IsOnline = false;
-                        SocketList.Remove(  SocketList.Find(  y=>((IPEndPoint)y.RemoteEndPoint).Address == ((IPEndPoint)SocketToRemove.RemoteEndPoint).Address  )  );                
-                    }
-
-                    DB.SaveChanges();
-                    DB.DisposeAsync();
-
-                    //reload web page
-                    try{
-                        new Thread(()=>
-                            Functions.SignalRSender.AskToReloadMachinesTable() 
-                        ).Start();                        
-                    }
-                    catch(Exception exc){
-                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
-                    }
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList2 : ") + e.Message);
-                }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss removeFromList : ") + e.Message);
-            }
-            return SocketList;
+          try
+          {
+            listener_DBContext DB = new listener_DBContext (); 
+            DB.Machines.Single( j=> j.IpAddress ==  ip.ToString()).IsOnline = false;
+            DB.SaveChanges();
+            DB.DisposeAsync();
+          }
+          catch(Exception e)
+          {
+            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " setModemOffline failed for: " + ip.ToString());
+          }         
         }
-
-        public static List<Socket> addToList(Socket SocketToAdd, List<Socket> SocketList)
+        public static void setModemOnline(IPAddress ip)
         {
-            try
-            {
-                SocketList.Add(  SocketToAdd  ); 
-                listener_DBContext DB = new listener_DBContext (); 
-                DB.Machines.First(  j=> j.IpAddress ==  ((IPEndPoint)SocketToAdd.RemoteEndPoint).Address.ToString() ).IsOnline = true;
-                DB.SaveChanges();
-                DB.DisposeAsync();
-
-                //reload web page
-                try{
-                    new Thread(()=>
-                        Functions.SignalRSender.AskToReloadMachinesTable() 
-                    ).Start();                        
-                }
-                catch(Exception exc){
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
-                }
-
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss addToList : ") + e.Message);
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss addToList : ") + e.InnerException);
-                
-            }
-            return SocketList;
+          try
+          {
+            listener_DBContext DB = new listener_DBContext (); 
+            DB.Machines.Single( j=> j.IpAddress ==  ip.ToString()).IsOnline = true;
+            DB.SaveChanges();
+            DB.DisposeAsync();
+          }
+          catch(Exception e)
+          {
+            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " setModemOnline failed for: " + ip.ToString());
+          }
         }
+        
         /// <summary>
         /// Checks the connection state
         /// </summary>
