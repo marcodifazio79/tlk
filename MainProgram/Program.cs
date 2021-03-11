@@ -365,7 +365,7 @@ public class AsynchronousSocketListener {
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                     
                     //send response to modem
-                    Thread responseToModemThread = new Thread(()=>Send (  handler   ,  "#TWR"  ));
+                    Thread responseToModemThread = new Thread(()=>Send (  handler   ,  "#CRK"  ));
                     responseToModemThread.Start();
                 
                 }
