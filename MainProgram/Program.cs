@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;  
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using System.Xml;
@@ -364,13 +364,19 @@ public class AsynchronousSocketListener {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                     
-                    //send response to modem
-                    Thread responseToModemThread = new Thread(()=>Send (  handler   ,  "#CRK"  ));
-                    responseToModemThread.Start();
-                
+                    //a quick regex operation to check if it's a response to a response, 
+                    //in that case no response is nedeed
+                    string pattern = @"<TCA=[0-9]+-[0-9]+ >";
+                    Match m = Regex.Match(content, pattern, RegexOptions.IgnoreCase);
+                    if( ! m.Success)
+                    {
+                        //send response to modem
+                        Thread responseToModemThread = new Thread(()=>Send (  handler   ,  "#CRK"  ));
+                        responseToModemThread.Start();
+                    }
                 }
                 else 
-                {  
+                {
                     // Not all data received. Get more.  
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data..");
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
