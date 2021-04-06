@@ -213,13 +213,19 @@ public class AsynchronousSocketListener {
                             answerToBackend = "<Error>Comando non riconosciuto</Error>";
                         break;
                         case "ComandoDaGirare":
-                            Thread t = new Thread(()=>Send (
-                                ConnectedModems[IPAddress.Parse(remoteComm[1])],  
-                                "#PWD123456"+ remoteComm[2]));
-                            t.Start();
-                            //answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
-                            answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1] , command_id,  remoteComm[2]  );
-                            
+                            // meglio non mandare comandi a modem non collegati..
+                            if(ConnectedModems.ContainsKey(IPAddress.Parse(remoteComm[1])))
+                            {
+                                Thread t = new Thread(()=>Send (
+                                    ConnectedModems[IPAddress.Parse(remoteComm[1])],  
+                                    "#PWD123456"+ remoteComm[2]));
+                                t.Start();
+                                //answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
+                                answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1] , command_id,  remoteComm[2]  );
+                            }
+                            else{
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Comando ignorato, modem offline");
+                            }
                         break;
                         case "ComandoDaEseguire":
                             answerToBackend = Functions.DatabaseFunctions.IsAliveAnswer(command_id);
@@ -420,7 +426,7 @@ public class AsynchronousSocketListener {
 
     public static async Task Send(Socket handler, String data) {  
         StateObject state = new StateObject();
-        IPAddress ip = IPAddress.Parse("127.0.0.1"); //a placeholder, just in case
+        IPAddress ip = IPAddress.Parse("127.0.0.1"); //a dummy value to initialize the variable.
         try{  
             //byte[] byteData = Encoding.ASCII.GetBytes(data);
             // Begin sending the data to the remote device.
@@ -435,7 +441,7 @@ public class AsynchronousSocketListener {
         }catch(Exception e) {
             if(e is System.Net.Sockets.SocketException)
             {
-                //the modem get stucked in "send mode" from time to time. If this happens, 
+                // the modem get stucked in "send mode" from time to time. If this happen, 
                 // trying to send to the modem cause a SocketException, i'll reset the connection if this occur
                 ConnectedModems.Remove(ip);
                 Functions.SocketList.setModemOffline(ip);
