@@ -455,11 +455,11 @@ namespace Functions
             string expectedAnswer = "";
             bool IsCommandSuccesful = false;
             try{
-                
                 expectedAnswer = DB.CommandsMatch.Single(y=>y.Id == command_id).expectedAnswer;
                 string pattern = @"<TCA=[0-9\- ]+"+expectedAnswer+@"[0-9a-zA-Z \-]+>$";
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
-                for(int i=0; i < (Seconds/2); i++){
+                for(int i=0; i < (Seconds/2); i++)
+                {
                     Thread.Sleep(2000);
                 
                     MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
@@ -467,26 +467,17 @@ namespace Functions
                         .OrderByDescending(z=>z.time_stamp)
                         .First(l => l.IpAddress == modemIp);
                     
-                    double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
-                    if(secondsFromLastPacket < Seconds)
+                    Match m = Regex.Match(lastReceivedFromModem.TransferredData, pattern, RegexOptions.IgnoreCase);
+                    if(m.Success)
                     {
-                        Match m = Regex.Match(lastReceivedFromModem.TransferredData, pattern, RegexOptions.IgnoreCase);
-                        if(m.Success)
-                        {
-                            answer = lastReceivedFromModem.TransferredData;
-                            IsCommandSuccesful = true;
-                            break;
-                        }
-                        else
-                        {
-                            IsCommandSuccesful = false;
-                        }
+                        answer = lastReceivedFromModem.TransferredData;
+                        IsCommandSuccesful = true;
+                        break;
                     }
                     else
                     {
                         IsCommandSuccesful = false;
                     }
-                    
                 }
             }
             catch(Exception e)
