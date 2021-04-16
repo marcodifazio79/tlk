@@ -516,7 +516,7 @@ namespace Functions
             try{
                 //let's reload the machcommandstable
                 new Thread(()=>
-                    Functions.SignalRSender.AskToReloadMachCommandTable ( command_id ) 
+                    Functions.SignalRSender.AskToReloadMachCommandTable ( (int)commandToUpdate.IdMacchina ) 
                 ).Start();
                 }
             catch(Exception exc){
