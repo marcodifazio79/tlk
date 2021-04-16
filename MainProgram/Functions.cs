@@ -455,7 +455,9 @@ namespace Functions
             string expectedAnswer = "";
             bool IsCommandSuccesful = false;
             try{
-                expectedAnswer = DB.CommandsMatch.Single(y=>y.Id == command_id).expectedAnswer;
+                char[] MyChar = {'1','2','3','4','5','6','7','8','9','0','#'};
+                expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand.StartsWith( commandtext.Trim(MyChar) )).expectedAnswer;
+                
                 string pattern = @"<TCA=[0-9\- ]+"+expectedAnswer+@"[0-9a-zA-Z \-]+>$";
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++)
