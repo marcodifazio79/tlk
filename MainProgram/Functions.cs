@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Threading;
 using Functions.database;
-
+using System.Text.RegularExpressions;
 using System.Linq;
 
 namespace Functions
@@ -205,6 +205,7 @@ namespace Functions
                 //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
                 //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
 
+                //Since the new answer format from the C3 sucks we do not update values. 
 
                 if(data.Contains("LGG="))
                 {
@@ -311,8 +312,6 @@ namespace Functions
                             mPacketArray.Length.ToString() + ")");
                     }
                 }
-
-
             }
             catch (Exception e)
             {
@@ -354,76 +353,71 @@ namespace Functions
         {
             listener_DBContext DB = new listener_DBContext (); 
             try{
-            //esempio di come dovrebbe essere "data" 
-            //
-            //<data>
-	        //    <transactionTarget>modem<transactionTarget/>
-	        //    <codElettronico>123456789</codElettronico>
-	        //    <command>TakeARide!</command>
-            //</data>
+                //  esempio di come dovrebbe essere "data" 
+                //
+                //  <data>
+                //    <transactionTarget>modem<transactionTarget/>
+                //    <codElettronico>123456789</codElettronico>
+                //    <command>TakeARide!</command>
+                //  </data>
 
-            XmlDocument data = new XmlDocument();
-            data.LoadXml(content);
+                XmlDocument data = new XmlDocument();
+                data.LoadXml(content);
 
-            String codElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
-            String command = data.SelectSingleNode(@"/data/command").InnerText;
-            RemoteCommand remCom = null;
+                String codElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
+                String command = data.SelectSingleNode(@"/data/command").InnerText;
+                RemoteCommand remCom = null;
 
-            if(DB.Machines.Any(y=> y.Mid == codElettronico))
-            {
-
-                remCom = new RemoteCommand { 
-                    Body = content,
-                    Sender = ipSender,
-                    IdMacchina = DB.Machines.First(   y=> y.Mid == codElettronico    ).Id,
-                    Status = "Pending",
-                    ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
-                    SendedAt = null,
-                    AnsweredAt = null
-                } ;
-                DB.RemoteCommand.Add( remCom  );
-                
-            }
-            else
-            {
-                remCom = new RemoteCommand { 
-                    Body = content,
-                    Sender = ipSender,
-                    IdMacchina = null,
-                    Status = "Error",
-                    ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
-                    SendedAt = null,
-                    AnsweredAt = null
-
-                } ;
-                DB.RemoteCommand.Add( remCom  );
-            }
-            DB.SaveChanges();
-
-            //reload the web page
-            if(remCom.IdMacchina!= null)
-            {              
-                try{
-                    new Thread(()=>
-                        Functions.SignalRSender.AskToReloadMachCommandTable ( (int)remCom.IdMacchina ) 
-                    ).Start();
+                if(DB.Machines.Any(y=> y.Mid == codElettronico))
+                {
+                    remCom = new RemoteCommand { 
+                        Body = content,
+                        Sender = ipSender,
+                        IdMacchina = DB.Machines.First(   y=> y.Mid == codElettronico    ).Id,
+                        Status = "Pending",
+                        ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                        SendedAt = null,
+                        AnsweredAt = null
+                    } ;
+                    DB.RemoteCommand.Add( remCom  );
                 }
-                catch(Exception exc){
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
+                else
+                {
+                    remCom = new RemoteCommand { 
+                        Body = content,
+                        Sender = ipSender,
+                        IdMacchina = null,
+                        Status = "Error",
+                        ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                        SendedAt = null,
+                        AnsweredAt = null
+                    } ;
+                    DB.RemoteCommand.Add( remCom  );
                 }
-            }
+                DB.SaveChanges();
 
-            if(remCom.Status=="Pending")
-                return remCom.Id;
-            else 
-                return -1; //error
+                //reload the web page
+                if(remCom.IdMacchina!= null)
+                {              
+                    try{
+                        new Thread(()=>
+                            Functions.SignalRSender.AskToReloadMachCommandTable ( (int)remCom.IdMacchina ) 
+                        ).Start();
+                    }
+                    catch(Exception exc){
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
+                    }
+                }
+
+                if(remCom.Status=="Pending")
+                    return remCom.Id;
+                else 
+                    return -1; //error
 
             }catch(Exception e )
             {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss insertIntoRemoteCommand : ") + e.Message);
-                
                 DB.DisposeAsync();
-            
                 return -1;
             }
             finally{DB.DisposeAsync();}
@@ -439,7 +433,7 @@ namespace Functions
             try
             {
                 string mPacket = DB.MachinesConnectionTrace.Where( k=>k.IdMacchinaNavigation.Id == machineID &&  k.TransferredData.StartsWith("<TPK=$M1,")   )
-                .OrderByDescending(j=>j.Id).First().TransferredData;
+                    .OrderByDescending(j=>j.Id).First().TransferredData;
                 string[] mPacketArray = mPacket.Split(',');
                 return (Convert.ToInt32(mPacketArray[3]) / Convert.ToInt32( mPacketArray[4]));
             }
@@ -461,16 +455,9 @@ namespace Functions
             string expectedAnswer = "";
             bool IsCommandSuccesful = false;
             try{
-                // if the command is like LGA600 or KAL500, whe must remove the param or get fucked. 
-                // but removing the numbers from commands broke #PU1, so #PU1 get a special case,
-                // becouse i cannot think of anything better at the moment
-                char[] MyChar = {'1','2','3','4','5','6','7','8','9','0'};
                 
-                if(commandtext == "#PU1")
-                    expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand.StartsWith( commandtext.Trim(MyChar) )).expectedAnswer;        
-                else
-                    expectedAnswer = DB.CommandsMatch.Single(y=>y.ModemCommand == commandtext.Trim(MyChar) ).expectedAnswer;        
-                
+                expectedAnswer = DB.CommandsMatch.Single(y=>y.Id == command_id).expectedAnswer;
+                string pattern = @"<TCA=[0-9\- ]+"+expectedAnswer+@"[0-9a-zA-Z \-]+>$";
                 int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++){
                     Thread.Sleep(2000);
@@ -483,8 +470,9 @@ namespace Functions
                     double secondsFromLastPacket = (  DateTime.Now - DateTime.Parse( lastReceivedFromModem.time_stamp.ToString())).TotalSeconds;
                     if(secondsFromLastPacket < Seconds)
                     {
-                        if(lastReceivedFromModem.TransferredData.Contains(expectedAnswer))
-                        {       
+                        Match m = Regex.Match(lastReceivedFromModem.TransferredData, pattern, RegexOptions.IgnoreCase);
+                        if(m.Success)
+                        {
                             answer = lastReceivedFromModem.TransferredData;
                             IsCommandSuccesful = true;
                             break;
@@ -541,8 +529,6 @@ namespace Functions
             catch(Exception exc){
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachCommandTable: "+exc.Message);
             }
-
-
             DB.DisposeAsync();
         }
 
