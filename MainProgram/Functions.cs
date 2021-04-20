@@ -558,23 +558,30 @@ namespace Functions
                     //se il comando è parametrizzadile (quindi impostare un valore sul modem, cerco il valore da impostare)
                     if(CM.IsParameterizable)
                     {
-                        commandForModem = commandForModem + data.SelectSingleNode(@"/data/value").InnerText;
+                        string paramValue = data.SelectSingleNode(@"/data/value").InnerText;
+                        if (!string.IsNullOrEmpty(paramValue))
+                        {
+                            commandForModem = commandForModem + paramValue;
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 // Il comando MHD imposta il MID del modem, è MOLTO brutto averne due con lo stesso mid. Quindi controllo se il comando è MHD, nel caso controllo il
 // parametro (il nuovo mid) e se già presente nel db non invio il comando
-                        if( commandForModem.Contains( "#MHD") )
-                        {
-                            if(DB.Machines.Select( j => j.Mid ==  data.SelectSingleNode(@"/data/value").InnerText).Count() > 0)
+                            if( commandForModem.Contains( "#MHD") )
                             {
-                                returnValues = new string[] {"ComandoDaScartare","",""}; 
-                                return returnValues;
+                                if(DB.Machines.Select( j => j.Mid ==  data.SelectSingleNode(@"/data/value").InnerText).Count() > 0)
+                                {
+                                    returnValues = new string[] {"ComandoDaScartare","",""}; 
+                                    return returnValues;
+                                }
                             }
+                        }
+                        else{
+                            // param valure null 
+                            returnValues = new string[] {"ComandoDaScartare","",""};                                     
                         }
                     }
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
-
                     returnValues = new string[] {   "ComandoDaGirare" , DB.Machines.First(y=>y.Mid == targetCodElettronico).IpAddress , commandForModem   };
                 }
                 else{
