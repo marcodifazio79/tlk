@@ -40,6 +40,7 @@ namespace Casse
                     LastTransactionForModem.IdMachinesConnectionTrace = id_MachinesConnectionTrace;
                     LastTransactionForModem.Status = "CashPacketReceivedFromModem";
                     LastTransactionForModem.DataPacchettoRicevuto = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    DB.SaveChanges();
                     new Thread(()=>
                         loadCashPacketToDeborahDB(LastTransactionForModem.Id)
                         ).Start();
@@ -150,7 +151,7 @@ namespace Casse
                 DB.DisposeAsync();
                 try{
                     new Thread(()=>
-                        Functions.SignalRSender.AskToReloadCashTransactionTable ( machine_id  ) 
+                        Functions.SignalRSender.AskToReloadCashTransactionTable ( machine_id  )
                         ).Start();
                     }
                 catch(Exception e){
