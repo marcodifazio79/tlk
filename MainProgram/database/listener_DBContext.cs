@@ -32,6 +32,7 @@ namespace Functions.database
         public virtual DbSet<MachinesInMemory> MachinesInMemory { get; set; }
         public virtual DbSet<RemoteCommand> RemoteCommand { get; set; }
         public virtual DbSet<CommandsMatch> CommandsMatch { get; set; }
+        public virtual DbSet<CashTransaction> CashTransaction { get; set; }
 
         public IConfiguration Configuration { get; }
 
@@ -385,6 +386,71 @@ namespace Functions.database
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<CashTransaction>(entity =>
+            {
+                entity.HasIndex(e => e.IdMachines)
+                    .HasName("index_ID_Machines");
+
+                entity.HasIndex(e => e.IdMachinesConnectionTrace)
+                    .HasName("ID_MachinesConnectionTrace");
+
+                entity.HasIndex(e => e.Odm)
+                    .HasName("index_ODM");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdMachines)
+                    .HasColumnName("ID_Machines")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdMachinesConnectionTrace)
+                    .HasColumnName("ID_MachinesConnectionTrace")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Odm)
+                    .IsRequired()
+                    .HasColumnName("ODM")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.TentativiAutomaticiEseguiti)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.DataCreazione)
+                    .HasColumnName("DataCreazione")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.DataInvioRichiesta)
+                    .HasColumnName("DataInvioRichiesta")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.DataPacchettoRicevuto)
+                    .HasColumnName("DataPacchettoRicevuto")
+                    .HasColumnType("timestamp");
+                    
+                entity.Property(e => e.DataSincronizzazione)
+                    .HasColumnName("DataSincronizzazione")
+                    .HasColumnType("timestamp");
+
+                entity.HasOne(d => d.IdMachinesNavigation)
+                    .WithMany(p => p.CashTransaction)
+                    .HasForeignKey(d => d.IdMachines)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("CashTransaction_ibfk_1");
+
+                entity.HasOne(d => d.IdMachinesConnectionTraceNavigation)
+                    .WithMany(p => p.CashTransaction)
+                    .HasForeignKey(d => d.IdMachinesConnectionTrace)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("CashTransaction_ibfk_2");
             });
 
              modelBuilder.Entity<MachinesAttributes>(entity =>

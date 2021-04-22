@@ -7,6 +7,7 @@ namespace Functions.database
     {
         public Machines()
         {
+            CashTransaction = new HashSet<CashTransaction>();
             MachinesAttributes = new HashSet<MachinesAttributes>();
             MachinesConnectionTrace = new HashSet<MachinesConnectionTrace>();
             RemoteCommand = new HashSet<RemoteCommand>();
@@ -25,5 +26,7 @@ namespace Functions.database
         public virtual ICollection<MachinesConnectionTrace> MachinesConnectionTrace { get; set; }
         public virtual ICollection<RemoteCommand> RemoteCommand { get; set; }
         public virtual ICollection<MachinesAttributes> MachinesAttributes { get; set; }
+        public virtual ICollection<CashTransaction> CashTransaction { get; set; }
+
     }
 }
