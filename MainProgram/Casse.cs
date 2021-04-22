@@ -31,7 +31,9 @@ namespace Casse
                 // otherwise it's just someone sending cash request for "fun"
                 MachinesConnectionTrace MCT = DB.MachinesConnectionTrace.Single(s=>s.Id == id_MachinesConnectionTrace);
                 id_machine = Convert.ToInt32( MCT.IdMacchina);
-                CashTransaction LastTransactionForModem =  DB.CashTransaction.Last(s=>s.IdMachines == id_machine);
+                CashTransaction LastTransactionForModem =  DB.CashTransaction.Where(s=>s.IdMachines == id_machine)
+                                                                            .OrderBy(h=>h.Id)
+                                                                            .Last(s=>s.IdMachines == id_machine);
                 
                 if(LastTransactionForModem.Status == "CashRequestSentToModem")
                 {
@@ -39,7 +41,6 @@ namespace Casse
                     LastTransactionForModem.Status = "CashPacketReceivedFromModem";
                     LastTransactionForModem.DataPacchettoRicevuto = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                 }
-                
             }
             catch(Exception e)
             {
