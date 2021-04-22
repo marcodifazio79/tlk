@@ -542,7 +542,6 @@ namespace Functions
             string[] returnValues;
             try
             {
-                
                 RemoteCommand commandToExecute = DB.RemoteCommand.First(  y=>y.Id == RemoteCommand_ID  );
                 XmlDocument data = new XmlDocument();
                 data.LoadXml(commandToExecute.Body);
