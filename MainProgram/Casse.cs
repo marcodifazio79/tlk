@@ -24,12 +24,14 @@ namespace Casse
         public static void RegistrazioneCassa(int id_MachinesConnectionTrace)
         {
             listener_DBContext DB = new listener_DBContext();
+            int id_machine = 0;
             try
             {
                 // first thing first let's check if a cash transaction as been requested in the last few minute,
                 // otherwise it's just someone sending cash request for "fun"
                 MachinesConnectionTrace MCT = DB.MachinesConnectionTrace.Single(s=>s.Id == id_MachinesConnectionTrace);
-                CashTransaction LastTransactionForModem =  DB.CashTransaction.Last(s=>s.IdMachines == Convert.ToInt32( MCT.IdMacchina));
+                id_machine = Convert.ToInt32( MCT.IdMacchina);
+                CashTransaction LastTransactionForModem =  DB.CashTransaction.Last(s=>s.IdMachines == id_machine);
                 
                 if(LastTransactionForModem.Status == "CashRequestSentToModem")
                 {
@@ -47,6 +49,14 @@ namespace Casse
             {
                 DB.SaveChanges();
                 DB.DisposeAsync();
+                try{
+                    new Thread(()=>
+                        Functions.SignalRSender.AskToReloadCashTransactionTable ( id_machine ) 
+                        ).Start();
+                    }
+                catch(Exception e){
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " RegistrazioneCassa: "+e.Message);
+                }
             }
         }
         
