@@ -574,11 +574,17 @@ namespace Functions
 // parametro (il nuovo mid) e se già presente nel db non invio il comando
                             if( commandForModem.Contains( "#MHD") )
                             {
-                                if(DB.Machines.Select( j => j.Mid ==  data.SelectSingleNode(@"/data/value").InnerText).Count() > 0)
+                                if(DB.Machines.Select( j => j.Mid ==  paramValue).Count() > 0)
                                 {
+                                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") +" mid: "+ paramValue + " already present in DB. Discarding command..");
                                     returnValues = new string[] {"ComandoDaScartare","",""}; 
                                     return returnValues;
                                 }
+                            }
+                            else
+                            {
+                                //debug if, dovrei toglierlo appena scopro dov'è che scazza l'update del mid
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss ") +"new mid: "+ paramValue + " | replacing: " + targetCodElettronico);
                             }
                         }
                         else{
