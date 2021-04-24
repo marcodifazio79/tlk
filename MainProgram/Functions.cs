@@ -574,7 +574,7 @@ namespace Functions
 // parametro (il nuovo mid) e se già presente nel db non invio il comando
                             if( commandForModem.Contains( "#MHD") )
                             {
-                                if(DB.Machines.Select( j => j.Mid ==  paramValue).Count() > 0)
+                                if(DB.Machines.Where( j => j.Mid ==  paramValue).Count() > 0)
                                 {
                                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") +" mid: "+ paramValue + " already present in DB. Discarding command..");
                                     returnValues = new string[] {"ComandoDaScartare","",""}; 
