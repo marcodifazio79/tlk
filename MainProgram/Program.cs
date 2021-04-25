@@ -204,7 +204,6 @@ public class AsynchronousSocketListener {
                 if(  command_id == -1   )
                     answerToBackend = "<Error>command-error codice elettronico non collegato a una macchina nel db</Error>";
                 else{
-                    
                     string[] remoteComm = Functions.DatabaseFunctions.FetchRemoteCommand(command_id);
                     //qua si aprono 3 casi in remoteComm[]: comando non riconosciuto, comando da girare a una macchina, comando a cui rispondere direttamente
                     switch(remoteComm[0])

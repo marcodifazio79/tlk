@@ -452,11 +452,11 @@ namespace Functions
             finally{DB.DisposeAsync();}
         }   
         /// <summary>
-        ///  
+        /// 
         /// </summary>
         public static string checkAnswerToCommand(string modemIp, int command_id , string commandtext)
         {
-            listener_DBContext DB = new listener_DBContext (); 
+            listener_DBContext DB = new listener_DBContext ();
             
             string answer = "NoAnswer";
             string expectedAnswer = "";
@@ -464,18 +464,15 @@ namespace Functions
             try{
                 char[] MyChar = {'1','2','3','4','5','6','7','8','9','0'};
                 expectedAnswer = DB.CommandsMatch.First(y=>y.ModemCommand.StartsWith( commandtext.Trim(MyChar) )).expectedAnswer;
-                
                 string pattern = @"<TCA=[0-9\- ]+"+expectedAnswer+@"[0-9a-zA-Z \-\=]+>$";
-                int Seconds = 12; // secondi max in cui aspetto che il modem mi risponda
+                int Seconds = 15; // secondi max in cui aspetto che il modem mi risponda
                 for(int i=0; i < (Seconds/2); i++)
                 {
                     Thread.Sleep(2000);
-                
                     MachinesConnectionTrace lastReceivedFromModem = DB.MachinesConnectionTrace
                         .Where(j => j.SendOrRecv == "RECV")
                         .OrderByDescending(z=>z.time_stamp)
                         .First(l => l.IpAddress == modemIp);
-                    
                     Match m = Regex.Match(lastReceivedFromModem.TransferredData, pattern, RegexOptions.IgnoreCase);
                     if(m.Success)
                     {
@@ -580,11 +577,11 @@ namespace Functions
                                     returnValues = new string[] {"ComandoDaScartare","",""}; 
                                     return returnValues;
                                 }
-                            }
-                            else
-                            {
-                                //debug if, dovrei toglierlo appena scopro dov'è che scazza l'update del mid
-                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss ") +"new mid: "+ paramValue + " | replacing: " + targetCodElettronico);
+                                else
+                                {
+                                    // insieme al nuovo MID mando il comando #RES, in modo da riavviare il modem e registare il nuovo MID nel DB
+                                    commandForModem += "#RES";
+                                }
                             }
                         }
                         else{
