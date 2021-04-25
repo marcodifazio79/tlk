@@ -157,7 +157,6 @@ public class AsynchronousSocketListener {
             state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 5);
             state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 16);
 
-
             handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
      
         }
@@ -193,8 +192,8 @@ public class AsynchronousSocketListener {
             
             if (bytesRead > 0) {
                 // There  might be more data, so store the data received so far.
-                state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
-                content = state.sb.ToString();  
+                state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
+                content = state.sb.ToString();
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
@@ -215,7 +214,7 @@ public class AsynchronousSocketListener {
                             // meglio non mandare comandi a modem non collegati..
                             if(ConnectedModems.ContainsKey(IPAddress.Parse(remoteComm[1])))
                             {
-                                Thread t = new Thread(()=>Send (
+                                Thread t = new Thread(()=>Send(
                                     ConnectedModems[IPAddress.Parse(remoteComm[1])],  
                                     "#PWD123456"+ remoteComm[2]));
                                 t.Start();

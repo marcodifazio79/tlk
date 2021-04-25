@@ -9,8 +9,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 
 namespace Functions
-{
-    
+{    
     public class DatabaseFunctions
     {   
         public DatabaseFunctions()

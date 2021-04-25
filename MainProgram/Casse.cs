@@ -1,9 +1,6 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.SignalR.Client;
 using System.Threading;
 using Functions.database;
 
