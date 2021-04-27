@@ -65,18 +65,17 @@ namespace Functions
         }
 
         /// <summary>
-        ///  
+        /// 
         /// </summary>
         public static void insertIntoMachinesTable(string ip_addr)
         {
-            listener_DBContext DB = new listener_DBContext (); 
+            listener_DBContext DB = new listener_DBContext ();
             try
             {
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-
                 }
                 else
                 {
@@ -87,7 +86,6 @@ namespace Functions
                         last_communication =null,
                         time_creation =null
                         });
-                    
                 }
                 DB.SaveChanges();
                

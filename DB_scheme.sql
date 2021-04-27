@@ -9,8 +9,9 @@
   `IsOnline` BOOLEAN NOT NULL DEFAULT true,
   PRIMARY KEY (`id`),
   KEY `index_ip_mid` (`ip_address`,`mid`),
-  KEY `index_mid` (`mid`),
-  KEY `index_imei` (`imei`)
+  UNIQUE KEY `index_mid` (`mid`),
+  UNIQUE KEY `index_imei` (`imei`),
+  UNIQUE KEY `index_ip_address` (`ip_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
  CREATE TABLE `MachinesConnectionTrace` (
@@ -124,6 +125,55 @@ KEY `index_DataInvioRichiesta` (`DataInvioRichiesta`),
 KEY `index_DataPacchettoRicevuto` (`DataPacchettoRicevuto`),
 KEY `index_DataSincronizzazione` (`DataSincronizzazione`),
 KEY `index_ID_Machines` (`ID_Machines`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `AlertType` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`type` varchar(50) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `AlertStatus` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`status` varchar(50) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `Alert` (
+`Id` int(11) NOT NULL AUTO_INCREMENT,
+`DataCreazione` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`DataRisoluzione` datetime DEFAULT NULL,
+`AlertDescription` varchar(500) NOT NULL,
+`AlertSeggestedActions` varchar(500) NOT NULL,
+`ID_AlertType` int(11) NOT NULL,
+`ID_AlertStatus` int(11) NOT NULL,
+`ResolvedBy` varchar(256) DEFAULT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY (`ID_AlertType`)
+        REFERENCES AlertType(id)
+        ON DELETE NO ACTION,
+FOREIGN KEY (`ID_AlertStatus`)
+        REFERENCES AlertStatus(id)
+        ON DELETE NO ACTION,
+FOREIGN KEY (`ResolvedBy`)
+        REFERENCES AspNetUsers(Id)
+        ON DELETE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `AlertTargetRole` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`ID_AspNetRoles` varchar(256) NOT NULL,
+`ID_Alert` int(11) NOT NULL,
+PRIMARY KEY (`id`),
+key `index_ID_AspNetRoles` (`ID_AspNetRoles`),
+key `index_ID_Alert` (`ID_Alert`),
+FOREIGN KEY (`ID_AspNetRoles`)
+        REFERENCES AspNetRoles(Id)
+        ON DELETE NO ACTION,
+FOREIGN KEY (`ID_Alert`)
+        REFERENCES Alert(Id)
+        ON DELETE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
