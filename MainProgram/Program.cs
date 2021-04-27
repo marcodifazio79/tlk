@@ -516,9 +516,6 @@ public class AsynchronousSocketListener {
         else{
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": appsettings.json is missing, startup cancelled.");  
         }  
-        return 0;  
-    
+        return 0;
     }
-
-    
 }

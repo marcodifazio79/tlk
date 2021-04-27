@@ -10,6 +10,9 @@ WorkingDirectory= /home/kdl_admin/tlk/MainProgram/bin/Release/netcoreapp3.1/linu
 ExecStart= /home/kdl_admin/tlk/MainProgram/bin/Release/netcoreapp3.1/linux-x64/publish/tlk_core
 TimeoutStopSec= 3
 
+Restart=on-failure
+RestartSec=30s
+
 ExecStop= /bin/kill -9 $MAINPID
 ExecStop= /home/kdl_admin/tlk/MainProgram/setMachinesOffline
 [Install]
