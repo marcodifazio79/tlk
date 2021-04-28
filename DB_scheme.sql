@@ -146,12 +146,17 @@ CREATE TABLE `Alert` (
 `DataRisoluzione` datetime DEFAULT NULL,
 `AlertDescription` varchar(500) NOT NULL,
 `AlertSeggestedActions` varchar(500) NOT NULL,
+`linkToRelevantLocation` varchar(1024) DEFAULT NULL,
 `ID_AlertType` int(11) NOT NULL,
 `ID_AlertStatus` int(11) NOT NULL,
 `ResolvedBy` varchar(256) DEFAULT NULL,
+`ID_machine` int(11) DEFAULT NULL,
 PRIMARY KEY (`id`),
 FOREIGN KEY (`ID_AlertType`)
         REFERENCES AlertType(id)
+        ON DELETE NO ACTION,
+FOREIGN KEY (`ID_machine`)
+        REFERENCES Machines(id)
         ON DELETE NO ACTION,
 FOREIGN KEY (`ID_AlertStatus`)
         REFERENCES AlertStatus(id)

@@ -34,14 +34,18 @@ namespace Functions.database
         public virtual DbSet<CommandsMatch> CommandsMatch { get; set; }
         public virtual DbSet<CashTransaction> CashTransaction { get; set; }
 
-        public IConfiguration Configuration { get; }
-
+        public static IConfiguration Configuration;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            Configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddEnvironmentVariables()
+                //.AddCommandLine(args)
+                .Build();
+
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL("server=10.10.10.71; database=listener_DB; uid=bot_user; pwd=Qwert@#!99;");
-                    //Configuration["ConnectionStrings:DefaultConnection"].ToString());
+                optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnection"].ToString());
             }
         }
 
