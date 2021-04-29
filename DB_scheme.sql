@@ -24,11 +24,10 @@
   KEY `index_ip_address` (`ip_address`),
   KEY `index_time_stamp` (`time_stamp`),
   KEY `index_id_Macchina` (`id_Macchina`),
-  
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id_Macchina`)
         REFERENCES Machines(id)
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -60,9 +59,9 @@
   `Status` varchar(15) NOT NULL,
   KEY `index_ID_Macchina` (`id_Macchina`),
   PRIMARY KEY (`id`),
-    FOREIGN KEY (`id_Macchina`)
+  FOREIGN KEY (`id_Macchina`)
         REFERENCES Machines(id)
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=22516 DEFAULT CHARSET=latin1;
 
 
@@ -93,10 +92,10 @@
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id_Attribute`)
         REFERENCES Attr(id)
-        ON DELETE NO ACTION,
+        ON DELETE CASCADE,
     FOREIGN KEY (`id_Macchina`)
         REFERENCES Machines(id)
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 
@@ -115,10 +114,10 @@ CREATE TABLE `CashTransaction` (
 PRIMARY KEY (`id`),
 FOREIGN KEY (`ID_Machines`)
         REFERENCES Machines(id)
-        ON DELETE NO ACTION,
+        ON DELETE CASCADE,
 FOREIGN KEY (`ID_MachinesConnectionTrace`)
         REFERENCES MachinesConnectionTrace(id)
-        ON DELETE NO ACTION,
+        ON DELETE CASCADE,
 KEY `index_ODM` (`ODM`),
 KEY `index_DataCreazione` (`DataCreazione`),
 KEY `index_DataInvioRichiesta` (`DataInvioRichiesta`),
