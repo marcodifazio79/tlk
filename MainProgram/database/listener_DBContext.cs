@@ -224,6 +224,10 @@ namespace Functions.database
                     .IsRequired()
                     .HasDefaultValueSql("'1'");
                     
+                entity.Property(e => e.MarkedBroken)
+                    .IsRequired()
+                    .HasDefaultValueSql("'0'");
+
                 entity.Property(e => e.last_communication)
                     .HasColumnName("last_communication")
                     .HasColumnType("timestamp");

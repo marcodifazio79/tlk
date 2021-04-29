@@ -34,7 +34,7 @@ namespace Functions
                 
                 string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
-
+                
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr );
@@ -81,7 +81,8 @@ namespace Functions
                 {
                     DB.Machines.Add( new Machines{
                         IpAddress = ip_addr,
-                        Mid = "",
+                        Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyMMddHHmmssfff")),
                         Version = "",
                         last_communication =null,
                         time_creation =null
