@@ -277,7 +277,7 @@ namespace Functions.database
                 entity.HasOne(d => d.IdMacchinaNavigation)
                     .WithMany(p => p.MachinesConnectionTrace)
                     .HasForeignKey(d => d.IdMacchina)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("MachinesConnectionTrace_ibfk_1");
             });
 
@@ -356,7 +356,7 @@ namespace Functions.database
                 entity.HasOne(d => d.IdMacchinaNavigation)
                     .WithMany(p => p.RemoteCommand)
                     .HasForeignKey(d => d.IdMacchina)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("RemoteCommand_ibfk_1");
             });
 
@@ -499,7 +499,7 @@ namespace Functions.database
                 entity.HasOne(d => d.IdMacchinaNavigation)
                     .WithMany(p => p.MachinesAttributes)
                     .HasForeignKey(d => d.IdMacchina)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("MachinesAttributes_ibfk_2");
             }); 
 
