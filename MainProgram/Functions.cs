@@ -120,7 +120,7 @@ namespace Functions
                     DB.Machines.Add( new Machines{
                         IpAddress = ip_addr,
                         Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyMMddHHmmssfff")),
+                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
                         Version = "",
                         last_communication =null,
                         time_creation =null
