@@ -211,7 +211,6 @@ namespace Functions.database
                     .HasColumnName("ip_address")
                     .HasMaxLength(15);
 
-
                 entity.Property(e => e.Mid)
                     .HasColumnName("mid")
                     .HasMaxLength(50);
@@ -223,7 +222,7 @@ namespace Functions.database
                 entity.Property(e => e.IsOnline)
                     .IsRequired()
                     .HasDefaultValueSql("'1'");
-                    
+
                 entity.Property(e => e.MarkedBroken)
                     .IsRequired()
                     .HasDefaultValueSql("'0'");
