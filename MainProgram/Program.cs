@@ -133,32 +133,44 @@ public class AsynchronousSocketListener {
         //figure out if the callback come from the modem or the backend, based on which port it come from, and signal the corrisponding thread to continue
         int ConPort =  ((IPEndPoint)handler.LocalEndPoint).Port;
         if(ConPort == 9005) {  
-            // Signal the modem thread to continue.  
-            allDoneModem.Set();  
-
-            IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
-            if (ConnectedModems.ContainsKey(ip))
+            string ip_as_string = IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()).ToString();
+            
+            // controllo che l'ip sia effettivamente quello di un modem
+            if(ip_as_string.StartsWith("172.16."))
             {
-                ConnectedModems[ip] = handler;
-            }else{
-                ConnectedModems.Add(ip,handler);
-            }            
-            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ())+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-            Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
+                // Signal the modem thread to continue.  
+                allDoneModem.Set();  
 
-            Functions.SocketList.setModemOnline(ip);
-            
-            // Create the state object.  
-            StateObject state = new StateObject();  
-            state.workSocket = handler;
-            
-            //set the keep alive values for the socket
-            state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-            state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 5);
-            state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 16);
+                IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
+                if (ConnectedModems.ContainsKey(ip))
+                {
+                    ConnectedModems[ip] = handler;
+                }else{
+                    ConnectedModems.Add(ip,handler);
+                }            
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ ip_as_string+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
+                Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
 
-            handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
-     
+                Functions.SocketList.setModemOnline(ip);
+                
+                // Create the state object.  
+                StateObject state = new StateObject();  
+                state.workSocket = handler;
+                
+                //set the keep alive values for the socket
+                state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 5);
+                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 16);
+
+                handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
+            }
+            else
+            {
+                try{
+                    handler.Shutdown(   SocketShutdown.Both  );
+                }catch{}
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " tentativo di connessione da un dispositivo fuori la sottorete attesa ignorato");    
+            }
         }
         else if(ConPort == 9909){  
             // Signal the command thread to continue.   

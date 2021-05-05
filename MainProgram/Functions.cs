@@ -35,15 +35,52 @@ namespace Functions
                 string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
                 
-                if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
+                // controllo se esiste un modem con il mid scritto nel pacchetto, e se
+                // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
+                // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
+                if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
                 {
-                    Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr );
-                    MachineToUpdate.Imei =  Convert.ToInt64(imei);
-                    MachineToUpdate.Mid = mid;
-                    MachineToUpdate.IsOnline = true;
-                    MachineToUpdate.Version = version;
-                    MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
+                    if( DB.Machines.Any( y=> y.Mid == mid ) )
+                    {
+                        Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+                        if(MachineToUpdate != machinesOriginePacchetto )
+                        {
+                            if(MachineToUpdate.MarkedBroken)
+                            {
+                                MachineToUpdate.MarkedBroken = false;
+                                MachineToUpdate.IpAddress = ip_addr;
+                                MachineToUpdate.Imei =  Convert.ToInt64(imei);
+                                MachineToUpdate.Mid = mid;
+                                MachineToUpdate.IsOnline = true;
+                                MachineToUpdate.Version = version;
+                                MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+
+                                // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
+                                // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
+                                DB.Machines.Remove(machinesOriginePacchetto);
+                            }
+                            else
+                            {
+                                MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // se sono qui,
+                        // questa è in pratica la prima volta che si riceve il pacchetto 
+                        // <MID=1234567890-865291049819286><VER=110> per questa macchina,
+                        // è quindi una macchina nuova
+                        machinesOriginePacchetto.Imei =  Convert.ToInt64(imei);
+                        machinesOriginePacchetto.Mid = mid;
+                        machinesOriginePacchetto.IsOnline = true;
+                        machinesOriginePacchetto.Version = version;
+                        machinesOriginePacchetto.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    }
                 }
+
+                
                 DB.SaveChanges();
                
                 //reload web page
@@ -58,6 +95,7 @@ namespace Functions
 
             }catch(Exception e){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: " + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: " + e.StackTrace);
             }finally{
                 DB.DisposeAsync();
             }
@@ -82,7 +120,7 @@ namespace Functions
                     DB.Machines.Add( new Machines{
                         IpAddress = ip_addr,
                         Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyMMddHHmmssfff")),
+                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
                         Version = "",
                         last_communication =null,
                         time_creation =null
