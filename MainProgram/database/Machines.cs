@@ -20,7 +20,7 @@ namespace Functions.database
         public string Version { get; set; }
         public bool IsOnline { get; set; }
         public bool MarkedBroken { get; set; }
-        
+        public bool LogEnabled { get; set; }
         public DateTime? last_communication { get; set; }
         public DateTime? time_creation { get; set; }
 

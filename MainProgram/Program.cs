@@ -118,10 +118,6 @@ public class AsynchronousSocketListener {
         }  
     }
 
-    
-
-
-
     public static void AcceptCallback(IAsyncResult ar) {  
 
         try{
