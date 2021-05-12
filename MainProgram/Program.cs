@@ -411,11 +411,13 @@ public class AsynchronousSocketListener {
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + e.ToString());
             try{
                 IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Errore comunicazione con: " +ip.ToString () + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Errore comunicazione con: " +ip.ToString () +" -> " + e.Message);
                 DatabaseFunctions.insertIntoDB("Errore comunicazione con: " + ip.ToString () );
                 ConnectedModems.Remove(ip);
                 Functions.SocketList.setModemOffline(ip);
-                handler.Shutdown(SocketShutdown.Both);  
+                Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
+                handler.Shutdown(SocketShutdown.Both); 
+                Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
                 handler.Close();
             }catch(Exception ex){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + ex.ToString());
