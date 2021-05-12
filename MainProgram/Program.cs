@@ -396,14 +396,23 @@ public class AsynchronousSocketListener {
             
             }        
             else if(bytesRead == 0){
-                        IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ ip.ToString ());
-                        Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", content );
-                        ConnectedModems.Remove(ip);
-                        Functions.SocketList.setModemOffline(ip);
-                        handler.Shutdown(SocketShutdown.Both);
-                        handler.Close();
-                        return;
+                IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ ip.ToString ());
+                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", content );
+                ConnectedModems.Remove(ip);
+                Functions.SocketList.setModemOffline(ip);
+                Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
+                handler.Shutdown(SocketShutdown.Both); 
+                Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
+                handler.Close();
+                Console.WriteLine( "Socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" closed." );
+                
+                // SOCKET LEAKs DEBUG
+                StateObject originalState = (StateObject) ar.AsyncState;
+                Socket originalSocket = originalState.workSocket;
+                Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
+                // SOCKET LEAKs DEBUG
+                return;
             }
 
 
@@ -417,8 +426,16 @@ public class AsynchronousSocketListener {
                 Functions.SocketList.setModemOffline(ip);
                 Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
                 handler.Shutdown(SocketShutdown.Both); 
-                Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
+                Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
                 handler.Close();
+                Console.WriteLine( "Socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" closed." );
+                
+                // SOCKET LEAKs DEBUG
+                StateObject originalState = (StateObject) ar.AsyncState;
+                Socket originalSocket = originalState.workSocket;
+                Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
+                // SOCKET LEAKs DEBUG
+
             }catch(Exception ex){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + ex.ToString());
             }
