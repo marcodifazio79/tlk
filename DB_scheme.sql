@@ -7,6 +7,8 @@
   `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
   `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `IsOnline` BOOLEAN NOT NULL DEFAULT true,
+  `MarkedBroken` BOOLEAN NOT NULL DEFAULT false,
+  `LogEnabled` BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (`id`),
   KEY `index_ip_mid` (`ip_address`,`mid`),
   UNIQUE KEY `index_mid` (`mid`),
