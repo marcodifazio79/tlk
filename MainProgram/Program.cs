@@ -405,7 +405,6 @@ public class AsynchronousSocketListener {
                 handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
                 handler.Close();
-                Console.WriteLine( "Socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" closed." );
                 
                 // SOCKET LEAKs DEBUG
                 StateObject originalState = (StateObject) ar.AsyncState;
@@ -428,7 +427,6 @@ public class AsynchronousSocketListener {
                 handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
                 handler.Close();
-                Console.WriteLine( "Socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" closed." );
                 
                 // SOCKET LEAKs DEBUG
                 StateObject originalState = (StateObject) ar.AsyncState;
