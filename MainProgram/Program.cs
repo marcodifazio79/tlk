@@ -458,7 +458,7 @@ public class AsynchronousSocketListener {
             // Begin sending the data to the remote device.
 
             ip = ((IPEndPoint)handler.RemoteEndPoint).Address; 
-            sock_port = ((IPEndPoint)state.workSocket.RemoteEndPoint).Port;
+            sock_port = ((IPEndPoint)handler.RemoteEndPoint).Port;
             state.workSocket = handler;
             state.sb = new StringBuilder(data, data.Length);
             state.buffer = Encoding.ASCII.GetBytes(data);
