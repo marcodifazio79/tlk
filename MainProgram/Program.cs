@@ -405,12 +405,13 @@ public class AsynchronousSocketListener {
                 handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
                 handler.Close();
-                
+                try{
                 // SOCKET LEAKs DEBUG
-                StateObject originalState = (StateObject) ar.AsyncState;
-                Socket originalSocket = originalState.workSocket;
-                Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
+                    StateObject originalState = (StateObject) ar.AsyncState;
+                    Socket originalSocket = originalState.workSocket;
+                    Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
                 // SOCKET LEAKs DEBUG
+                }catch{}
                 return;
             }
 
@@ -427,12 +428,13 @@ public class AsynchronousSocketListener {
                 handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
                 handler.Close();
-                
+                try{
                 // SOCKET LEAKs DEBUG
-                StateObject originalState = (StateObject) ar.AsyncState;
-                Socket originalSocket = originalState.workSocket;
-                Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
+                    StateObject originalState = (StateObject) ar.AsyncState;
+                    Socket originalSocket = originalState.workSocket;
+                    Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
                 // SOCKET LEAKs DEBUG
+                }catch{}
 
             }catch(Exception ex){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + ex.ToString());
