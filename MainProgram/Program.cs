@@ -156,7 +156,8 @@ public class AsynchronousSocketListener {
                 //set the keep alive values for the socket
                 state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                 state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 5);
-                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 16);
+                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //old value: 16
+                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 5); 
 
                 handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
             }
@@ -451,11 +452,13 @@ public class AsynchronousSocketListener {
     public static async Task Send(Socket handler, String data) {  
         StateObject state = new StateObject();
         IPAddress ip = IPAddress.Parse("127.0.0.1"); //a dummy value to initialize the variable.
+        int sock_port = 0;
         try{  
             //byte[] byteData = Encoding.ASCII.GetBytes(data);
             // Begin sending the data to the remote device.
 
             ip = ((IPEndPoint)handler.RemoteEndPoint).Address; 
+            sock_port = ((IPEndPoint)state.workSocket.RemoteEndPoint).Port;
             state.workSocket = handler;
             state.sb = new StringBuilder(data, data.Length);
             state.buffer = Encoding.ASCII.GetBytes(data);
@@ -469,7 +472,11 @@ public class AsynchronousSocketListener {
                 // trying to send to the modem cause a SocketException, i'll reset the connection if this occur
                 ConnectedModems.Remove(ip);
                 Functions.SocketList.setModemOffline(ip);
-                
+                Console.WriteLine("Send error, closing "+ip.ToString()+":"+sock_port.ToString()); 
+                try{
+                    state.workSocket.Shutdown(SocketShutdown.Both); 
+                    state.workSocket.Close();
+                }catch{}
             }
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Begin send error: " + e.ToString());
             Functions.DatabaseFunctions.insertIntoDB("begin send error.");
@@ -493,8 +500,12 @@ public class AsynchronousSocketListener {
             try{
                 Console.WriteLine(e.ToString()); 
                 IPAddress ip = ((IPEndPoint)state.workSocket.RemoteEndPoint).Address;
+                int sock_port = ((IPEndPoint)state.workSocket.RemoteEndPoint).Port;
                 ConnectedModems.Remove(ip);
                 Functions.SocketList.setModemOffline(ip);
+                Console.WriteLine("SendCallback error, closing "+ip.ToString()+":"+sock_port.ToString()); 
+                state.workSocket.Shutdown(SocketShutdown.Both); 
+                state.workSocket.Close();
 
             }catch(Exception ex){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.ToString());
