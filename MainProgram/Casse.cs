@@ -206,16 +206,16 @@ namespace Casse
                 splittedCashPacket[17]+"','"+ //contatore ch07
                 splittedCashPacket[18]+"','"+ //valore ch08
                 splittedCashPacket[19]+"'," +  //contatore ch08
-                " '0', '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,'"+ //from Ch9 to Cashless
+                " '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0','"+ //from Ch9 to Cashless
                 splittedCashPacket[20]+"',"     //incasso
-                +" NULL,'"+                     //change
+                +" '0','"+                     //change
                 splittedCashPacket[21]+"',"     //sales 
                 +" '0', '0', '0', '0', '0', '0','"+
                 splittedCashPacket[22]+"','"+   //ticket
                 splittedCashPacket[3]+"',"+     //price
-                " '0', '0', '0', '0', '0', '0', '0', '0', NULL, '0', NULL, NULL, '000', NULL, NULL,'"+
+                " '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '000', '0', '0','"+
                 DateTime.Now.AddMinutes(30).ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")) + //timestamp_next_try
-                "', '0', CURRENT_TIMESTAMP, '1', NULL, '0');";
+                "', '0', CURRENT_TIMESTAMP, '1', '0', '0');";
         
             return queryPrimaParte + querySecondaParte;
         }
@@ -254,16 +254,16 @@ namespace Casse
                 (Convert.ToInt32(splittedCashPacket_current[17]) - Convert.ToInt32(splittedCashPacket_previous[17])).ToString() +"','"+ //contatore ch07
                 splittedCashPacket_current[18]+"','"+ //valore ch08
                 (Convert.ToInt32(splittedCashPacket_current[19]) - Convert.ToInt32(splittedCashPacket_previous[19])).ToString()  //contatore ch08
-                +"', '0', '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,'"+ //from Ch9 to Cashless
+                +"', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0','"+ //from Ch9 to Cashless
                 (Convert.ToInt32(splittedCashPacket_current[20]) - Convert.ToInt32(splittedCashPacket_previous[20])).ToString()+"',"     //incasso
-                +" NULL,'"+                     //change
+                +" '0','"+                     //change
                 (Convert.ToInt32(splittedCashPacket_current[21]) - Convert.ToInt32(splittedCashPacket_previous[21])).ToString()+"',"     //sales 
                 +"'0', '0', '0', '0', '0', '0','"+
                 (Convert.ToInt32(splittedCashPacket_current[22]) - Convert.ToInt32(splittedCashPacket_previous[22])).ToString()+"','"+   //ticket
                 splittedCashPacket_current[3]+"',"+     //price
-                " '0', '0', '0', '0', '0', '0', '0', '0', NULL, '0', NULL, NULL, '000', NULL, NULL,'"+ 
+                " '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '000', '0', '0','"+ 
                 DateTime.Now.AddMinutes(30).ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")) + //timestamp_next_try
-                "','0', CURRENT_TIMESTAMP, '1', NULL, '0');";
+                "','0', CURRENT_TIMESTAMP, '1', '0', '0');";
 
             return queryPrimaParte + querySecondaParte;
         }
