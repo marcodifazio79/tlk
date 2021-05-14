@@ -33,6 +33,7 @@ public class AsynchronousSocketListener {
     public static ManualResetEvent allDoneCommand = new ManualResetEvent(false);  
     //connection requested by the server to the modem
     //private static ManualResetEvent connectDone = new ManualResetEvent(false); 
+    
     //configuration file, loaded at startup
     public static IConfiguration Configuration;
     

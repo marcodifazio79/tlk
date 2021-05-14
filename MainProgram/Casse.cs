@@ -3,16 +3,25 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using Functions.database;
-
+using Microsoft.Extensions.Configuration;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+
+//
+// le casse le carico su un database, un servizio di 
+// *qualcuno* si occuperà poi di caricarle su SAP
+//
 
 namespace Casse
 {
     public class CasseFunctions
     {   
+        public static IConfiguration Configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+            .Build();      
         public CasseFunctions()
-        {}
+        {
+        }
         
         /// <summary>
         /// RegistrazioneCassa viene chiamato quando ricevo, indovina, un pacchetto di cassa.
@@ -160,9 +169,8 @@ namespace Casse
 
         static int insertToDeborahDB(string queryString)
         {
-            string connectionString = "server=10.10.10.99;uid=tel_daemon;pwd=Mjnh_ftl_#99;database=tel_admin";
-            
             try{
+                string connectionString = Configuration["ConnectionStrings:DB_Casse"].ToString();//"server=10.10.10.99;uid=tel_daemon;pwd=Mjnh_ftl_#99;database=tel_admin";
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     MySqlCommand command = new MySqlCommand(queryString, connection);
@@ -175,6 +183,7 @@ namespace Casse
             }
             
         }
+        
         /// <summary>
         /// Crea il pacchetto da caricare sul db di deborah, partendo dall`unica cassa disponibile
         /// </summary>
