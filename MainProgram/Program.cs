@@ -141,7 +141,20 @@ public class AsynchronousSocketListener {
                 IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
                 if (ConnectedModems.ContainsKey(ip))
                 {
-                    ConnectedModems[ip] = handler;
+                    try{
+                        // mi è arrivata una nuova connessione per un modem che risulta già connesso,
+                        // chiudo e riapro.
+                        Console.WriteLine("Closing old socket "+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Address.ToString()+":"+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Port.ToString());
+                        ConnectedModems[ip].Close();
+                        
+                    }catch{
+                        Console.WriteLine("Error closing the old socket for a modem conenction, check for socket leaks.");
+                        return;
+                    }
+                    finally{
+                        ConnectedModems[ip] = handler;
+                    }
+                    
                 }else{
                     ConnectedModems.Add(ip,handler);
                 }            
