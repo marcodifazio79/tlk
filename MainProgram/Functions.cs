@@ -616,7 +616,8 @@ namespace Functions
                                 else
                                 {
                                     // insieme al nuovo MID mando il comando #RES, in modo da riavviare il modem e registare il nuovo MID nel DB
-                                    commandForModem += "#RES";
+                                    // CONCATENZAIONE TEMPORANEAMENTE DISABILITATA
+                                    //commandForModem += "#RES";
                                 }
                             }
                         }
