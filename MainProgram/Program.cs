@@ -256,6 +256,13 @@ public class AsynchronousSocketListener {
                     }
                 }
             }
+            else
+            {
+                if(bytesRead == 0)
+                {
+                    Console.WriteLine("Received 0 byte from backend, closing..");
+                }
+            }
         }
         catch(Exception e) {
             answerToBackend = "error";
