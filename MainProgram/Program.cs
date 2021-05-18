@@ -216,53 +216,60 @@ public class AsynchronousSocketListener {
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
                 content = state.sb.ToString();
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
-                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
-                
-                //At this point content should look like = <data><codElettronico>9876543210</codElettronico><command>IsAlive</command></data>
-                
-                int command_id = Functions.DatabaseFunctions.insertIntoRemoteCommand(  content, ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()  );
-                if(  command_id == -1   )
-                    answerToBackend = "<Error>command-error codice elettronico non collegato a una macchina nel db</Error>";
-                else{
-                    string[] remoteComm = Functions.DatabaseFunctions.FetchRemoteCommand(command_id);
-                    //qua si aprono 3 casi in remoteComm[]: comando non riconosciuto, comando da girare a una macchina, comando a cui rispondere direttamente
-                    switch(remoteComm[0])
-                    {
-                        case "ComandoNonRiconosciuto":
-                            answerToBackend = "<Error>Comando non riconosciuto</Error>";
-                        break;
-                        case "ComandoDaGirare":
-                            // meglio non mandare comandi a modem non collegati..
-                            if(ConnectedModems.ContainsKey(IPAddress.Parse(remoteComm[1])))
-                            {
-                                Thread t = new Thread(()=>Send(
-                                    ConnectedModems[IPAddress.Parse(remoteComm[1])],  
-                                    "#PWD123456"+ remoteComm[2]));
-                                t.Start();
-                                //answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
-                                answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1] , command_id,  remoteComm[2]  );
-                            }
-                            else{
-                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Comando ignorato, modem offline");
-                            }
-                        break;
-                        case "ComandoDaEseguire":
-                            answerToBackend = Functions.DatabaseFunctions.IsAliveAnswer(command_id);
-                        break;
-                        case "ComandoDaScartare":
-                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Comando ignorato, controllare i parametri");
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                if(bytesRead == 0)
+                if(content != "<end_of_transmission>")
                 {
-                    Console.WriteLine("Received 0 byte from backend, closing..");
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
+                    Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                    
+                    //At this point content should look like = <data><codElettronico>9876543210</codElettronico><command>IsAlive</command></data>
+                    
+                    int command_id = Functions.DatabaseFunctions.insertIntoRemoteCommand(  content, ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()  );
+                    if(  command_id == -1   )
+                        answerToBackend = "<Error>command-error codice elettronico non collegato a una macchina nel db</Error>";
+                    else{
+                        string[] remoteComm = Functions.DatabaseFunctions.FetchRemoteCommand(command_id);
+                        //qua si aprono 3 casi in remoteComm[]: comando non riconosciuto, comando da girare a una macchina, comando a cui rispondere direttamente
+                        switch(remoteComm[0])
+                        {
+                            case "ComandoNonRiconosciuto":
+                                answerToBackend = "<Error>Comando non riconosciuto</Error>";
+                            break;
+                            case "ComandoDaGirare":
+                                // meglio non mandare comandi a modem non collegati..
+                                if(ConnectedModems.ContainsKey(IPAddress.Parse(remoteComm[1])))
+                                {
+                                    Thread t = new Thread(()=>Send(
+                                        ConnectedModems[IPAddress.Parse(remoteComm[1])],  
+                                        "#PWD123456"+ remoteComm[2]));
+                                    t.Start();
+                                    //answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
+                                    answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1] , command_id,  remoteComm[2]  );
+                                }
+                                else{
+                                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Comando ignorato, modem offline");
+                                }
+                            break;
+                            case "ComandoDaEseguire":
+                                answerToBackend = Functions.DatabaseFunctions.IsAliveAnswer(command_id);
+                            break;
+                            case "ComandoDaScartare":
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Comando ignorato, controllare i parametri");
+                            break;
+                        }
+                    }
+                    //response for the backend
+                    Thread responseToBackendThred = new Thread(()=> Send (  handler   ,  answerToBackend  ));
+                    responseToBackendThred.Start();
+                }
+                else
+                {
+                    Console.WriteLine("end of transmission received, closing socket.. 1/2");
+                    handler.Close();
+                    Console.WriteLine("end of transmission, socket close 2/2");
+                    
                 }
             }
+            
         }
         catch(Exception e) {
             answerToBackend = "error";
@@ -270,9 +277,7 @@ public class AsynchronousSocketListener {
         }
         finally
         {
-            //response for the backend
-            Thread responseToBackendThred = new Thread(()=> Send (  handler   ,  answerToBackend  ));
-            responseToBackendThred.Start();
+            
         }
     }
     public static async void ReadCallback(IAsyncResult ar) {
