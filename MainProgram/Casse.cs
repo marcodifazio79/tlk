@@ -195,7 +195,7 @@ namespace Casse
             string querySecondaParte = " VALUES (NULL, '"+ //id assegnato dal DB
                 theOnlyCashTransaction.IdMachinesNavigation.Mid+"', '"+   //CodeMa 
                 theOnlyCashTransaction.Odm+"', '"+   //OdmTaskPalmare
-                DateTime.Now.ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"))  //DateB
+                DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")  //DateB
                 +"', '2',"   //TipoDa
                 +"'1',"      //CanaleGettone
                 +"'8','"+    //CanaleProve
@@ -245,7 +245,7 @@ namespace Casse
             string querySecondaParte = " VALUES (NULL, '"+ //id assegnato dal DB
                 currentTransaction.IdMachinesNavigation.Mid+"', '"+   //CodeMa 
                 currentTransaction.Odm+"', '"+   //OdmTaskPalmare
-                DateTime.Now.ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"))  //DateB
+                DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")  //DateB
                 +"', '2',"   //TipoDa
                 +"'1',"      //CanaleGettone
                 +"'8','"+    //CanaleProve
