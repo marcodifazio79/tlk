@@ -271,7 +271,8 @@ public class AsynchronousSocketListener {
             try{
                 Send (  handler   ,  answerToBackend  );
                 Console.WriteLine("Closing frontend connection -> {0}:{1}",((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString(),((IPEndPoint)state.workSocket.RemoteEndPoint).Port.ToString());
-                state.workSocket.Close();
+                state.workSocket.Shutdown(SocketShutdown.Both);
+                state.workSocket.Close(3);
             }catch(Exception e){
                 Console.WriteLine("Error closing connection w command sender: "+ e.StackTrace);
             }

@@ -222,7 +222,9 @@ namespace Casse
                 +" '0', '0', '0', '0', '0', '0','"+
                 splittedCashPacket[22]+"','"+   //ticket
                 splittedCashPacket[3]+"',"+     //price
-                " '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '000', '0', '0','"+
+                " '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '000', '0','"+
+                DateTime.Now.ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")) + //timestamp_try
+                "','"+
                 DateTime.Now.AddMinutes(30).ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")) + //timestamp_next_try
                 "', '0', CURRENT_TIMESTAMP, '1', '0', '0');";
         
@@ -270,7 +272,9 @@ namespace Casse
                 +"'0', '0', '0', '0', '0', '0','"+
                 (Convert.ToInt32(splittedCashPacket_current[22]) - Convert.ToInt32(splittedCashPacket_previous[22])).ToString()+"','"+   //ticket
                 splittedCashPacket_current[3]+"',"+     //price
-                " '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '000', '0', '0','"+ 
+                " '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '000', '0', '"+
+                DateTime.Now.ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")) + //timestamp_try
+                "','"+ 
                 DateTime.Now.AddMinutes(30).ToString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")) + //timestamp_next_try
                 "','0', CURRENT_TIMESTAMP, '1', '0', '0');";
 
