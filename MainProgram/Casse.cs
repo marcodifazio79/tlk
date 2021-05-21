@@ -72,36 +72,6 @@ namespace Casse
             }
         }
         
-        // /// <summary>
-        // /// cash_calculator lo uso per vedere se il modem ha ricevuto la richiesta di cassa (CAS-OK)
-        // /// e successivamente per leggere la cassa vera e propria (<TPK=$M1,)
-        // /// </summary>
-        // public static void cash_calculator(int machine_id, int cashTransactionID)
-        // {
-         
-        //     listener_DBContext DB = new listener_DBContext (); 
-        //     try{
-        //         DB.CashTransaction.Single(m=>m.Id == cashTransactionID).Status = "Syncing..";
-        //         DB.SaveChanges();
-        //         var t = new Task( () => {
-        //             loadCashPacketToDeborahDB(cashTransactionID); 
-        //         });
-        //         t.Start();
-                
-        //         return;    
-        //     }
-        //     catch(Exception e)
-        //     {
-        //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " cash_checker: "+e.Message);
-        //     }
-        //     finally
-        //     {
-        //         DB.SaveChanges();
-        //         DB.DisposeAsync();
-        //     }
-        
-        // }
-
         /// <summary>
         /// qui scriverò la funzione per caricare la cassa sul db di deborah 
         ///(cassa che andrà calcolata prima sulla base di cashPacket)

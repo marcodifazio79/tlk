@@ -488,7 +488,6 @@ namespace Functions.database
                     .IsRequired()
                     .HasMaxLength(50);
 
-
                 entity.Property(e => e.CreatedAt)
                     .HasColumnName("CreatedAt")
                     .HasColumnType("timestamp");
