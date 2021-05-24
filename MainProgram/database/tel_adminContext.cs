@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 
-namespace tlk_core.database
+namespace Functions.database
 {
     public partial class tel_adminContext : DbContext
     {

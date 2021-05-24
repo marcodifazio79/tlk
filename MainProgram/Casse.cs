@@ -87,7 +87,7 @@ namespace Casse
                                                 .Single(s=>s.Id == cashTransactionID);
                 machine_id = transaction.IdMachines;
                 string[] splittedCashPacket = transaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
-                string queryPerCaricarePacchettoSap = "";
+                int loading_result = 0;
                 if(splittedCashPacket.Length == 40)
                 {
                     //controllo se è il l`unico pacchetto di cassa mai ricevuto da quella macchina o meno
@@ -100,14 +100,14 @@ namespace Casse
                             .ThenInclude(j=>j.IdMacchinaNavigation)
                             .Take(2)
                             .Last();
-                        queryPerCaricarePacchettoSap = buildPacket(transaction, previousTransaction);
+                        loading_result = buildPacket_better(transaction, previousTransaction);
                     }
                     else
                     {
-                        queryPerCaricarePacchettoSap = buildPacket(transaction);
+                        loading_result = buildPacket_better(transaction);
                     }
-                    int insertResult = insertToDeborahDB(queryPerCaricarePacchettoSap);
-                    if(insertResult != 0)
+                    
+                    if(loading_result == 0)
                         transaction.Status = "Inviata";
                     else
                         transaction.Status = "Errore =(";
@@ -249,6 +249,203 @@ namespace Casse
                 "','0', CURRENT_TIMESTAMP, '1', '0', '0');";
 
             return queryPrimaParte + querySecondaParte;
+        }
+
+        static int buildPacket_better(CashTransaction theOnlyCashTransaction)
+        {
+            try{
+                tel_adminContext tel_adminDB = new tel_adminContext();
+                string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
+                SapCashDaemon SapCashDaemon_toLoad   = new SapCashDaemon{
+                    CodeMa = splittedCashPacket[1],
+                    OdmTaskPalmare = theOnlyCashTransaction.Odm,
+                    TipoDa = 1,
+                    CanaleGettone = 1 ,
+                    CanaleProve = 8,
+                    Ch1 = float.Parse( splittedCashPacket[4]),
+                    Qty1 = Convert.ToInt32(splittedCashPacket[5]),
+                    Ch2 = float.Parse( splittedCashPacket[6]),
+                    Qty2 = Convert.ToInt32(splittedCashPacket[7]),
+                    Ch3 = float.Parse( splittedCashPacket[8]),
+                    Qty3 = Convert.ToInt32(splittedCashPacket[9]),
+                    Ch4 = float.Parse( splittedCashPacket[10]),
+                    Qty4 = Convert.ToInt32(splittedCashPacket[11]),
+                    Ch5 = float.Parse( splittedCashPacket[12]),
+                    Qty5 = Convert.ToInt32(splittedCashPacket[13]),
+                    Ch6 = float.Parse( splittedCashPacket[14]),
+                    Qty6 = Convert.ToInt32(splittedCashPacket[15]),
+                    Ch7 = float.Parse( splittedCashPacket[16]),
+                    Qty7 = Convert.ToInt32(splittedCashPacket[17]),
+                    Ch8 = float.Parse( splittedCashPacket[18]),
+                    Qty8 = Convert.ToInt32(splittedCashPacket[19]),
+                    Ch9 = 0,
+                    Qty9 = 0,
+                    MdbVal2 = 0,
+                    MdbInc2 = 0,
+                    MdbTub2 = 0,
+                    MdbVal3 = 0,
+                    MdbInc3 = 0,
+                    MdbTub3 = 0,
+                    MdbVal4 = 0,
+                    MdbInc4 = 0,
+                    MdbTub4 = 0,
+                    MdbVal5 = 0,
+                    MdbInc5 = 0,
+                    MdbTub5 = 0,
+                    MdbVal6 = 0,
+                    MdbInc6 = 0,
+                    MdbTub6 = 0,
+                    Cashless = float.Parse( splittedCashPacket[24]),
+                    Total = Convert.ToInt32( splittedCashPacket[20]),
+                    Change  = 0,
+                    Sales = Convert.ToInt32( splittedCashPacket[21]),
+                    Consumabile = 0,
+                    HopperGettone = 0,
+                    Vend1Prc = 0,
+                    QtyV1 = 0,
+                    Vend2Prc = 0,
+                    QtyV2 = 0,
+                    Ticket = Convert.ToInt32( splittedCashPacket[22]),
+                    Price = Convert.ToInt32( splittedCashPacket[3]),
+                    Bns1 = 0,
+                    Bns2 = 0,
+                    Bns11 = 0,
+                    Bns21 = 0,
+                    Bns5 = 0,
+                    Bns10 = 0,
+                    Bns20 = 0,
+                    Token = 0,
+                    ContMonViso = 0, 
+                    MechValue = 0,
+                    CashlessNayax = 0,
+                    CashlessApp = 0,
+                    Status = "0",
+                    SapExitCode = "0",
+                    TimestampNextTry = DateTime.Now.AddMinutes(30).ToString("yyyy-MM-dd HH:mm:ss"),
+                    Counter = 0,
+                    Visible = true,
+                    Message = "0",
+                    ForceStop = 0,
+                    DateB = DateTime.Now,
+                    timestamp_try = DateTime.Now,
+                    timestamp = DateTime.Now
+                };
+                tel_adminDB.SapCashDaemon.Add(SapCashDaemon_toLoad);
+                tel_adminDB.SapCashProducts.Add(new SapCashProducts{
+                    CashId = SapCashDaemon_toLoad.Id,
+                    Product = "0",
+                    Sales = 0,
+                    Test = 0,
+                    Prezzo = 0,
+                    Refund = 0,
+                    Status = 0,
+                    timestamp = DateTime.Now
+                });
+                return 0;
+            }
+            catch(Exception e){
+                Console.WriteLine("Exception loading SapCashDaemon or SapCashProducts: " + e.StackTrace);
+                return 1;
+            }
+        }
+        static int buildPacket_better(CashTransaction theOnlyCashTransaction, CashTransaction previousTransaction)
+        {
+            try{
+                tel_adminContext tel_adminDB = new tel_adminContext();
+                string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
+                string[] splittedCashPacket_previous = previousTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
+            
+                SapCashDaemon SapCashDaemon_toLoad   = new SapCashDaemon{
+                    CodeMa = splittedCashPacket[1],
+                    OdmTaskPalmare = theOnlyCashTransaction.Odm,
+                    TipoDa = 1,
+                    CanaleGettone = 1 ,
+                    CanaleProve = 8,
+                    Ch1 = float.Parse( splittedCashPacket[4]),
+                    Qty1 = Convert.ToInt32(splittedCashPacket[5]) - Convert.ToInt32(splittedCashPacket_previous[5]),
+                    Ch2 = float.Parse( splittedCashPacket[6]),
+                    Qty2 = Convert.ToInt32(splittedCashPacket[7])- Convert.ToInt32(splittedCashPacket_previous[7]),
+                    Ch3 = float.Parse( splittedCashPacket[8]),
+                    Qty3 = Convert.ToInt32(splittedCashPacket[9])- Convert.ToInt32(splittedCashPacket_previous[9]),
+                    Ch4 = float.Parse( splittedCashPacket[10]),
+                    Qty4 = Convert.ToInt32(splittedCashPacket[11])- Convert.ToInt32(splittedCashPacket_previous[11]),
+                    Ch5 = float.Parse( splittedCashPacket[12]),
+                    Qty5 = Convert.ToInt32(splittedCashPacket[13])- Convert.ToInt32(splittedCashPacket_previous[13]),
+                    Ch6 = float.Parse( splittedCashPacket[14]),
+                    Qty6 = Convert.ToInt32(splittedCashPacket[15])- Convert.ToInt32(splittedCashPacket_previous[15]),
+                    Ch7 = float.Parse( splittedCashPacket[16]),
+                    Qty7 = Convert.ToInt32(splittedCashPacket[17])- Convert.ToInt32(splittedCashPacket_previous[17]),
+                    Ch8 = float.Parse( splittedCashPacket[18]),
+                    Qty8 = Convert.ToInt32(splittedCashPacket[19])- Convert.ToInt32(splittedCashPacket_previous[19]),
+                    Ch9 = 0,
+                    Qty9 = 0,
+                    MdbVal2 = 0,
+                    MdbInc2 = 0,
+                    MdbTub2 = 0,
+                    MdbVal3 = 0,
+                    MdbInc3 = 0,
+                    MdbTub3 = 0,
+                    MdbVal4 = 0,
+                    MdbInc4 = 0,
+                    MdbTub4 = 0,
+                    MdbVal5 = 0,
+                    MdbInc5 = 0,
+                    MdbTub5 = 0,
+                    MdbVal6 = 0,
+                    MdbInc6 = 0,
+                    MdbTub6 = 0,
+                    Cashless = float.Parse( splittedCashPacket[24])- float.Parse(splittedCashPacket_previous[24]),
+                    Total = Convert.ToInt32( splittedCashPacket[20]) - Convert.ToInt32(splittedCashPacket_previous[20]),
+                    Change  = 0,
+                    Sales = Convert.ToInt32( splittedCashPacket[21]) - Convert.ToInt32(splittedCashPacket_previous[21]),
+                    Consumabile = 0,
+                    HopperGettone = 0,
+                    Vend1Prc = 0,
+                    QtyV1 = 0,
+                    Vend2Prc = 0,
+                    QtyV2 = 0,
+                    Ticket = Convert.ToInt32( splittedCashPacket[22]) - Convert.ToInt32(splittedCashPacket_previous[22]),
+                    Price = Convert.ToInt32( splittedCashPacket[3]),
+                    Bns1 = 0,
+                    Bns2 = 0,
+                    Bns11 = 0,
+                    Bns21 = 0,
+                    Bns5 = 0,
+                    Bns10 = 0,
+                    Bns20 = 0,
+                    Token = 0,
+                    ContMonViso = 0, 
+                    MechValue = 0,
+                    CashlessNayax = 0,
+                    CashlessApp = 0,
+                    Status = "0",
+                    SapExitCode = "0",
+                    TimestampNextTry = DateTime.Now.AddMinutes(30).ToString("yyyy-MM-dd HH:mm:ss"),
+                    Counter = 0,
+                    Visible = true,
+                    Message = "0",
+                    ForceStop = 0,
+                    DateB = DateTime.Now,
+                    timestamp_try = DateTime.Now,
+                    timestamp = DateTime.Now
+                };
+                tel_adminDB.SapCashDaemon.Add(SapCashDaemon_toLoad);
+                tel_adminDB.SapCashProducts.Add(new SapCashProducts{
+                    CashId = SapCashDaemon_toLoad.Id,
+                    Product = "0",
+                    Sales = 0,
+                    Test = 0,
+                    Prezzo = 0,
+                    Refund = 0,
+                    Status = 0,
+                    timestamp = DateTime.Now
+                });
+                return 0;
+            }
+            catch(Exception e){
+                Console.WriteLine("[2] Exception loading SapCashDaemon or SapCashProducts: " + e.StackTrace);
+                return 1;
+            }
         }
     }
 }

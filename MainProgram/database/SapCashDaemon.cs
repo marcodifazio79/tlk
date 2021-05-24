@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace tlk_core.database
+namespace Functions.database
 {
     public partial class SapCashDaemon
     {
