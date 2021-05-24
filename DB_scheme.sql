@@ -16,23 +16,20 @@
   UNIQUE KEY `index_ip_address` (`ip_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
- CREATE TABLE `MachinesConnectionTrace` (
+CREATE TABLE `MachinesConnectionTrace` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip_address` varchar(15) NOT NULL,
   `send_or_recv` varchar(4) NOT NULL,
   `transferred_data` varchar(10000) NOT NULL,
   `id_Macchina` int(11) DEFAULT NULL,
+  `synced` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `index_ip_address` (`ip_address`),
   KEY `index_time_stamp` (`time_stamp`),
   KEY `index_id_Macchina` (`id_Macchina`),
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`id_Macchina`)
-        REFERENCES Machines(id)
-        ON DELETE CASCADE
-
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+  CONSTRAINT `MachinesConnectionTrace_ibfk_1` FOREIGN KEY (`id_Macchina`) REFERENCES `Machines` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=521528 DEFAULT CHARSET=latin1 
 
 
 
