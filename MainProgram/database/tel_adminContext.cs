@@ -21,6 +21,11 @@ namespace Functions.database
         public static IConfiguration Configuration;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            Configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddEnvironmentVariables()
+                //.AddCommandLine(args)
+                .Build();
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DB_Casse"].ToString());
