@@ -23,6 +23,7 @@
   `send_or_recv` varchar(4) NOT NULL,
   `transferred_data` varchar(10000) NOT NULL,
   `id_Macchina` int(11) DEFAULT NULL,
+  `synced` tinyint(1) NOT NULL DEFAULT '0',
   KEY `index_ip_address` (`ip_address`),
   KEY `index_time_stamp` (`time_stamp`),
   KEY `index_id_Macchina` (`id_Macchina`),
