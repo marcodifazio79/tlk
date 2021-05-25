@@ -253,8 +253,8 @@ namespace Casse
 
         static int buildPacket_better(CashTransaction theOnlyCashTransaction)
         {
+            tel_adminContext tel_adminDB = new tel_adminContext();
             try{
-                tel_adminContext tel_adminDB = new tel_adminContext();
                 string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
                 SapCashDaemon SapCashDaemon_toLoad   = new SapCashDaemon{
                     CodeMa = splittedCashPacket[1],
@@ -341,17 +341,20 @@ namespace Casse
                     Status = 0,
                     timestamp = DateTime.Now
                 });
-                return 0;
             }
             catch(Exception e){
                 Console.WriteLine("Exception loading SapCashDaemon or SapCashProducts: " + e.StackTrace);
                 return 1;
+            }finally{
+                tel_adminDB.SaveChanges();
+                tel_adminDB.DisposeAsync();
             }
+            return 0;
         }
         static int buildPacket_better(CashTransaction theOnlyCashTransaction, CashTransaction previousTransaction)
         {
+            tel_adminContext tel_adminDB = new tel_adminContext();
             try{
-                tel_adminContext tel_adminDB = new tel_adminContext();
                 string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
                 string[] splittedCashPacket_previous = previousTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
                 if(splittedCashPacket[24] == "")
@@ -444,12 +447,16 @@ namespace Casse
                     Status = 0,
                     timestamp = DateTime.Now
                 });
-                return 0;
+                
             }
             catch(Exception e){
                 Console.WriteLine("[2] Exception loading SapCashDaemon or SapCashProducts: " + e.StackTrace);
                 return 1;
+            }finally{
+                tel_adminDB.SaveChanges();
+                tel_adminDB.DisposeAsync();
             }
+            return 0;
         }
     }
 }
