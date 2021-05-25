@@ -183,4 +183,7 @@ FOREIGN KEY (`ID_Alert`)
         ON DELETE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE USER 'telemetria_ftd'@'10.10.10.%' IDENTIFIED BY 'Tghdje@#!!299_#';
+GRANT select,update on listener_DB.MachinesConnectionTrace  TO 'telemetria_ftd'@'10.10.10.%'
+
 
