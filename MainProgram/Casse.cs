@@ -24,7 +24,7 @@ namespace Casse
         }
         
         /// <summary>
-        /// RegistrazioneCassa viene chiamato quando ricevo, indovina, un pacchetto di cassa.
+        /// RegistrazioneCassa viene chiamato quando ricevo un pacchetto di cassa.
         /// Inizia qui l'elaborazione per caricarlo sul DB di Deborah
         /// </summary>
         public static void RegistrazioneCassa(int id_MachinesConnectionTrace)
@@ -253,8 +253,8 @@ namespace Casse
 
         static int buildPacket_better(CashTransaction theOnlyCashTransaction)
         {
+            tel_adminContext tel_adminDB = new tel_adminContext();
             try{
-                tel_adminContext tel_adminDB = new tel_adminContext();
                 string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
                 SapCashDaemon SapCashDaemon_toLoad   = new SapCashDaemon{
                     CodeMa = splittedCashPacket[1],
@@ -262,21 +262,21 @@ namespace Casse
                     TipoDa = 1,
                     CanaleGettone = 1 ,
                     CanaleProve = 8,
-                    Ch1 = float.Parse( splittedCashPacket[4]),
+                    Ch1 = (float)Convert.ToInt32( splittedCashPacket[4]),
                     Qty1 = Convert.ToInt32(splittedCashPacket[5]),
-                    Ch2 = float.Parse( splittedCashPacket[6]),
+                    Ch2 = (float)Convert.ToInt32( splittedCashPacket[6]),
                     Qty2 = Convert.ToInt32(splittedCashPacket[7]),
-                    Ch3 = float.Parse( splittedCashPacket[8]),
+                    Ch3 = (float)Convert.ToInt32( splittedCashPacket[8]),
                     Qty3 = Convert.ToInt32(splittedCashPacket[9]),
-                    Ch4 = float.Parse( splittedCashPacket[10]),
+                    Ch4 = (float)Convert.ToInt32( splittedCashPacket[10]),
                     Qty4 = Convert.ToInt32(splittedCashPacket[11]),
-                    Ch5 = float.Parse( splittedCashPacket[12]),
+                    Ch5 = (float)Convert.ToInt32( splittedCashPacket[12]),
                     Qty5 = Convert.ToInt32(splittedCashPacket[13]),
-                    Ch6 = float.Parse( splittedCashPacket[14]),
+                    Ch6 = (float)Convert.ToInt32( splittedCashPacket[14]),
                     Qty6 = Convert.ToInt32(splittedCashPacket[15]),
-                    Ch7 = float.Parse( splittedCashPacket[16]),
+                    Ch7 = (float)Convert.ToInt32( splittedCashPacket[16]),
                     Qty7 = Convert.ToInt32(splittedCashPacket[17]),
-                    Ch8 = float.Parse( splittedCashPacket[18]),
+                    Ch8 = (float)Convert.ToInt32( splittedCashPacket[18]),
                     Qty8 = Convert.ToInt32(splittedCashPacket[19]),
                     Ch9 = 0,
                     Qty9 = 0,
@@ -295,8 +295,8 @@ namespace Casse
                     MdbVal6 = 0,
                     MdbInc6 = 0,
                     MdbTub6 = 0,
-                    Cashless = float.Parse( splittedCashPacket[24]),
-                    Total = Convert.ToInt32( splittedCashPacket[20]),
+                    Cashless = (float)Convert.ToInt32( splittedCashPacket[24]),
+                    Total = (float)Convert.ToInt32( splittedCashPacket[20]),
                     Change  = 0,
                     Sales = Convert.ToInt32( splittedCashPacket[21]),
                     Consumabile = 0,
@@ -306,7 +306,7 @@ namespace Casse
                     Vend2Prc = 0,
                     QtyV2 = 0,
                     Ticket = Convert.ToInt32( splittedCashPacket[22]),
-                    Price = Convert.ToInt32( splittedCashPacket[3]),
+                    Price = (float)Convert.ToInt32( splittedCashPacket[3]),
                     Bns1 = 0,
                     Bns2 = 0,
                     Bns11 = 0,
@@ -341,41 +341,48 @@ namespace Casse
                     Status = 0,
                     timestamp = DateTime.Now
                 });
-                return 0;
             }
             catch(Exception e){
                 Console.WriteLine("Exception loading SapCashDaemon or SapCashProducts: " + e.StackTrace);
                 return 1;
+            }finally{
+                tel_adminDB.SaveChanges();
+                tel_adminDB.DisposeAsync();
             }
+            return 0;
         }
         static int buildPacket_better(CashTransaction theOnlyCashTransaction, CashTransaction previousTransaction)
         {
+            tel_adminContext tel_adminDB = new tel_adminContext();
             try{
-                tel_adminContext tel_adminDB = new tel_adminContext();
                 string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
                 string[] splittedCashPacket_previous = previousTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
-            
+                if(splittedCashPacket[24] == "")
+                    splittedCashPacket[24] = "0";
+                if(splittedCashPacket_previous[24] == "")
+                    splittedCashPacket_previous[24] = "0";
+                
                 SapCashDaemon SapCashDaemon_toLoad   = new SapCashDaemon{
                     CodeMa = splittedCashPacket[1],
                     OdmTaskPalmare = theOnlyCashTransaction.Odm,
                     TipoDa = 1,
-                    CanaleGettone = 1 ,
+                    CanaleGettone = 1,
                     CanaleProve = 8,
-                    Ch1 = float.Parse( splittedCashPacket[4]),
+                    Ch1 =  (float)Convert.ToInt32( splittedCashPacket[4]),
                     Qty1 = Convert.ToInt32(splittedCashPacket[5]) - Convert.ToInt32(splittedCashPacket_previous[5]),
-                    Ch2 = float.Parse( splittedCashPacket[6]),
+                    Ch2 = (float)Convert.ToInt32( splittedCashPacket[6]),
                     Qty2 = Convert.ToInt32(splittedCashPacket[7])- Convert.ToInt32(splittedCashPacket_previous[7]),
-                    Ch3 = float.Parse( splittedCashPacket[8]),
+                    Ch3 = (float)Convert.ToInt32( splittedCashPacket[8]),
                     Qty3 = Convert.ToInt32(splittedCashPacket[9])- Convert.ToInt32(splittedCashPacket_previous[9]),
-                    Ch4 = float.Parse( splittedCashPacket[10]),
+                    Ch4 = (float)Convert.ToInt32( splittedCashPacket[10]),
                     Qty4 = Convert.ToInt32(splittedCashPacket[11])- Convert.ToInt32(splittedCashPacket_previous[11]),
-                    Ch5 = float.Parse( splittedCashPacket[12]),
+                    Ch5 = (float)Convert.ToInt32( splittedCashPacket[12]),
                     Qty5 = Convert.ToInt32(splittedCashPacket[13])- Convert.ToInt32(splittedCashPacket_previous[13]),
-                    Ch6 = float.Parse( splittedCashPacket[14]),
+                    Ch6 = (float)Convert.ToInt32( splittedCashPacket[14]),
                     Qty6 = Convert.ToInt32(splittedCashPacket[15])- Convert.ToInt32(splittedCashPacket_previous[15]),
-                    Ch7 = float.Parse( splittedCashPacket[16]),
+                    Ch7 = (float)Convert.ToInt32( splittedCashPacket[16]),
                     Qty7 = Convert.ToInt32(splittedCashPacket[17])- Convert.ToInt32(splittedCashPacket_previous[17]),
-                    Ch8 = float.Parse( splittedCashPacket[18]),
+                    Ch8 = (float)Convert.ToInt32( splittedCashPacket[18]),
                     Qty8 = Convert.ToInt32(splittedCashPacket[19])- Convert.ToInt32(splittedCashPacket_previous[19]),
                     Ch9 = 0,
                     Qty9 = 0,
@@ -394,8 +401,8 @@ namespace Casse
                     MdbVal6 = 0,
                     MdbInc6 = 0,
                     MdbTub6 = 0,
-                    Cashless = float.Parse( splittedCashPacket[24])- float.Parse(splittedCashPacket_previous[24]),
-                    Total = Convert.ToInt32( splittedCashPacket[20]) - Convert.ToInt32(splittedCashPacket_previous[20]),
+                    Cashless = (float)Convert.ToInt32( splittedCashPacket[24])- (float)Convert.ToInt32(splittedCashPacket_previous[24]),
+                    Total = (float)Convert.ToInt32( splittedCashPacket[20]) - (float)Convert.ToInt32(splittedCashPacket_previous[20]),
                     Change  = 0,
                     Sales = Convert.ToInt32( splittedCashPacket[21]) - Convert.ToInt32(splittedCashPacket_previous[21]),
                     Consumabile = 0,
@@ -405,7 +412,7 @@ namespace Casse
                     Vend2Prc = 0,
                     QtyV2 = 0,
                     Ticket = Convert.ToInt32( splittedCashPacket[22]) - Convert.ToInt32(splittedCashPacket_previous[22]),
-                    Price = Convert.ToInt32( splittedCashPacket[3]),
+                    Price = (float)Convert.ToInt32( splittedCashPacket[3]),
                     Bns1 = 0,
                     Bns2 = 0,
                     Bns11 = 0,
@@ -440,12 +447,16 @@ namespace Casse
                     Status = 0,
                     timestamp = DateTime.Now
                 });
-                return 0;
+                
             }
             catch(Exception e){
                 Console.WriteLine("[2] Exception loading SapCashDaemon or SapCashProducts: " + e.StackTrace);
                 return 1;
+            }finally{
+                tel_adminDB.SaveChanges();
+                tel_adminDB.DisposeAsync();
             }
+            return 0;
         }
     }
 }
