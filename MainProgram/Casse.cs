@@ -354,7 +354,11 @@ namespace Casse
                 tel_adminContext tel_adminDB = new tel_adminContext();
                 string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
                 string[] splittedCashPacket_previous = previousTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
-            
+                if(splittedCashPacket[24] == "")
+                    splittedCashPacket[24] = "0";
+                if(splittedCashPacket_previous[24] == "")
+                    splittedCashPacket_previous[24] = "0";
+                
                 SapCashDaemon SapCashDaemon_toLoad   = new SapCashDaemon{
                     CodeMa = splittedCashPacket[1],
                     OdmTaskPalmare = theOnlyCashTransaction.Odm,
