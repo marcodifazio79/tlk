@@ -24,7 +24,7 @@ namespace Casse
         }
         
         /// <summary>
-        /// RegistrazioneCassa viene chiamato quando ricevo, indovina, un pacchetto di cassa.
+        /// RegistrazioneCassa viene chiamato quando ricevo un pacchetto di cassa.
         /// Inizia qui l'elaborazione per caricarlo sul DB di Deborah
         /// </summary>
         public static void RegistrazioneCassa(int id_MachinesConnectionTrace)
