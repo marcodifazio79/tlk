@@ -17,6 +17,6 @@ namespace Functions.database
         public DateTime? time_stamp { get; set; }
         public virtual Machines IdMacchinaNavigation { get; set; }
         public virtual ICollection<CashTransaction> CashTransaction { get; set; }
-
+        public int telemetria_status { get; set; }
     }
 }

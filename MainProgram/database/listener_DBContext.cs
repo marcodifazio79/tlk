@@ -277,6 +277,10 @@ namespace Functions.database
                     .HasColumnName("time_stamp")
                     .HasColumnType("timestamp");
 
+                entity.Property(e => e.telemetria_status)
+                    .HasColumnName("telemetria_status")
+                    .HasColumnType("tinyint(1)");
+
                 entity.HasOne(d => d.IdMacchinaNavigation)
                     .WithMany(p => p.MachinesConnectionTrace)
                     .HasForeignKey(d => d.IdMacchina)
