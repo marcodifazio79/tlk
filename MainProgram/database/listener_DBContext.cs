@@ -279,7 +279,7 @@ namespace Functions.database
 
                 entity.Property(e => e.telemetria_status)
                     .HasColumnName("telemetria_status")
-                    .HasColumnType("tinyint(1)");
+                    .HasColumnType("int(1)");
 
                 entity.HasOne(d => d.IdMacchinaNavigation)
                     .WithMany(p => p.MachinesConnectionTrace)
