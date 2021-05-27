@@ -132,7 +132,7 @@ CREATE TABLE `LogType` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `LogType` VALUES ('Informational'),('Alert'),('Critical'),('Error');
+INSERT INTO `LogType`(type) VALUES ('Informational'),('Alert'),('Critical'),('Error');
 
 CREATE TABLE `LogStatus` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -140,7 +140,7 @@ CREATE TABLE `LogStatus` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `LogStatus` VALUES ('NoActionNeeded'),('Solved'),('ActionNeeded!');
+INSERT INTO `LogStatus`(status) VALUES ('NoActionNeeded'),('Solved'),('ActionNeeded!');
 
 CREATE TABLE `Log` (
 `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -188,6 +188,6 @@ FOREIGN KEY (`ID_Log`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE USER 'telemetria_ftd'@'10.10.10.%' IDENTIFIED BY 'Tghdje@#!!299_#';
-GRANT select,update on listener_DB.MachinesConnectionTrace  TO 'telemetria_ftd'@'10.10.10.%'
+GRANT select,update on listener_DB.MachinesConnectionTrace  TO 'telemetria_ftd'@'10.10.10.%';
 
 
