@@ -23,13 +23,15 @@ CREATE TABLE `MachinesConnectionTrace` (
   `send_or_recv` varchar(4) NOT NULL,
   `transferred_data` varchar(10000) NOT NULL,
   `id_Macchina` int(11) DEFAULT NULL,
-  `telemetria_status` int(1) NOT NULL DEFAULT '0',
+  `telemetria_status` int(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `index_ip_address` (`ip_address`),
   KEY `index_time_stamp` (`time_stamp`),
   KEY `index_id_Macchina` (`id_Macchina`),
+  KEY `index_telemetria_status` (`telemetria_status`),
+  KEY `index_telemetria_status_time_stamp` (`telemetria_status`,`time_stamp`),
   CONSTRAINT `MachinesConnectionTrace_ibfk_1` FOREIGN KEY (`id_Macchina`) REFERENCES `Machines` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=521528 DEFAULT CHARSET=latin1 
+) ENGINE=InnoDB AUTO_INCREMENT=536872 DEFAULT CHARSET=latin1;
 
 
 
@@ -147,7 +149,7 @@ CREATE TABLE `Log` (
 `DataCreazione` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 `DataRisoluzione` datetime DEFAULT NULL,
 `LogDescription` varchar(500) NOT NULL,
-`LogSeggestedActions` varchar(500) NOT NULL,
+`LogSeggestedActions` varchar(500) DEFAULT NULL,
 `linkToRelevantLocation` varchar(1024) DEFAULT NULL,
 `ID_LogType` int(11) NOT NULL,
 `ID_LogStatus` int(11) NOT NULL,
