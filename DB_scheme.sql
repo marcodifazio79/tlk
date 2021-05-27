@@ -126,56 +126,64 @@ KEY `index_ID_Machines` (`ID_Machines`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `AlertType` (
+CREATE TABLE `LogType` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
 `type` varchar(50) NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `AlertStatus` (
+INSERT INTO `LogType` VALUES ('Informational'),('Alert'),('Critical'),('Error');
+
+CREATE TABLE `LogStatus` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
 `status` varchar(50) NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `Alert` (
+INSERT INTO `LogStatus` VALUES ('NoActionNeeded'),('Solved'),('ActionNeeded!');
+
+CREATE TABLE `Log` (
 `Id` int(11) NOT NULL AUTO_INCREMENT,
 `DataCreazione` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 `DataRisoluzione` datetime DEFAULT NULL,
-`AlertDescription` varchar(500) NOT NULL,
-`AlertSeggestedActions` varchar(500) NOT NULL,
+`LogDescription` varchar(500) NOT NULL,
+`LogSeggestedActions` varchar(500) NOT NULL,
 `linkToRelevantLocation` varchar(1024) DEFAULT NULL,
-`ID_AlertType` int(11) NOT NULL,
-`ID_AlertStatus` int(11) NOT NULL,
-`ResolvedBy` varchar(256) DEFAULT NULL,
+`ID_LogType` int(11) NOT NULL,
+`ID_LogStatus` int(11) NOT NULL,
+`ID_user` varchar(256) DEFAULT NULL,
 `ID_machine` int(11) DEFAULT NULL,
 PRIMARY KEY (`id`),
-FOREIGN KEY (`ID_AlertType`)
-        REFERENCES AlertType(id)
+KEY `index_ID_user` (`ID_user`),
+KEY `index_ID_LogType` (`ID_LogType`),
+KEY `index_DataCreazione` (`DataCreazione`),
+KEY `index_ID_machine` (`ID_machine`),
+FOREIGN KEY (`ID_LogType`)
+        REFERENCES LogType(id)
         ON DELETE NO ACTION,
 FOREIGN KEY (`ID_machine`)
         REFERENCES Machines(id)
         ON DELETE NO ACTION,
-FOREIGN KEY (`ID_AlertStatus`)
-        REFERENCES AlertStatus(id)
+FOREIGN KEY (`ID_LogStatus`)
+        REFERENCES LogStatus(id)
         ON DELETE NO ACTION,
-FOREIGN KEY (`ResolvedBy`)
+FOREIGN KEY (`ID_user`)
         REFERENCES AspNetUsers(Id)
         ON DELETE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `AlertTargetRole` (
+CREATE TABLE `LogTargetRole` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
 `ID_AspNetRoles` varchar(256) NOT NULL,
-`ID_Alert` int(11) NOT NULL,
+`ID_Log` int(11) NOT NULL,
 PRIMARY KEY (`id`),
 key `index_ID_AspNetRoles` (`ID_AspNetRoles`),
-key `index_ID_Alert` (`ID_Alert`),
+key `index_ID_Log` (`ID_Log`),
 FOREIGN KEY (`ID_AspNetRoles`)
         REFERENCES AspNetRoles(Id)
         ON DELETE NO ACTION,
-FOREIGN KEY (`ID_Alert`)
-        REFERENCES Alert(Id)
+FOREIGN KEY (`ID_Log`)
+        REFERENCES Log(Id)
         ON DELETE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
