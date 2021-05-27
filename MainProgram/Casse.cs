@@ -216,6 +216,9 @@ namespace Casse
                     timestamp = DateTime.Now
                 };
                 tel_adminDB.SapCashDaemon.Add(SapCashDaemon_toLoad);
+                 // salvo per poter prendere l'id di SapCashDaemon_toLoad
+                tel_adminDB.SaveChanges();
+                
                 tel_adminDB.SapCashProducts.Add(new SapCashProducts{
                     CashId = SapCashDaemon_toLoad.Id,
                     Product = "0",
@@ -322,6 +325,8 @@ namespace Casse
                     timestamp = DateTime.Now
                 };
                 tel_adminDB.SapCashDaemon.Add(SapCashDaemon_toLoad);
+                // salvo per poter prendere l'id di SapCashDaemon_toLoad
+                tel_adminDB.SaveChanges();
                 tel_adminDB.SapCashProducts.Add(new SapCashProducts{
                     CashId = SapCashDaemon_toLoad.Id,
                     Product = "0",
