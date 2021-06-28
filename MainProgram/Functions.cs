@@ -706,12 +706,8 @@ namespace Functions
             return returnValue;
         }
 
-    }
-
     //la lista non tiene conto degli accentratori: comefunziona con n kiddie sotto un solo modem? indagare.
 
-    public class SocketList
-    {
 
         public static void setModemOffline(IPAddress ip)
         {
@@ -762,10 +758,21 @@ namespace Functions
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss IsConnected : ") + e.Message);
                 return false;
             }
-            
         }
-        
-    }
 
-    
+        private class Logger
+        {
+            private static void modemConnectionDrop(IPAddress ip)
+            {
+                using(listener_DBContext DB = new listener_DBContext())
+                {
+                    Log logEntryToAdd = new Log{
+                        DataCreazione = DateTime.Now,
+                        
+                    };
+                }
+            }
+
+        }
+    }    
 }

@@ -33,7 +33,7 @@ namespace Functions.database
         public virtual DbSet<RemoteCommand> RemoteCommand { get; set; }
         public virtual DbSet<CommandsMatch> CommandsMatch { get; set; }
         public virtual DbSet<CashTransaction> CashTransaction { get; set; }
-
+        public virtual DbSet<Log> Log { get; set; }
         public static IConfiguration Configuration;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -509,6 +509,58 @@ namespace Functions.database
                     .HasConstraintName("MachinesAttributes_ibfk_2");
             }); 
 
+            modelBuilder.Entity<Log>(entity =>
+            {
+                entity.HasIndex(e => e.IdLogStatus)
+                    .HasName("ID_LogStatus");
+
+                entity.HasIndex(e => e.IdLogType)
+                    .HasName("index_ID_LogType");
+
+                entity.HasIndex(e => e.IdMachine)
+                    .HasName("index_ID_machine");
+
+                entity.HasIndex(e => e.IdUser)
+                    .HasName("index_ID_user");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)");
+                
+                entity.Property(e => e.DataCreazione)
+                    .HasColumnName("DataCreazione")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.DataRisoluzione)
+                    .HasColumnName("DataRisoluzione")
+                    .HasColumnType("timestamp");
+
+                entity.Property(e => e.IdLogStatus)
+                    .HasColumnName("ID_LogStatus")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdLogType)
+                    .HasColumnName("ID_LogType")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdMachine)
+                    .HasColumnName("ID_machine")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.IdUser)
+                    .HasColumnName("ID_user")
+                    .HasMaxLength(256);
+
+                entity.Property(e => e.LinkToRelevantLocation)
+                    .HasColumnName("linkToRelevantLocation")
+                    .HasMaxLength(1024);
+
+                entity.Property(e => e.LogDescription)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.LogSeggestedActions).HasMaxLength(500);
+
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }

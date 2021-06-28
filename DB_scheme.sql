@@ -192,4 +192,5 @@ FOREIGN KEY (`ID_Log`)
 CREATE USER 'telemetria_ftd'@'10.10.10.%' IDENTIFIED BY 'Tghdje@#!!299_#';
 GRANT select,update on listener_DB.MachinesConnectionTrace  TO 'telemetria_ftd'@'10.10.10.%';
 
-
+CREATE USER 'alberto_ro'@'%' IDENTIFIED BY 'SDCko@#!12';
+GRANT select on listener_DB.*  TO 'alberto_ro'@'%';

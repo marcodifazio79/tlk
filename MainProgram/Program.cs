@@ -161,7 +161,7 @@ public class AsynchronousSocketListener {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ ip_as_string+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
                 Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
 
-                Functions.SocketList.setModemOnline(ip);
+                Functions.DatabaseFunctions.setModemOnline(ip);
                 
                 // Create the state object.  
                 StateObject state = new StateObject();  
@@ -369,7 +369,7 @@ public class AsynchronousSocketListener {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client");
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", "Connessione chiusa dal client" );
                     ConnectedModems.Remove(ip);
-                    Functions.SocketList.setModemOffline(ip);
+                    Functions.DatabaseFunctions.setModemOffline(ip);
                     //handler.Shutdown(SocketShutdown.Both);  
                     handler.Close(2); //wait 2 seconds before close
                     return;
@@ -425,7 +425,7 @@ public class AsynchronousSocketListener {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ ip.ToString ());
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", content );
                 ConnectedModems.Remove(ip);
-                Functions.SocketList.setModemOffline(ip);
+                Functions.DatabaseFunctions.setModemOffline(ip);
                 //Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
                 //handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
@@ -448,7 +448,7 @@ public class AsynchronousSocketListener {
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Errore comunicazione con: " +ip.ToString () +" -> " + e.Message);
                 DatabaseFunctions.insertIntoDB("Errore comunicazione con: " + ip.ToString () );
                 ConnectedModems.Remove(ip);
-                Functions.SocketList.setModemOffline(ip);
+                Functions.DatabaseFunctions.setModemOffline(ip);
                 //Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
                 //handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
@@ -495,7 +495,7 @@ public class AsynchronousSocketListener {
                 // the modem get stucked in "send mode" from time to time. If this happen, 
                 // trying to send to the modem cause a SocketException, i'll reset the connection if this occur
                 ConnectedModems.Remove(ip);
-                Functions.SocketList.setModemOffline(ip);
+                Functions.DatabaseFunctions.setModemOffline(ip);
                 Console.WriteLine("Send error, closing "+ip.ToString()+":"+sock_port.ToString()); 
                 try{
                     //state.workSocket.Shutdown(SocketShutdown.Both); 
@@ -526,7 +526,7 @@ public class AsynchronousSocketListener {
                 IPAddress ip = ((IPEndPoint)state.workSocket.RemoteEndPoint).Address;
                 int sock_port = ((IPEndPoint)state.workSocket.RemoteEndPoint).Port;
                 ConnectedModems.Remove(ip);
-                Functions.SocketList.setModemOffline(ip);
+                Functions.DatabaseFunctions.setModemOffline(ip);
                 Console.WriteLine("SendCallback error, closing "+ip.ToString()+":"+sock_port.ToString()); 
                 //state.workSocket.Shutdown(SocketShutdown.Both); 
                 state.workSocket.Close(2); //wait 2 seconds before close
