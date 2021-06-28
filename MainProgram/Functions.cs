@@ -44,6 +44,11 @@ namespace Functions
                     if( DB.Machines.Any( y=> y.Mid == mid ) )
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+                        
+                        // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
+                        if(MachineToUpdate.Version != version)
+                            MachineToUpdate.Version = version; 
+                        
                         if(MachineToUpdate != machinesOriginePacchetto )
                         {
                             if(MachineToUpdate.MarkedBroken)
@@ -53,7 +58,7 @@ namespace Functions
                                 MachineToUpdate.Imei =  Convert.ToInt64(imei);
                                 MachineToUpdate.Mid = mid;
                                 MachineToUpdate.IsOnline = true;
-                                MachineToUpdate.Version = version;
+                                //MachineToUpdate.Version = version; lo aggiorno sopra
                                 MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
 
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
@@ -147,6 +152,7 @@ namespace Functions
         public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             listener_DBContext DB = new listener_DBContext ();
+            
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {

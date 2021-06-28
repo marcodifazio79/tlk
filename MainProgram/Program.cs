@@ -306,7 +306,7 @@ public class AsynchronousSocketListener {
                         Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
                     }
 
-                    if(content.Contains("<VER=500>"))
+                    if(content.Contains("<VER=500>")) // variante per modem del cazzo che non vuole una risposta
                     {
                         state = new StateObject();
                         state.workSocket = ConnectedModems[((IPEndPoint)handler.RemoteEndPoint).Address];
