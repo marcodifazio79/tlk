@@ -14,12 +14,12 @@ addiungere a /etc/sysctl.conf <br/>
 `net.ipv4.tcp_keepalive_time = 30` <br/>
 `net.ipv4.tcp_keepalive_intvl = 10` <br/>
 `net.ipv4.tcp_keepalive_probes = 6` <br/>
-i parametri sopra sono di riferimento, con questi una disconnessione viene riconosciuta in circa 2 minuti al massimo. Va fatto un po' di studio per tunarli bene.~~
-//set the keep alive values for the socket
-`state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);`
-`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);`
-`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //old value: 16`
-`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10);`
+i parametri sopra sono di riferimento, con questi una disconnessione viene riconosciuta in circa 2 minuti al massimo. Va fatto un po' di studio per tunarli bene.~~<br/>
+//set the keep alive values for the socket<br/>
+`state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);`<br/>
+`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);`<br/>
+`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //old value: 16`<br/>
+`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10);`<br/>
 
 Se tlk_core non risulta eseguibile provare `chmod a+x path/to/tlk_core`<br/>
 Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi: 
