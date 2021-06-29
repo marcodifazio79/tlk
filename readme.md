@@ -9,12 +9,17 @@ Per ricostruire il db context (metti caso che aggiungiamo tabelle), da dentro la
 NOTA BENE: controllare il risultato! Non sempre lo scaffolding funziona, in base alla versione del server e dell'ef potrebbe ignorare delle colonne nelle tabelle, non traducendole in variabili nell'ef (aggiungerle a mano). Oppure aggiungere `-t TABLEMANE` e cambiare l'output path `-o databaseTemp` per genereare nuovi file da integrare in quelli esistenti. 
 
 ### The server
-Fondamentale è abbassare i parametri del keepalive per il tcp del server: <br/>modificare i singoli socket aperti dall'applicazione non è efficace. Quindi: <br/>
+~~Fondamentale è abbassare i parametri del keepalive per il tcp del server: <br/>modificare i singoli socket aperti dall'applicazione non è efficace. Quindi: <br/>
 addiungere a /etc/sysctl.conf <br/>
 `net.ipv4.tcp_keepalive_time = 30` <br/>
 `net.ipv4.tcp_keepalive_intvl = 10` <br/>
 `net.ipv4.tcp_keepalive_probes = 6` <br/>
-i parametri sopra sono di riferimento, con questi una disconnessione viene riconosciuta in circa 2 minuti al massimo. Va fatto un po' di studio per tunarli bene.
+i parametri sopra sono di riferimento, con questi una disconnessione viene riconosciuta in circa 2 minuti al massimo. Va fatto un po' di studio per tunarli bene.~~
+//set the keep alive values for the socket
+`state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);`
+`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);`
+`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //old value: 16`
+`state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10);`
 
 Se tlk_core non risulta eseguibile provare `chmod a+x path/to/tlk_core`<br/>
 Il 28/01/2020 è stato creato il servizio tlk_core.service, quindi: 
