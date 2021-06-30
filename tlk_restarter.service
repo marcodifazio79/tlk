@@ -1,0 +1,6 @@
+[Unit]
+Description=TLK_Core al momento soffre di socket leak, riavvio la notte per pulire eventuali connessioni appese (aspettando il fix)
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl try-restart tlk_core.service

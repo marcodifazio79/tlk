@@ -145,7 +145,9 @@ public class AsynchronousSocketListener {
                         // mi è arrivata una nuova connessione per un modem che risulta già connesso,
                         // chiudo e riapro.
                         Console.WriteLine("Closing old socket "+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Address.ToString()+":"+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Port.ToString());
+                        ConnectedModems[ip].Shutdown(SocketShutdown.Both);
                         ConnectedModems[ip].Close(2);
+                        ConnectedModems[ip].Dispose();
                         
                     }catch{
                         Console.WriteLine("Error closing the old socket for a modem conenction, check for socket leaks.");
@@ -273,6 +275,7 @@ public class AsynchronousSocketListener {
                 Console.WriteLine("Closing frontend connection -> {0}:{1}",((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString(),((IPEndPoint)state.workSocket.RemoteEndPoint).Port.ToString());
                 state.workSocket.Shutdown(SocketShutdown.Both);
                 state.workSocket.Close(3);
+                state.workSocket.Dispose();
             }catch(Exception e){
                 Console.WriteLine("Error closing connection w command sender: "+ e.StackTrace);
             }
@@ -370,8 +373,9 @@ public class AsynchronousSocketListener {
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", "Connessione chiusa dal client" );
                     ConnectedModems.Remove(ip);
                     Functions.DatabaseFunctions.setModemOffline(ip);
-                    //handler.Shutdown(SocketShutdown.Both);  
+                    handler.Shutdown(SocketShutdown.Both);  
                     handler.Close(2); //wait 2 seconds before close
+                    handler.Dispose();
                     return;
                 }
         }
@@ -427,9 +431,10 @@ public class AsynchronousSocketListener {
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 //Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
-                //handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
+                handler.Shutdown(SocketShutdown.Both); 
                 handler.Close(2); //wait 2 seconds before close
+                handler.Dispose();
                 try{
                 // SOCKET LEAKs DEBUG
                     StateObject originalState = (StateObject) ar.AsyncState;
@@ -450,9 +455,10 @@ public class AsynchronousSocketListener {
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 //Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
-                //handler.Shutdown(SocketShutdown.Both); 
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
+                handler.Shutdown(SocketShutdown.Both);
                 handler.Close(2); //wait 2 seconds before close
+                handler.Dispose();
                 try{
                 // SOCKET LEAKs DEBUG
                     StateObject originalState = (StateObject) ar.AsyncState;
@@ -498,8 +504,9 @@ public class AsynchronousSocketListener {
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 Console.WriteLine("Send error, closing "+ip.ToString()+":"+sock_port.ToString()); 
                 try{
-                    //state.workSocket.Shutdown(SocketShutdown.Both); 
+                    state.workSocket.Shutdown(SocketShutdown.Both); 
                     state.workSocket.Close(2); //wait 2 seconds before close
+                    state.workSocket.Dispose();
                 }catch{}
             }
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Begin send error: " + e.ToString());
@@ -519,7 +526,6 @@ public class AsynchronousSocketListener {
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Sent {0} bytes to client.", bytesSent);  
             Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString() ,"SEND", state.sb.ToString()  );
             
-            
         } catch (Exception e) {  
             try{
                 Console.WriteLine(e.ToString()); 
@@ -530,7 +536,7 @@ public class AsynchronousSocketListener {
                 Console.WriteLine("SendCallback error, closing "+ip.ToString()+":"+sock_port.ToString()); 
                 //state.workSocket.Shutdown(SocketShutdown.Both); 
                 state.workSocket.Close(2); //wait 2 seconds before close
-
+                state.workSocket.Dispose();
             }catch(Exception ex){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.ToString());
             } 

@@ -1,0 +1,9 @@
+[Unit]
+Description=TLK_Core al momento soffre di socket leak, riavvio la notte per pulire eventuali connessioni appese (aspettando il fix)
+
+[Timer]
+OnCalendar=*-*-* 3:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
