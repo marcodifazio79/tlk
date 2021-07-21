@@ -367,25 +367,6 @@ namespace Functions
                             mPacketArray.Length.ToString() + ")");
                     }
                 }
-                else if (data.StartsWith("<TPK=$M5"))
-                {
-                    data = data.Substring(  0 , data.IndexOf(">") );
-                    string[] mPacketArray = data.Split(',');
-                    if(mPacketArray.Length == 55)
-                    {
-                        // da verificare se i modem con cassa M5 rispondono ai comandi
-                        MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        //                            
-                        if(mPacketArray[50] == "1")
-                        {
-                            // the 35° field in packet is set to 1 when it's the answer to a #cas command.
-                            Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M5");
-                        }
-
-                    }
-                } 
                 else if (data.StartsWith("<TPK=$M3"))
                 {
                     data = data.Substring(  0 , data.IndexOf(">") );
@@ -403,7 +384,36 @@ namespace Functions
                         }
 
                     }
+                    else
+                    {
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
+                            mPacketArray.Length.ToString() + ")");
+                    }
                 } 
+                else if (data.StartsWith("<TPK=$M5"))
+                {
+                    data = data.Substring(  0 , data.IndexOf(">") );
+                    string[] mPacketArray = data.Split(',');
+                    if(mPacketArray.Length == 55)
+                    {
+                        // da verificare se i modem con cassa M5 rispondono ai comandi
+                        MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                        MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                        MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                        //                            
+                        if(mPacketArray[50] == "1")
+                        {
+                            // the 35° field in packet is set to 1 when it's the answer to a #cas command.
+                            Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M5");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
+                            mPacketArray.Length.ToString() + ")");
+                    }
+                } 
+                
 
             }
             catch (Exception e)
