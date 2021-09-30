@@ -7,11 +7,13 @@ using System.Threading;
 using Functions.database;
 using System.Text.RegularExpressions;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace Functions
 {    
     public class DatabaseFunctions
     {   
+        public static IConfiguration Configuration;
         public DatabaseFunctions()
         {
             
@@ -68,6 +70,8 @@ namespace Functions
                             else
                             {
                                 MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                MachineToUpdate.MarkedBroken=true;
+                                //DB.Machines.Remove(MachineToUpdate);
                             }
                         }
                     }
@@ -182,7 +186,10 @@ namespace Functions
                 }
                 else
                 {
-                    if(ip_addr.StartsWith("172.16."))
+                    
+                    int val_ipset=Convert.ToInt16(Configuration["IPSet:IPFree"].ToString());
+                    // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
+                    if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
                     {
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
@@ -373,9 +380,9 @@ namespace Functions
                     string[] mPacketArray = data.Split(',');
                     if(mPacketArray.Length == 47)
                     {
-                        MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                       // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                       // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                       //MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
                         //                            
                         if(mPacketArray[42] == "1")
                         {
@@ -397,9 +404,9 @@ namespace Functions
                     if(mPacketArray.Length == 55)
                     {
                         // da verificare se i modem con cassa M5 rispondono ai comandi
-                        MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                       // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                       // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                       // MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
                         //                            
                         if(mPacketArray[50] == "1")
                         {

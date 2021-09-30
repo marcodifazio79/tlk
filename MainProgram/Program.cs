@@ -133,7 +133,9 @@ public class AsynchronousSocketListener {
             string ip_as_string = IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()).ToString();
             
             // controllo che l'ip sia effettivamente quello di un modem
-            if(ip_as_string.StartsWith("172.16."))
+            int val_ipset=Convert.ToInt16(Configuration["IPSet:IPFree"].ToString());
+            // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
+            if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             {
                 // Signal the modem thread to continue.  
                 allDoneModem.Set();  
@@ -219,7 +221,6 @@ public class AsynchronousSocketListener {
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
                 content = state.sb.ToString();
             
-            
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
@@ -241,8 +242,7 @@ public class AsynchronousSocketListener {
                             if(ConnectedModems.ContainsKey(IPAddress.Parse(remoteComm[1])))
                             {
                                 Thread t = new Thread(()=>Send(
-                                    ConnectedModems[IPAddress.Parse(remoteComm[1])],  
-                                    "#PWD123456"+ remoteComm[2]));
+                                    ConnectedModems[IPAddress.Parse(remoteComm[1])],"#PWD123456"+ remoteComm[2]));
                                 t.Start();
                                 //answerToBackend = "<Info>Comando inoltrato alla macchina</Info>";
                                 answerToBackend = Functions.DatabaseFunctions.checkAnswerToCommand(remoteComm[1] , command_id,  remoteComm[2]  );
