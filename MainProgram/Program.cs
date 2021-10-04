@@ -371,11 +371,11 @@ public class AsynchronousSocketListener {
                     IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client");
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", "Connessione chiusa dal client" );
-                    ConnectedModems.Remove(ip);
+    /*                 ConnectedModems.Remove(ip);
                     Functions.DatabaseFunctions.setModemOffline(ip);
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close(2); //wait 2 seconds before close
-                    handler.Dispose();
+                    handler.Dispose(); */
                     return;
                 }
         }
@@ -428,7 +428,7 @@ public class AsynchronousSocketListener {
                 IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ ip.ToString ());
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", content );
-                ConnectedModems.Remove(ip);
+                /* ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 //Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
@@ -441,7 +441,7 @@ public class AsynchronousSocketListener {
                     Socket originalSocket = originalState.workSocket;
                     Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
                 // SOCKET LEAKs DEBUG
-                }catch{}
+                }catch{} */
                 return;
             }
 
@@ -452,7 +452,7 @@ public class AsynchronousSocketListener {
                 IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Errore comunicazione con: " +ip.ToString () +" -> " + e.Message);
                 DatabaseFunctions.insertIntoDB("Errore comunicazione con: " + ip.ToString () );
-                ConnectedModems.Remove(ip);
+/*                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 //Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
                 Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
@@ -464,8 +464,8 @@ public class AsynchronousSocketListener {
                     StateObject originalState = (StateObject) ar.AsyncState;
                     Socket originalSocket = originalState.workSocket;
                     Console.WriteLine("Original socket: "+ ((IPEndPoint)originalSocket.RemoteEndPoint).Address.ToString () +":"+((IPEndPoint)originalSocket.RemoteEndPoint).Port.ToString());
-                // SOCKET LEAKs DEBUG
-                }catch{}
+                // SOCKET LEAKs DEBUG */
+                //}catch{}
 
             }catch(Exception ex){
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + ex.ToString());
@@ -500,14 +500,14 @@ public class AsynchronousSocketListener {
             {
                 // the modem get stucked in "send mode" from time to time. If this happen, 
                 // trying to send to the modem cause a SocketException, i'll reset the connection if this occur
-                ConnectedModems.Remove(ip);
+               /*  ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 Console.WriteLine("Send error, closing "+ip.ToString()+":"+sock_port.ToString()); 
                 try{
                     state.workSocket.Shutdown(SocketShutdown.Both); 
                     state.workSocket.Close(2); //wait 2 seconds before close
                     state.workSocket.Dispose();
-                }catch{}
+                }catch{} */
             }
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Begin send error: " + e.ToString());
             Functions.DatabaseFunctions.insertIntoDB("begin send error.");
@@ -527,19 +527,20 @@ public class AsynchronousSocketListener {
             Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)state.workSocket.RemoteEndPoint).Address.ToString() ,"SEND", state.sb.ToString()  );
             
         } catch (Exception e) {  
-            try{
+            //try{
                 Console.WriteLine(e.ToString()); 
                 IPAddress ip = ((IPEndPoint)state.workSocket.RemoteEndPoint).Address;
                 int sock_port = ((IPEndPoint)state.workSocket.RemoteEndPoint).Port;
-                ConnectedModems.Remove(ip);
-                Functions.DatabaseFunctions.setModemOffline(ip);
                 Console.WriteLine("SendCallback error, closing "+ip.ToString()+":"+sock_port.ToString()); 
+/*                 ConnectedModems.Remove(ip);
+                Functions.DatabaseFunctions.setModemOffline(ip);
+                
                 //state.workSocket.Shutdown(SocketShutdown.Both); 
                 state.workSocket.Close(2); //wait 2 seconds before close
                 state.workSocket.Dispose();
             }catch(Exception ex){
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.ToString());
-            } 
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ex.ToString());*/
+            //}    
         } finally {
             
             //Thread t = new Thread(()=>Send (handler, "#PWD123456"));
@@ -548,10 +549,6 @@ public class AsynchronousSocketListener {
         }  
     }  
   
-
-
-      
-    
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

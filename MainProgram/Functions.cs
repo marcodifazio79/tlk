@@ -386,7 +386,7 @@ namespace Functions
                         //                            
                         if(mPacketArray[42] == "1")
                         {
-                            // the 35° field in packet is set to 1 when it's the answer to a #cas command.
+                            // the 42° field in packet is set to 1 when it's the a4nswer to a #cas command.
                             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M3");
                         }
 
@@ -410,7 +410,7 @@ namespace Functions
                         //                            
                         if(mPacketArray[50] == "1")
                         {
-                            // the 35° field in packet is set to 1 when it's the answer to a #cas command.
+                            // the 42° field in packet is set to 1 when it's the answer to a #cas command.
                             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M5");
                         }
                     }
