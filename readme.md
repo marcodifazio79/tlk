@@ -1,4 +1,14 @@
 # Telemetria Kiddie
+Requisiti hardware e software
+Macchina virtualizzata in cluster con storage HA
+CPU: 8 x Xeon E5640@2,37GHz
+RAM: 8Gb 
+Storage: 50 Gb
+SO: Linux Ubuntu 18.04.5 LTS
+Ambiente di sviluppo: Asp.net Core MVC, MSVS CODE in C#
+DB: MySql ver. 14.14
+L’ambiente di sviluppo e collaudo è disponibile su un server di staging con ip 10.10.10.72 clone del server di produzione
+L’ambiente di produzione è disponibile su un server con ip 10.10.10.71 (https:\\tlk.dedemapp.com)
 
 ### The code
 ~~La cartella col codice di riferimento attuale del server è net_core_v2.~~ <br/>
@@ -82,3 +92,4 @@ use test_db;
 CREATE TABLE packet (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, rawPacket VARCHAR(500), ipAddress VARCHAR(16), port VARCHAR(6));
 CREATE USER 'db_user'@'%' IDENTIFIED BY 'Qwerty.12';
 GRANT ALL PRIVILEGES ON test_db.* to 'db_user'@'%';
+
