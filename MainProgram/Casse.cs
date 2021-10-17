@@ -47,9 +47,9 @@ namespace Casse
                     LastTransactionForModem.Status = "CashPacketReceivedFromModem";
                     LastTransactionForModem.DataPacchettoRicevuto = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     DB.SaveChanges();
-                    new Thread(()=>
-                        loadCashPacketToDeborahDB(LastTransactionForModem.Id,CasType)
-                        ).Start();
+                    // new Thread(()=>
+                    //     loadCashPacketToDeborahDB(LastTransactionForModem.Id,CasType)
+                    //     ).Start();
                     
                 }
             }

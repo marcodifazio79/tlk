@@ -133,7 +133,7 @@ public class AsynchronousSocketListener {
             string ip_as_string = IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()).ToString();
             
             // controllo che l'ip sia effettivamente quello di un modem
-            int val_ipset=Convert.ToInt16(Configuration["IPSet:IPFree"].ToString());
+            int val_ipset=Convert.ToInt16(DatabaseFunctions.GetIPMode());
             // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
             if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             {

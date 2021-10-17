@@ -8,6 +8,7 @@ using Functions.database;
 using System.Text.RegularExpressions;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Custom;
 
 namespace Functions
 {    
@@ -18,7 +19,11 @@ namespace Functions
         {
             
         }
-
+        public static string GetIPMode()
+        {
+            return ConfigurationManager.AppSetting["IPSet:IPFree"];
+        }
+//
         /// <summary>
         ///  
         /// </summary>
@@ -187,7 +192,7 @@ namespace Functions
                 else
                 {
                     
-                    int val_ipset=Convert.ToInt16(Configuration["IPSet:IPFree"].ToString());
+                    int val_ipset=Convert.ToInt16(GetIPMode());
                     // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
                     if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
                     {
@@ -349,77 +354,99 @@ namespace Functions
                           );
                     }
                 }
-                //the TPK=$M1 package contains various machine details, i'll use it to update the various field here.
-                if(data.StartsWith("<TPK=$M1"))
-                {
-                    //let's make sure we are working on ONE packet (from time to time two packet get aggregated)
-                    data = data.Substring(  0 , data.IndexOf(">") );
-                    string[] mPacketArray = data.Split(',');
-                    if(mPacketArray.Length == 40)
-                    {
-                        //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
-                        //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
-                        MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        if(mPacketArray[35] == "1")
-                        {
-                            // the 35° field in packet is set to 1 when it's the answer to a #cas command.
-                            Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M1");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
-                            mPacketArray.Length.ToString() + ")");
-                    }
-                }
-                else if (data.StartsWith("<TPK=$M3"))
-                {
-                    data = data.Substring(  0 , data.IndexOf(">") );
-                    string[] mPacketArray = data.Split(',');
-                    if(mPacketArray.Length == 47)
-                    {
-                       // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                       // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                       //MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        //                            
-                        if(mPacketArray[42] == "1")
-                        {
-                            // the 42° field in packet is set to 1 when it's the a4nswer to a #cas command.
-                            Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M3");
-                        }
 
+
+                if (data.StartsWith("<TCA=>"))
+                {if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina))
+                    {
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina)
+                            .Value = data.Substring(data.IndexOf("TCA=")+4,   5);
+                        DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina)
+                            .CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                     else
                     {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
-                            mPacketArray.Length.ToString() + ")");
-                    }
-                } 
-                else if (data.StartsWith("<TPK=$M5"))
-                {
-                    data = data.Substring(  0 , data.IndexOf(">") );
-                    string[] mPacketArray = data.Split(',');
-                    if(mPacketArray.Length == 55)
-                    {
-                        // da verificare se i modem con cassa M5 rispondono ai comandi
-                       // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                       // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                       // MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                        //                            
-                        if(mPacketArray[50] == "1")
-                        {
-                            // the 42° field in packet is set to 1 when it's the answer to a #cas command.
-                            Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M5");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
-                            mPacketArray.Length.ToString() + ")");
-                    }
-                } 
+                        DB.MachinesAttributes.Add( 
+                            new MachinesAttributes {
+                                IdMacchina = id_macchina,
+                                IdAttribute = DB.Attr.Single(l=>l.Name == "TCA").Id,
+                                Value = data.Substring(data.IndexOf("TCA=")+4,  5   )
+                                ,CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"))
+                            }
+                          );
+                    }}
+                
+                //the TPK=$M1 package contains various machine details, i'll use it to update the various field here.
+                // if(data.StartsWith("<TPK=$M1"))
+                // {
+                //     //let's make sure we are working on ONE packet (from time to time two packet get aggregated)
+                //     data = data.Substring(  0 , data.IndexOf(">") );
+                //     string[] mPacketArray = data.Split(',');
+                //     if(mPacketArray.Length == 40)
+                //     {
+                //         //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
+                //         //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
+                //         MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //         MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //         MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //         if(mPacketArray[35] == "1")
+                //         {
+                //             // the 35° field in packet is set to 1 when it's the answer to a #cas command.
+                //             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M1");
+                //         }
+                //     }
+                //     else
+                //     {
+                //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
+                //             mPacketArray.Length.ToString() + ")");
+                //     }
+                // }
+                // else if (data.StartsWith("<TPK=$M3"))
+                // {
+                //     data = data.Substring(  0 , data.IndexOf(">") );
+                //     string[] mPacketArray = data.Split(',');
+                //     if(mPacketArray.Length == 47)
+                //     {
+                //        // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //        // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //        //MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //         //                            
+                //         if(mPacketArray[42] == "1")
+                //         {
+                //             // the 42° field in packet is set to 1 when it's the a4nswer to a #cas command.
+                //             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M3");
+                //         }
+
+                //     }
+                //     else
+                //     {
+                //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
+                //             mPacketArray.Length.ToString() + ")");
+                //     }
+                // } 
+                // else if (data.StartsWith("<TPK=$M5"))
+                // {
+                //     data = data.Substring(  0 , data.IndexOf(">") );
+                //     string[] mPacketArray = data.Split(',');
+                //     if(mPacketArray.Length == 55)
+                //     {
+                //         // da verificare se i modem con cassa M5 rispondono ai comandi
+                //        // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //        // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //        // MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
+                //         //                            
+                //         if(mPacketArray[50] == "1")
+                //         {
+                //             // the 42° field in packet is set to 1 when it's the answer to a #cas command.
+                //             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M5");
+                //         }
+                //     }
+                //     else
+                //     {
+                //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
+                //             mPacketArray.Length.ToString() + ")");
+                //     }
+                // } 
                 
 
             }
