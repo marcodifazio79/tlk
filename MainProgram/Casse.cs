@@ -50,7 +50,6 @@ namespace Casse
                     // new Thread(()=>
                     //     loadCashPacketToDeborahDB(LastTransactionForModem.Id,CasType)
                     //     ).Start();
-                    
                 }
             }
             catch(Exception e)
