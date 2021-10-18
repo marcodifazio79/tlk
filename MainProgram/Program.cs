@@ -48,7 +48,7 @@ public class AsynchronousSocketListener {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
             IPAddress ipAddress = ipHostInfo.AddressList[0];
         #else
-            IPAddress ipAddress = IPAddress.Parse(  Configuration["LocalAddressForConnections"].ToString()); 
+            IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddressForConnections"].ToString()); 
         #endif
 
         
@@ -135,8 +135,10 @@ public class AsynchronousSocketListener {
             // controllo che l'ip sia effettivamente quello di un modem
             int val_ipset=Convert.ToInt16(DatabaseFunctions.GetIPMode());
             // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
-            if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
-            {
+            
+            
+            // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
+            // {
                 // Signal the modem thread to continue.  
                 allDoneModem.Set();  
 
@@ -178,14 +180,14 @@ public class AsynchronousSocketListener {
                 state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10); 
 
                 handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
-            }
-            else
-            {
-                try{
-                    handler.Shutdown(   SocketShutdown.Both  );
-                }catch{}
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " tentativo di connessione da un dispositivo fuori la sottorete attesa ignorato");    
-            }
+            // }
+            // else
+            // {
+            //     try{
+            //         handler.Shutdown(   SocketShutdown.Both  );
+            //     }catch{}
+            //     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " tentativo di connessione da un dispositivo fuori la sottorete attesa ignorato");    
+            // }
         }
         else if(ConPort == 9909){  
             // Signal the command thread to continue.   
