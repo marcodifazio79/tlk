@@ -99,7 +99,16 @@ CREATE TABLE `MachinesConnectionTrace` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
-
+CREATE TABLE `DatiCassa` (
+`Id` int(11) NOT NULL AUTO_INCREMENT,
+`Odm` varchar(50) NOT NULL,
+`Mid` varchar(50) DEFAULT NULL,
+`TransferredData` varchar(10000) NOT NULL,
+`JsonData` varchar(10000) NOT NULL,
+`Status` varchar(50) NOT NULL,
+`DataSentToTelem` datetime DEFAULT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `CashTransaction` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
