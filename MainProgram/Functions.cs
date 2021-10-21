@@ -41,37 +41,37 @@ namespace Functions
                 
                 string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
-                //**********************************************************************************Gestione per IP Statico********************
+                
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 
-                // if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
-                // {
-                //     Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
-                //     if( DB.Machines.Any( y=> y.Mid == mid ) )
-                //     {
-                //         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-                //******************************************************************************************************************************
-                if( DB.Machines.Any( y=> y.Mid == mid ) )
+                if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
+					
+																										  
+																
+						
+																							
+																																				
+														 
                 {
-                    Machines machinesOriginePacchetto = DB.Machines.First( y=> y.Mid == mid);
+                    Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
                     if( DB.Machines.Any( y=> y.Mid == mid ) )
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
                         
-                        if(MachineToUpdate.IpAddress != ip_addr)
-                            MachineToUpdate.IpAddress = ip_addr; 
+																
+																 
                         // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
                         if(MachineToUpdate.Version != version)
                             MachineToUpdate.Version = version; 
                         
                         if(MachineToUpdate != machinesOriginePacchetto )
                         {
-                            // if(MachineToUpdate.MarkedBroken)
-                            // {
+                            if(MachineToUpdate.MarkedBroken)
+                            {
                                 MachineToUpdate.MarkedBroken = false;
-                               // MachineToUpdate.IpAddress = ip_addr; lo aggiorno sopra
+                                MachineToUpdate.IpAddress = ip_addr;
                                 MachineToUpdate.Imei =  Convert.ToInt64(imei);
                                 MachineToUpdate.Mid = mid;
                                 MachineToUpdate.IsOnline = true;
@@ -81,13 +81,13 @@ namespace Functions
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DB.Machines.Remove(machinesOriginePacchetto);
-                            // }
-                            // else
-                            // {
-                            //     MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                            //     MachineToUpdate.MarkedBroken=true;
-                            //     //DB.Machines.Remove(MachineToUpdate);
-                            // }
+                            }
+                            else
+                            {
+                                MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                MachineToUpdate.MarkedBroken=true;
+                                //DB.Machines.Remove(MachineToUpdate);
+                            }
                         }
                     }
                     else
@@ -129,7 +129,7 @@ namespace Functions
         /// <summary>
         /// 
         /// </summary>
-        public static void insertIntoMachinesTable(string ip_addr,string mid,string imei,string version)
+        public static void insertIntoMachinesTable(string ip_addr)
         {
             listener_DBContext DB = new listener_DBContext ();
             try
@@ -141,63 +141,63 @@ namespace Functions
                 }
                 else
                 {
-                    if (mid!="")
-                    {
-                        if(DB.Machines.Any( y=> y.Mid == mid )   )
-                        {
-                            Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid ) ;
-                            MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                        
-                            MachineToUpdate.IpAddress= ip_addr;
-                                    
-                            MachineToUpdate.Mid  = mid;//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                            MachineToUpdate.Imei = Convert.ToInt64(imei);//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                            MachineToUpdate.Version = version;
-                            
-                            MachineToUpdate.time_creation =null;
-                        }
-                    }
-                    else
-                    {
-                        DB.Machines.Add( new Machines{
-                            IpAddress = ip_addr,
-                            
-                            Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                            Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                            Version ="",
-                            last_communication =null,
-                            time_creation =null
-                            });
-                    }
-                // {
-                //     if(mid!="")
-                //     {
-                //         DB.Machines.Add( new Machines{
-                //             IpAddress = ip_addr,
-                            
-                //             Mid  = mid,//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                //             Imei = Convert.ToInt64(imei),//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                //             Version = version,//"",
-                //             last_communication =null,
-                //             time_creation =null
-                //             });
-                //     }
-                //     else
-                //     {
-                //         DB.Machines.Add( new Machines{
-                //             IpAddress = ip_addr,
-                            
-                //             Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                //             Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                //             Version ="",
-                //             last_communication =null,
-                //             time_creation =null
-                //             });
-
-                //     }
-                // }
-                DB.SaveChanges();
+								
+					 
+																  
+						 
+																							  
+																															   
+						
+															   
+									
+																														
+																																	   
+															  
+							
+																
+						 
+					 
+						
+					 
+                    DB.Machines.Add( new Machines{
+                        IpAddress = ip_addr,
+							
+                        Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                        Version = "",
+													 
+											   
+							   
+					 
+					
+								  
+						
+														 
+												   
+							
+																										   
+																														  
+													  
+                        last_communication =null,
+                        time_creation =null
+                        });
                 }
+						   
+						
+														 
+												   
+							
+																									 
+																								  
+										   
+														
+												  
+								  
+
+						
+					
+                DB.SaveChanges();
+               
             }
             catch(Exception ex)
             {
@@ -221,20 +221,20 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
-                string mid="";
-                string imei="";
-                string version="";
-                if(transferred_data.StartsWith("<MID"))
-                {
-                    string tmpstr="";
-                    string[] tmpstrMatr=transferred_data.Split('>');
-                    version= tmpstrMatr[1].Substring(5, tmpstrMatr[1].Length - 5);
+							  
+							   
+								  
+													   
+				 
+									 
+																	
+																				  
 
-                    tmpstr=tmpstrMatr[0].Substring(5,tmpstrMatr[0].Length-5);
-                    tmpstrMatr=tmpstr.Split('-');
-                    mid=tmpstrMatr[0];
-                    imei=tmpstrMatr[1];
-                }
+																			 
+												 
+									  
+									   
+				 
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
@@ -263,14 +263,14 @@ namespace Functions
                 else
                 {
                     
-                    int val_ipset=Convert.ToInt16(GetIPMode());
-                    // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
+                    //int val_ipset=Convert.ToInt16(GetIPMode());
+                    //// controllo modificato per permettere l'utilizzo di SIM non VODAFONE
                     // if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
                     // {
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding.. "+ip_addr+"-"+mid+"-"+imei+"-"+version);
-                        insertIntoMachinesTable(ip_addr,mid,imei,version);
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
+                        insertIntoMachinesTable(ip_addr);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
                     // }
