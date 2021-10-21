@@ -141,14 +141,31 @@ namespace Functions
                 }
                 else
                 {
-                    DB.Machines.Add( new Machines{
-                        IpAddress = ip_addr,
-                        Mid  = mid,//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                        Imei = Convert.ToInt64(imei),//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                        Version = version,//"",
-                        last_communication =null,
-                        time_creation =null
-                        });
+                    if(mid!="")
+                    {
+                        DB.Machines.Add( new Machines{
+                            IpAddress = ip_addr,
+                            
+                            Mid  = mid,//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                            Imei = Convert.ToInt64(imei),//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                            Version = version,//"",
+                            last_communication =null,
+                            time_creation =null
+                            });
+                    }
+                    else
+                    {
+                        DB.Machines.Add( new Machines{
+                            IpAddress = ip_addr,
+                            
+                            Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                            Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                            Version ="",
+                            last_communication =null,
+                            time_creation =null
+                            });
+
+                    }
                 }
                 DB.SaveChanges();
                
