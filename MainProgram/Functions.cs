@@ -141,17 +141,21 @@ namespace Functions
                 }
                 else
                 {
-                    if(mid!="")
+                    if (mid!="")
                     {
-                        DB.Machines.Add( new Machines{
-                            IpAddress = ip_addr,
+                        if(DB.Machines.Any( y=> y.Mid == mid )   )
+                        {
+                            Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid ) ;
+                            MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        
+                            MachineToUpdate.IpAddress= ip_addr;
+                                    
+                            MachineToUpdate.Mid  = mid;//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                            MachineToUpdate.Imei = Convert.ToInt64(imei);//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                            MachineToUpdate.Version = version;
                             
-                            Mid  = mid,//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                            Imei = Convert.ToInt64(imei),//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                            Version = version,//"",
-                            last_communication =null,
-                            time_creation =null
-                            });
+                            MachineToUpdate.time_creation =null;
+                        }
                     }
                     else
                     {
@@ -164,11 +168,36 @@ namespace Functions
                             last_communication =null,
                             time_creation =null
                             });
-
                     }
-                }
+                // {
+                //     if(mid!="")
+                //     {
+                //         DB.Machines.Add( new Machines{
+                //             IpAddress = ip_addr,
+                            
+                //             Mid  = mid,//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                //             Imei = Convert.ToInt64(imei),//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                //             Version = version,//"",
+                //             last_communication =null,
+                //             time_creation =null
+                //             });
+                //     }
+                //     else
+                //     {
+                //         DB.Machines.Add( new Machines{
+                //             IpAddress = ip_addr,
+                            
+                //             Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                //             Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                //             Version ="",
+                //             last_communication =null,
+                //             time_creation =null
+                //             });
+
+                //     }
+                // }
                 DB.SaveChanges();
-               
+                }
             }
             catch(Exception ex)
             {
@@ -240,7 +269,7 @@ namespace Functions
                     // {
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding.. "+ip_addr+"-"+mid+"-"+imei+"-"+version);
                         insertIntoMachinesTable(ip_addr,mid,imei,version);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
