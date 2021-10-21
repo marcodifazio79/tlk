@@ -47,29 +47,20 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
-					
-																										  
-																
-						
-																							
-																																				
-														 
                 {
                     Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
                     if( DB.Machines.Any( y=> y.Mid == mid ) )
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-                        
-																
-																 
+                        		 
                         // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
                         if(MachineToUpdate.Version != version)
                             MachineToUpdate.Version = version; 
                         
                         if(MachineToUpdate != machinesOriginePacchetto )
                         {
-                            if(MachineToUpdate.MarkedBroken)
-                            {
+                            // if(MachineToUpdate.MarkedBroken)
+                            // {
                                 MachineToUpdate.MarkedBroken = false;
                                 MachineToUpdate.IpAddress = ip_addr;
                                 MachineToUpdate.Imei =  Convert.ToInt64(imei);
@@ -81,13 +72,13 @@ namespace Functions
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DB.Machines.Remove(machinesOriginePacchetto);
-                            }
-                            else
-                            {
-                                MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                                MachineToUpdate.MarkedBroken=true;
-                                //DB.Machines.Remove(MachineToUpdate);
-                            }
+                            // }
+                            // else
+                            // {
+                            //     MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                            //     MachineToUpdate.MarkedBroken=true;
+                            //     //DB.Machines.Remove(MachineToUpdate);
+                            // }
                         }
                     }
                     else
@@ -141,63 +132,16 @@ namespace Functions
                 }
                 else
                 {
-								
-					 
-																  
-						 
-																							  
-																															   
-						
-															   
-									
-																														
-																																	   
-															  
-							
-																
-						 
-					 
-						
-					 
                     DB.Machines.Add( new Machines{
                         IpAddress = ip_addr,
-							
                         Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
                         Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
                         Version = "",
-													 
-											   
-							   
-					 
-					
-								  
-						
-														 
-												   
-							
-																										   
-																														  
-													  
                         last_communication =null,
                         time_creation =null
                         });
                 }
-						   
-						
-														 
-												   
-							
-																									 
-																								  
-										   
-														
-												  
-								  
-
-						
-					
                 DB.SaveChanges();
-               
             }
             catch(Exception ex)
             {
@@ -209,8 +153,6 @@ namespace Functions
             }
         }
 
-        
-
         /// <summary>
         ///  
         /// </summary>
@@ -221,20 +163,6 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
-							  
-							   
-								  
-													   
-				 
-									 
-																	
-																				  
-
-																			 
-												 
-									  
-									   
-				 
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
