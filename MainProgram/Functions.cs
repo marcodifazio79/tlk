@@ -129,7 +129,7 @@ namespace Functions
         /// <summary>
         /// 
         /// </summary>
-        public static void insertIntoMachinesTable(string ip_addr)
+        public static void insertIntoMachinesTable(string ip_addr,string mid,string imei,string version)
         {
             listener_DBContext DB = new listener_DBContext ();
             try
@@ -143,9 +143,9 @@ namespace Functions
                 {
                     DB.Machines.Add( new Machines{
                         IpAddress = ip_addr,
-                        Mid  = "RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
-                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                        Version = "",
+                        Mid  = mid,//"RecuperoInCorso.." + DateTime.Now.ToString("yyMMddHHmmssfff"),
+                        Imei = Convert.ToInt64(imei),//Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                        Version = version,//"",
                         last_communication =null,
                         time_creation =null
                         });
@@ -175,6 +175,21 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
+                string mid="";
+                string imei="";
+                string version="";
+                if(transferred_data.StartsWith("<MID=99990051-862261040598166>><VER=117>"))
+                {
+                    string tmpstr="";
+                    string[] tmpstrMatr=transferred_data.Split('>');
+                    version= tmpstrMatr[1].Substring(5, tmpstrMatr[1].Length - 5);
+
+                    tmpstr=tmpstrMatr[0].Substring(5,tmpstrMatr[0].Length-5);
+                    tmpstrMatr=tmpstr.Split('-');
+                    mid=tmpstrMatr[0];
+                    imei=tmpstrMatr[1];
+                }
+
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
@@ -204,25 +219,25 @@ namespace Functions
                     
                     int val_ipset=Convert.ToInt16(GetIPMode());
                     // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
-                    if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
-                    {
+                    // if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
+                    // {
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
-                        insertIntoMachinesTable(ip_addr);
+                        insertIntoMachinesTable(ip_addr,mid,imei,version);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
-                    }
-                    else
-                    {
-                        MachineTraceToAdd = new MachinesConnectionTrace 
-                        {
-                            IpAddress = ip_addr,
-                            SendOrRecv = send_or_recv,
-                            TransferredData = transferred_data
-                        };
-                        DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
-                    }
+                    // }
+                    // else
+                    // {
+                    //     MachineTraceToAdd = new MachinesConnectionTrace 
+                    //     {
+                    //         IpAddress = ip_addr,
+                    //         SendOrRecv = send_or_recv,
+                    //         TransferredData = transferred_data
+                    //     };
+                    //     DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
+                    // }
                 }
                 DB.SaveChanges();
 

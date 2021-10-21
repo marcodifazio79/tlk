@@ -165,7 +165,7 @@ public class AsynchronousSocketListener {
                     ConnectedModems.Add(ip,handler);
                 }            
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ ip_as_string+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-                Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
+                Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString(),"","","");
 
                 Functions.DatabaseFunctions.setModemOnline(ip);
                 
