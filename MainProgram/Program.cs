@@ -189,7 +189,7 @@ public class AsynchronousSocketListener {
             //     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " tentativo di connessione da un dispositivo fuori la sottorete attesa ignorato");    
             // }
         }
-        else if(ConPort == 9909 | ConPort == 9009){  
+        else if(ConPort == 9909){  
             // Signal the command thread to continue.   
             allDoneCommand.Set();
 

@@ -195,7 +195,7 @@ namespace Functions
                 string mid="";
                 string imei="";
                 string version="";
-                if(transferred_data.StartsWith("<MID=99990051-862261040598166>><VER=117>"))
+                if(transferred_data.StartsWith("<MID"))
                 {
                     string tmpstr="";
                     string[] tmpstrMatr=transferred_data.Split('>');
