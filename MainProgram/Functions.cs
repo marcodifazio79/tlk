@@ -41,27 +41,37 @@ namespace Functions
                 
                 string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
-                
+                //**********************************************************************************Gestione per IP Statico********************
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-                if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
+
+                // if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
+                // {
+                //     Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
+                //     if( DB.Machines.Any( y=> y.Mid == mid ) )
+                //     {
+                //         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+                //******************************************************************************************************************************
+                if( DB.Machines.Any( y=> y.Mid == mid ) )
                 {
-                    Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
+                    Machines machinesOriginePacchetto = DB.Machines.First( y=> y.Mid == mid);
                     if( DB.Machines.Any( y=> y.Mid == mid ) )
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
                         
+                        if(MachineToUpdate.IpAddress != ip_addr)
+                            MachineToUpdate.IpAddress = ip_addr; 
                         // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
                         if(MachineToUpdate.Version != version)
                             MachineToUpdate.Version = version; 
                         
                         if(MachineToUpdate != machinesOriginePacchetto )
                         {
-                            if(MachineToUpdate.MarkedBroken)
-                            {
+                            // if(MachineToUpdate.MarkedBroken)
+                            // {
                                 MachineToUpdate.MarkedBroken = false;
-                                MachineToUpdate.IpAddress = ip_addr;
+                               // MachineToUpdate.IpAddress = ip_addr; lo aggiorno sopra
                                 MachineToUpdate.Imei =  Convert.ToInt64(imei);
                                 MachineToUpdate.Mid = mid;
                                 MachineToUpdate.IsOnline = true;
@@ -71,13 +81,13 @@ namespace Functions
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DB.Machines.Remove(machinesOriginePacchetto);
-                            }
-                            else
-                            {
-                                MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                                MachineToUpdate.MarkedBroken=true;
-                                //DB.Machines.Remove(MachineToUpdate);
-                            }
+                            // }
+                            // else
+                            // {
+                            //     MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                            //     MachineToUpdate.MarkedBroken=true;
+                            //     //DB.Machines.Remove(MachineToUpdate);
+                            // }
                         }
                     }
                     else
