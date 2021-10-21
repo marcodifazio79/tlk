@@ -138,49 +138,58 @@ public class AsynchronousSocketListener {
             
             
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
-            // {
-                // Signal the modem thread to continue.  
-                allDoneModem.Set();  
-
-                IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
-                if (ConnectedModems.ContainsKey(ip))
+            // 
+                if (ip_as_string.StartsWith("10.10"))
                 {
                     try{
-                        // mi è arrivata una nuova connessione per un modem che risulta già connesso,
-                        // chiudo e riapro.
-                        Console.WriteLine("Closing old socket "+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Address.ToString()+":"+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Port.ToString());
-                        ConnectedModems[ip].Shutdown(SocketShutdown.Both);
-                        ConnectedModems[ip].Close(2);
-                        ConnectedModems[ip].Dispose();
+                        handler.Shutdown(   SocketShutdown.Both  );
+                    }catch{}
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " tentativo di connessione da un dispositivo fuori la sottorete attesa ignorato");    
+                }
+                else
+                {
+                    // Signal the modem thread to continue.  
+                    allDoneModem.Set();  
+
+                    IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
+                    if (ConnectedModems.ContainsKey(ip))
+                    {
+                        try{
+                            // mi è arrivata una nuova connessione per un modem che risulta già connesso,
+                            // chiudo e riapro.
+                            Console.WriteLine("Closing old socket "+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Address.ToString()+":"+((IPEndPoint)ConnectedModems[ip].RemoteEndPoint).Port.ToString());
+                            ConnectedModems[ip].Shutdown(SocketShutdown.Both);
+                            ConnectedModems[ip].Close(2);
+                            ConnectedModems[ip].Dispose();
+                            
+                        }catch{
+                            Console.WriteLine("Error closing the old socket for a modem conenction, check for socket leaks.");
+                            return;
+                        }
+                        finally{
+                            ConnectedModems[ip] = handler;
+                        }
                         
-                    }catch{
-                        Console.WriteLine("Error closing the old socket for a modem conenction, check for socket leaks.");
-                        return;
-                    }
-                    finally{
-                        ConnectedModems[ip] = handler;
-                    }
+                    }else{
+                        ConnectedModems.Add(ip,handler);
+                    }            
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ ip_as_string+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
+                    Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
+
+                    Functions.DatabaseFunctions.setModemOnline(ip);
                     
-                }else{
-                    ConnectedModems.Add(ip,handler);
-                }            
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ ip_as_string+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-                Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
+                    // Create the state object.  
+                    StateObject state = new StateObject();  
+                    state.workSocket = handler;
+                    
+                    //set the keep alive values for the socket
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //old value: 16
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10); 
 
-                Functions.DatabaseFunctions.setModemOnline(ip);
-                
-                // Create the state object.  
-                StateObject state = new StateObject();  
-                state.workSocket = handler;
-                
-                //set the keep alive values for the socket
-                state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);
-                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //old value: 16
-                state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10); 
-
-                handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
-            // }
+                    handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
+                }
             // else
             // {
             //     try{

@@ -194,14 +194,26 @@ namespace Functions
                     //int val_ipset=Convert.ToInt16(GetIPMode());
                     //// controllo modificato per permettere l'utilizzo di SIM non VODAFONE
                     // if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
-                    // {
+                    if(ip_addr.StartsWith("10.10"))
+                    {
+                        MachineTraceToAdd = new MachinesConnectionTrace 
+                        {
+                            IpAddress = ip_addr,
+                            SendOrRecv = send_or_recv,
+                            TransferredData = transferred_data
+                        };
+                        DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
+                    }
+                    else
+                                     
+                    {
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
                         insertIntoMachinesTable(ip_addr);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
-                    // }
+                    }
                     // else
                     // {
                     //     MachineTraceToAdd = new MachinesConnectionTrace 
@@ -234,7 +246,6 @@ namespace Functions
                     catch(Exception exc){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
                     }
-                
                 }
             }
             catch(Exception e)
