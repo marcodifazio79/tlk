@@ -318,12 +318,12 @@ public class AsynchronousSocketListener {
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                     
-                    if(content.Contains("<VER=105>")){
+                    if(content.Contains("<TYP=")){
                         //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
                         //nell forma     <MID=1234567890-865291049819286><VER=110>
                         string[] contentSplit= content.Split('>');
                         string fakeImei= DateTime.Now.ToString("yyyyMMddHHmmssf");
-                        content=contentSplit[0]+"-" + fakeImei+"><VER=105>";
+                        content=contentSplit[0]+"-" + fakeImei+">"+contentSplit[1]+">";
                         Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
                     }
 
