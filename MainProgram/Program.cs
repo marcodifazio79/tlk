@@ -133,7 +133,7 @@ public class AsynchronousSocketListener {
             string ip_as_string = IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()).ToString();
             
             // controllo che l'ip sia effettivamente quello di un modem
-            int val_ipset=Convert.ToInt16(DatabaseFunctions.GetIPMode());
+            //int val_ipset=Convert.ToInt16(DatabaseFunctions.GetIPMode());
             // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
             
             
@@ -308,12 +308,26 @@ public class AsynchronousSocketListener {
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
-                
+                if (content=="<^>")   /*&& !content.EndsWith("^") */  
+                {
+                    await Task.Run(() => Send (handler, "#PWD123456#,"+"VTR"));
+                }
                 if (content.IndexOf("<VER=") > -1  /*&& !content.EndsWith("^") */  ) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
+                    
+                    if(content.Contains("<VER=105>")){
+                        //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
+                        //nell forma     <MID=1234567890-865291049819286><VER=110>
+                        string[] contentSplit= content.Split('>');
+                        string fakeImei= DateTime.Now.ToString("yyyyMMddHHmmssf");
+                        content=contentSplit[0]+"-" + fakeImei+"><VER=105>";
+                        Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
+                    }
+
+
                     if(content.Contains("<MID")){
                         //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
                         //nell forma     <MID=1234567890-865291049819286><VER=110>
@@ -328,6 +342,7 @@ public class AsynchronousSocketListener {
                         th.Start();
                         return;
                     }
+
 
                     string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 

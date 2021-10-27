@@ -33,6 +33,8 @@ namespace Functions
             try
             {
                 //   s = <MID=1234567890-865291049819286><VER=110>
+
+                
                 string mid = s.Substring(s.IndexOf("=")+1);
                 mid =mid.Substring(0,mid.IndexOf("-"));
 
@@ -278,7 +280,16 @@ namespace Functions
                 //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
 
                 //Since the new answer format from the C3 sucks we do not update values. 
+                if(data=="^")
+                {
+                    MachinesConnectionTrace targetMachine = new MachinesConnectionTrace();
+                    targetMachine =   DB.MachinesConnectionTrace
+                                     .Where(i=>i.IdMacchina==id_macchina)
+                                     .Where(s=>s.TransferredData.Contains("<TPK=$M5"))
+                                     .First();
+                   
 
+                }
                 if(data.Contains("LGG="))
                 {
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina))
@@ -366,7 +377,7 @@ namespace Functions
                 }
 
 
-                if (data.StartsWith("<TCA=>"))
+                if (data.StartsWith("<TCA=>"))  
                 {if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina))
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina)
@@ -490,7 +501,6 @@ namespace Functions
             }
         }
         
-
         /// <summary>
         /// Insert the command in the DB. 
         /// Return the command id in RemoteCommand table if succesfully,  
@@ -668,7 +678,6 @@ namespace Functions
             }
             DB.DisposeAsync();
         }
-
 
         /// <summary>
         /// Match the commands in queue with an appopriate action: 
