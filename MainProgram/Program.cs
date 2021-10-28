@@ -310,7 +310,8 @@ public class AsynchronousSocketListener {
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
                 if (content=="<^>")   /*&& !content.EndsWith("^") */  
                 {
-                    await Task.Run(() => Send (handler, "#PWD123456#,"+"VTR"));
+                    await Task.Run(() => Send (handler, "#PWD123456#,"+"WDR"));
+                    return;
                 }
                 if (content.IndexOf("<VER=") > -1  /*&& !content.EndsWith("^") */  ) 
                 {

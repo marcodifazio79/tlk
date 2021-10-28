@@ -93,3 +93,14 @@ CREATE TABLE packet (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, rawPacket VARCH
 CREATE USER 'db_user'@'%' IDENTIFIED BY 'Qwerty.12';
 GRANT ALL PRIVILEGES ON test_db.* to 'db_user'@'%';
 
+
+
+Le gettoniere rispondono ai comandi inviati senza inviare il mid di riferimento 
+    risposta corretta <TCA=00013851-04 CAS-OK > 
+    risposta gett.    <TCA=&CAS-OK >
+per questo motivo TLK NON PUO' ASSOCIARE LA RISPOTA AL COMANDO INVIATO e sia nella view CommandTables lo status dei comandi sarà sempre Error
+ 
+quando il campo [35] del pacchetto cassa "<TPK=$M1") il pacchetto è stato richiesto dal comando #CAS
+quando il campo [42] del pacchetto cassa "<TPK=$M2") il pacchetto è stato richiesto dal comando #CAS
+quando il campo [50] del pacchetto cassa "<TPK=$M3") il pacchetto è stato richiesto dal comando #CAS
+              

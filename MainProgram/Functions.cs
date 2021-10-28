@@ -34,7 +34,7 @@ namespace Functions
             {
                 //   s = <MID=1234567890-865291049819286><VER=110>
 
-                
+
                 string mid = s.Substring(s.IndexOf("=")+1);
                 mid =mid.Substring(0,mid.IndexOf("-"));
 
@@ -280,16 +280,7 @@ namespace Functions
                 //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
 
                 //Since the new answer format from the C3 sucks we do not update values. 
-                if(data=="^")
-                {
-                    MachinesConnectionTrace targetMachine = new MachinesConnectionTrace();
-                    targetMachine =   DB.MachinesConnectionTrace
-                                     .Where(i=>i.IdMacchina==id_macchina)
-                                     .Where(s=>s.TransferredData.Contains("<TPK=$M5"))
-                                     .First();
-                   
 
-                }
                 if(data.Contains("LGG="))
                 {
                     if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="LGG" && h.IdMacchina == id_macchina))
@@ -397,78 +388,6 @@ namespace Functions
                           );
                     }}
                 
-                //the TPK=$M1 package contains various machine details, i'll use it to update the various field here.
-                // if(data.StartsWith("<TPK=$M1"))
-                // {
-                //     //let's make sure we are working on ONE packet (from time to time two packet get aggregated)
-                //     data = data.Substring(  0 , data.IndexOf(">") );
-                //     string[] mPacketArray = data.Split(',');
-                //     if(mPacketArray.Length == 40)
-                //     {
-                //         //<TCA=9876543210-21 LGG=00030LGA=00240KAL=00300>
-                //         //<TCA=9876543210-22 +CSQ: 17,0OKATC-OK >
-                //         MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //         MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //         MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //         if(mPacketArray[35] == "1")
-                //         {
-                //             // the 35° field in packet is set to 1 when it's the answer to a #cas command.
-                //             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M1");
-                //         }
-                //     }
-                //     else
-                //     {
-                //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
-                //             mPacketArray.Length.ToString() + ")");
-                //     }
-                // }
-                // else if (data.StartsWith("<TPK=$M3"))
-                // {
-                //     data = data.Substring(  0 , data.IndexOf(">") );
-                //     string[] mPacketArray = data.Split(',');
-                //     if(mPacketArray.Length == 47)
-                //     {
-                //        // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //        // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //        //MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //         //                            
-                //         if(mPacketArray[42] == "1")
-                //         {
-                //             // the 42° field in packet is set to 1 when it's the a4nswer to a #cas command.
-                //             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M3");
-                //         }
-
-                //     }
-                //     else
-                //     {
-                //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
-                //             mPacketArray.Length.ToString() + ")");
-                //     }
-                // } 
-                // else if (data.StartsWith("<TPK=$M5"))
-                // {
-                //     data = data.Substring(  0 , data.IndexOf(">") );
-                //     string[] mPacketArray = data.Split(',');
-                //     if(mPacketArray.Length == 55)
-                //     {
-                //         // da verificare se i modem con cassa M5 rispondono ai comandi
-                //        // MachinePacketAnalyzer(id_macchina, "LGA=" + mPacketArray[38].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //        // MachinePacketAnalyzer(id_macchina, "LGG=" + mPacketArray[37].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //        // MachinePacketAnalyzer(id_macchina, "+CSQ:" +mPacketArray[32].PadLeft(  5, '0' ), id_MachinesConnectionTrace);
-                //         //                            
-                //         if(mPacketArray[50] == "1")
-                //         {
-                //             // the 42° field in packet is set to 1 when it's the answer to a #cas command.
-                //             Casse.CasseFunctions.RegistrazioneCassa(id_MachinesConnectionTrace,"M5");
-                //         }
-                //     }
-                //     else
-                //     {
-                //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : ") +"MachinePacketAnalyzer : TPK packet wrong size (" + 
-                //             mPacketArray.Length.ToString() + ")");
-                //     }
-                // } 
-                
 
             }
             catch (Exception e)
@@ -549,7 +468,7 @@ namespace Functions
                         SendedAt = null,
                         AnsweredAt = null
                     } ;
-                    DB.RemoteCommand.Add( remCom  );
+                    DB.RemoteCommand.Add(remCom );
                 }
                 DB.SaveChanges();
 
