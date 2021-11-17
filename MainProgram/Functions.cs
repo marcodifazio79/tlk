@@ -181,29 +181,29 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
-                string[] splittransferred_data=transferred_data.Split(',');
+                //string[] splittransferred_data=transferred_data.Split(',');
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
-                     Machines m;
-                    // se il campo 2 di transferred_data non è numerico e il campo 0 non indica una Instagram siamo in presenza di un concentratore
-                    // in questo caso anziche selezionarela macchina per ip la seleziono per CE
-                    if (!IsNumeric( splittransferred_data[2]) & !(splittransferred_data[0].Contains("<TPK=$I") ))
-                    {
-                        //prima però deve verificare che il CE è gia stato caricato come macchina singola nella tabella Machine
-                         if(DB.Machines.Any( y=> y.Mid == splittransferred_data[4] ))
-                         {
-                            m = DB.Machines.First( y => y.Mid == splittransferred_data[4]);
-                         }
-                         else
-                         {
-                            m = DB.Machines.First( y => y.IpAddress == ip_addr );     
-                         }
-                    }    
-                    else
-                    {
-                        m = DB.Machines.First( y => y.IpAddress == ip_addr );
-                    }
+                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr ); 
+                    // // se il campo 2 di transferred_data non è numerico e il campo 0 non indica una Instagram siamo in presenza di un concentratore
+                    // // in questo caso anziche selezionarela macchina per ip la seleziono per CE
+                    // if (!IsNumeric( splittransferred_data[2]) & !(splittransferred_data[0].Contains("<TPK=$I") ))
+                    // {
+                    //     //prima però deve verificare che il CE è gia stato caricato come macchina singola nella tabella Machine
+                    //      if(DB.Machines.Any( y=> y.Mid == splittransferred_data[4] ))
+                    //      {
+                    //         m = DB.Machines.First( y => y.Mid == splittransferred_data[4]);
+                    //      }
+                    //      else
+                    //      {
+                    //         m = DB.Machines.First( y => y.IpAddress == ip_addr );     
+                    //      }
+                    // }    
+                    // else
+                    // {
+                    //     m = DB.Machines.First( y => y.IpAddress == ip_addr );
+                    // }
     
 
                     if (transferred_data=="<^>" | transferred_data.StartsWith("TPK=$A5") | transferred_data.StartsWith("TPK=$A3") | transferred_data.StartsWith("TPK=$A1") | transferred_data.StartsWith("TPK=$A4") | transferred_data.StartsWith("TPK=$I0") | transferred_data.StartsWith("<TPK=DB") | transferred_data.StartsWith("<TPK=DB") ) 
