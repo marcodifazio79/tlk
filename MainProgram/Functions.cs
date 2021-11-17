@@ -186,8 +186,9 @@ namespace Functions
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                      Machines m;
-
-                    if (!IsNumeric( splittransferred_data[2]) & splittransferred_data[0]!="<TPK=$I" )
+                    // se il campo 2 di transferred_data non è numerico e il campo 0 non indica una Instagram siamo in presenza di un concentratore
+                    // in questo caso anziche selezionarela macchina per ip la seleziono per CE
+                    if (!IsNumeric( splittransferred_data[2]) & !(splittransferred_data[0].Contains("<TPK=$I") ))
                     {
 
                         m = DB.Machines.First( y => y.Mid == splittransferred_data[4]);
