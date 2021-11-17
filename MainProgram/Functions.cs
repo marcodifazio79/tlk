@@ -190,8 +190,15 @@ namespace Functions
                     // in questo caso anziche selezionarela macchina per ip la seleziono per CE
                     if (!IsNumeric( splittransferred_data[2]) & !(splittransferred_data[0].Contains("<TPK=$I") ))
                     {
-
-                        m = DB.Machines.First( y => y.Mid == splittransferred_data[4]);
+                        //prima però deve verificare che il CE è gia stato caricato come macchina singola nella tabella Machine
+                         if(DB.Machines.Any( y=> y.Mid == splittransferred_data[4] ))
+                         {
+                            m = DB.Machines.First( y => y.Mid == splittransferred_data[4]);
+                         }
+                         else
+                         {
+                            m = DB.Machines.First( y => y.IpAddress == ip_addr );     
+                         }
                     }    
                     else
                     {
