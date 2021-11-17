@@ -158,6 +158,22 @@ namespace Functions
         /// <summary>
         ///  
         /// </summary>
+        public static bool IsNumeric(string strText)
+        {
+            bool bres = false;
+            try
+            {
+                //Console.WriteLine(strText);   
+                Int64 result = Convert.ToInt64(strText);
+                bres = true;
+                return bres;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return bres;
+            }
+        }
         public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             listener_DBContext DB = new listener_DBContext ();
@@ -165,10 +181,22 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
+                string[] splittransferred_data=transferred_data.Split(',');
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
-                    Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
+                     Machines m;
+
+                    if (!IsNumeric( splittransferred_data[2]) & splittransferred_data[0]!="<TPK=$I" )
+                    {
+
+                        m = DB.Machines.First( y => y.Mid == splittransferred_data[4]);
+                    }    
+                    else
+                    {
+                        m = DB.Machines.First( y => y.IpAddress == ip_addr );
+                    }
+    
 
                     if (transferred_data=="<^>" | transferred_data.StartsWith("TPK=$A5") | transferred_data.StartsWith("TPK=$A3") | transferred_data.StartsWith("TPK=$A1") | transferred_data.StartsWith("TPK=$A4") | transferred_data.StartsWith("TPK=$I0") | transferred_data.StartsWith("<TPK=DB") | transferred_data.StartsWith("<TPK=DB") ) 
                     {
