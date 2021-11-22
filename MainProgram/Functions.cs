@@ -533,7 +533,19 @@ namespace Functions
                                 ,CreatedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"))
                             }
                           );
-                    }}
+                    }
+                }
+                if (data.StartsWith("<TPK=$M1,77770001"))  
+                {
+                    string[] splitdata= data.Split(',');
+                    var midexist = DB.Machines.Where(p => p.Mid == splitdata[1] );
+                    if (midexist.Count()==0)
+                    {   
+                        Machines mach = DB.Machines.Single(h=>h.Id == id_macchina);
+                        String s=splitdata[1]+"_"+ splitdata[31];
+                        updateModemTableEntry(mach.IpAddress,s);
+                    }
+                }
                 
 
             }
