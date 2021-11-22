@@ -142,7 +142,7 @@ public class AsynchronousSocketListener {
                 if (ip_as_string.StartsWith("10.10"))
                 {
                     try{
-                        handler.Shutdown(   SocketShutdown.Both  );
+                        handler.Shutdown(SocketShutdown.Both  );
                     }catch{}
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " tentativo di connessione da un dispositivo fuori la sottorete attesa ignorato");    
                 }
@@ -376,8 +376,6 @@ public class AsynchronousSocketListener {
                     }catch(Exception e){
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Something went wrong while reopening the connection " + e.Message);
                     }
-                        
-
                 }
                 else 
                 {  
@@ -448,12 +446,12 @@ public class AsynchronousSocketListener {
             else if(bytesRead == 0){
                 IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ ip.ToString ());
-                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", content );
+//                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", content );
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
-                //Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
-                Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
+                Console.WriteLine( "Shutting down socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() );
                 handler.Shutdown(SocketShutdown.Both); 
+                Console.WriteLine( "Closing socket "+ ip.ToString () +":"+((IPEndPoint)handler.RemoteEndPoint).Port.ToString() +" ...");
                 handler.Close(2); //wait 2 seconds before close
                 handler.Dispose();
                 try{

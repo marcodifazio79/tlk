@@ -127,6 +127,7 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {
+                
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
