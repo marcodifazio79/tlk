@@ -46,11 +46,10 @@ public class AsynchronousSocketListener {
         //Establish the local endpoint for the socket.  
         #if DEBUG
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //ipHostInfo.AddressList[0];
+            IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //ipHostInfo.AddressList[0];
         #else
             IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddressForConnections"].ToString()); 
         #endif
-
         
         //endpoint per i modem
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress,Convert.ToInt32( Configuration["Port:Modem"]));
@@ -69,7 +68,6 @@ public class AsynchronousSocketListener {
 
         Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
-
 
         //Console.WriteLine("\nPress ENTER to continue...");  
         Console.Read();  
@@ -338,7 +336,6 @@ public class AsynchronousSocketListener {
                         return;
                     }
 
-
                     string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
                     var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -554,7 +551,7 @@ public class AsynchronousSocketListener {
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 
-                //state.workSocket.Shutdown(SocketShutdown.Both); 
+                state.workSocket.Shutdown(SocketShutdown.Both); 
                 state.workSocket.Close(2); //wait 2 seconds before close
                 state.workSocket.Dispose();
             }catch(Exception ex){
