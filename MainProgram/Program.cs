@@ -46,10 +46,11 @@ public class AsynchronousSocketListener {
         //Establish the local endpoint for the socket.  
         #if DEBUG
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //ipHostInfo.AddressList[0];
+            IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //ipHostInfo.AddressList[0];
         #else
             IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddressForConnections"].ToString()); 
         #endif
+
         
         //endpoint per i modem
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress,Convert.ToInt32( Configuration["Port:Modem"]));
@@ -68,6 +69,7 @@ public class AsynchronousSocketListener {
 
         Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
+
 
         //Console.WriteLine("\nPress ENTER to continue...");  
         Console.Read();  
@@ -118,7 +120,7 @@ public class AsynchronousSocketListener {
     }
 
     public static void AcceptCallback(IAsyncResult ar) {  
-
+//primo ingresso dati
         try{
         // Get the socket that handles the client request.  
         Socket listener = (Socket) ar.AsyncState;  
@@ -134,13 +136,12 @@ public class AsynchronousSocketListener {
             //int val_ipset=Convert.ToInt16(DatabaseFunctions.GetIPMode());
             // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
             
-            
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
                 if (ip_as_string.StartsWith("10.10"))
                 {
                     try{
-                        handler.Shutdown(SocketShutdown.Both  );
+                        handler.Shutdown(SocketShutdown.Both);
                     }catch{}
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " tentativo di connessione da un dispositivo fuori la sottorete attesa ignorato");    
                 }
@@ -284,7 +285,9 @@ public class AsynchronousSocketListener {
             }
         }
     }
+  
     public static async void ReadCallback(IAsyncResult ar) {
+        //primo accesso dopo send data
         String content = String.Empty;  
   
         // Retrieve the state object and the handler socket  
@@ -300,6 +303,17 @@ public class AsynchronousSocketListener {
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
+                if (content.StartsWith("<MID=77770001-"))  /*&& !content.EndsWith("^") */  
+                {
+                    string[] splitCont=content.Split('>');
+                    string ip_address=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
+                    string mid=splitCont[0].Replace("<MID=77770001-","");
+                    Int64 imei=Convert.ToInt64( splitCont[1]);
+                    Functions.DatabaseFunctions.InsertNewModemToConfig(ip_address,mid,imei);
+
+                    return;
+                }
+
                 if (content=="<^>")   /*&& !content.EndsWith("^") */  
                 {
                     await Task.Run(() => Send (handler, "#PWD123456#,"+"WDR"));
@@ -335,6 +349,7 @@ public class AsynchronousSocketListener {
                         th.Start();
                         return;
                     }
+
 
                     string date1 = DateTime.Now.ToString("yy/MM/dd,HH:mm:ss");
 
@@ -386,7 +401,7 @@ public class AsynchronousSocketListener {
                 if(bytesRead == 0){
                     IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client");
-                    Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", "Connessione chiusa dal client" );
+                    //Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", "Connessione chiusa dal client" );
                     ConnectedModems.Remove(ip);
                     Functions.DatabaseFunctions.setModemOffline(ip);
                     handler.Shutdown(SocketShutdown.Both);  
@@ -417,9 +432,10 @@ public class AsynchronousSocketListener {
                 
                 if (content.IndexOf(">") > -1) 
                 {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " - from ReadOtherCallback: Read "+ content.Length.ToString()+ "  bytes from socket. Data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
-                    
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " - from ReadOtherCallback: conferma insertIntoMachinesConnectionTrace " + content);
+
                     // //a quick regex operation to check if it's a response to a response, 
                     // //in that case no response is nedeed
                     // string pattern = @"<TCA=[0-9]+-[0-9]+ >";
@@ -434,7 +450,7 @@ public class AsynchronousSocketListener {
                 else 
                 {
                     // Not all data received. Get more.  
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : getting more data..");
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " - from ReadOtherCallback: getting more data..");
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,  
                     new AsyncCallback(ReadOtherCallback), state);
                 }     
@@ -442,7 +458,7 @@ public class AsynchronousSocketListener {
             }        
             else if(bytesRead == 0){
                 IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client: "+ ip.ToString ());
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " - from ReadOtherCallback: Connessione chiusa dal client: "+ ip.ToString ());
 //                Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", content );
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
@@ -466,7 +482,7 @@ public class AsynchronousSocketListener {
             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + e.ToString());
             try{
                 IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Errore comunicazione con: " +ip.ToString () +" -> " + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " - from ReadOtherCallback: Errore comunicazione con: " +ip.ToString () +" -> " + e.Message);
                 DatabaseFunctions.insertIntoDB("Errore comunicazione con: " + ip.ToString () );
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
@@ -484,11 +500,11 @@ public class AsynchronousSocketListener {
                 }catch{}
 
             }catch(Exception ex){
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss : " ) + ex.ToString());
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss - from ReadOtherCallback: " ) + ex.ToString());
             }
             return;
         }
-        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
+        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " - from ReadOtherCallback: Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
         state = new StateObject();
         state.workSocket = handler;
         state.workSocket.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), state);
@@ -551,7 +567,7 @@ public class AsynchronousSocketListener {
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 
-                state.workSocket.Shutdown(SocketShutdown.Both); 
+                //state.workSocket.Shutdown(SocketShutdown.Both); 
                 state.workSocket.Close(2); //wait 2 seconds before close
                 state.workSocket.Dispose();
             }catch(Exception ex){

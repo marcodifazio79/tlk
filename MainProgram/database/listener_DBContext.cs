@@ -28,6 +28,7 @@ namespace Functions.database
 
         public virtual DbSet<EfmigrationsHistory> EfmigrationsHistory { get; set; }
         public virtual DbSet<Machines> Machines { get; set; }
+        public virtual DbSet<ModemPreConfig> ModemPreConfig { get; set; }
         public virtual DbSet<MachinesConnectionTrace> MachinesConnectionTrace { get; set; }
         public virtual DbSet<MachinesInMemory> MachinesInMemory { get; set; }
         public virtual DbSet<RemoteCommand> RemoteCommand { get; set; }
@@ -241,7 +242,45 @@ namespace Functions.database
                     .HasColumnType("timestamp");
 
             });
+            
+            modelBuilder.Entity<ModemPreConfig>(entity =>
+            {
+                entity.HasIndex(e => e.Imei)
+                    .HasName("index_imei");
 
+                entity.HasIndex(e => e.Mid)
+                    .HasName("index_mid");
+
+                entity.HasIndex(e => new { e.IpAddress, e.Mid })
+                    .HasName("index_ip_mid");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Imei)
+                    .HasColumnName("imei")
+                    .HasColumnType("bigint(20)");
+
+                entity.Property(e => e.IpAddress)
+                    .IsRequired()
+                    .HasColumnName("ip_address")
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.Mid)
+                    .HasColumnName("mid")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.last_communication)
+                    .HasColumnName("last_communication")
+                    .HasColumnType("timestamp");
+                    
+                
+                entity.Property(e => e.time_creation)
+                    .HasColumnName("time_creation")
+                    .HasColumnType("timestamp");
+
+            });
             modelBuilder.Entity<MachinesConnectionTrace>(entity =>
             {
                 entity.HasIndex(e => e.IdMacchina)

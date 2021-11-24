@@ -122,12 +122,31 @@ namespace Functions
         /// <summary>
         /// 
         /// </summary>
+        public static void InsertNewModemToConfig(string ipAddress, string mid,Int64 imei)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            try
+            {
+                DB.Machines.Add( new Machines{
+                    IpAddress = ipAddress,
+                    Mid  = mid,
+                    Imei = imei,
+                    last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                    time_creation =null
+                    });
+                DB.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                
+            }
+        }
         public static void insertIntoMachinesTable(string ip_addr)
         {
             listener_DBContext DB = new listener_DBContext ();
             try
             {
-                
+
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
@@ -344,6 +363,7 @@ namespace Functions
                     //int val_ipset=Convert.ToInt16(GetIPMode());
                     //// controllo modificato per permettere l'utilizzo di SIM non VODAFONE
                     // if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
+                    // se l'ip è del server aggiungo i dati in MCT
                     if(ip_addr.StartsWith("10.10"))
                     {
                         MachineTraceToAdd = new MachinesConnectionTrace 
@@ -516,7 +536,8 @@ namespace Functions
 
 
                 if (data.StartsWith("<TCA=>"))  
-                {if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina))
+                {
+                    if(DB.MachinesAttributes.Any(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina))
                     {
                         DB.MachinesAttributes.Single(h=>h.IdAttributeNavigation.Name =="TCA" && h.IdMacchina == id_macchina)
                             .Value = data.Substring(data.IndexOf("TCA=")+4,   5);
@@ -535,19 +556,7 @@ namespace Functions
                           );
                     }
                 }
-                if (data.StartsWith("<TPK=$M1,77770001"))  
-                {
-                    string[] splitdata= data.Split(',');
-                    var midexist = DB.Machines.Where(p => p.Mid == splitdata[1] );
-                    if (midexist.Count()==0)
-                    {   
-                        Machines mach = DB.Machines.Single(h=>h.Id == id_macchina);
-                        String s=splitdata[1]+"_"+ splitdata[31];
-                        updateModemTableEntry(mach.IpAddress,s);
-                    }
-                }
-                
-
+                              
             }
             catch (Exception e)
             {

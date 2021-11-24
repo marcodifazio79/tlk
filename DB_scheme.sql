@@ -45,8 +45,6 @@ CREATE TABLE `ModemPreConfig` (
   UNIQUE KEY `index_ip_address` (`ip_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-
  CREATE TABLE `Machines_InMemory` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,
@@ -162,8 +160,8 @@ CREATE TABLE `LogStatus` (
 `status` varchar(50) NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 INSERT INTO `LogStatus`(status) VALUES ('NoActionNeeded'),('Solved'),('ActionNeeded!');
+
 
 CREATE TABLE `Log` (
 `Id` int(11) NOT NULL AUTO_INCREMENT,
