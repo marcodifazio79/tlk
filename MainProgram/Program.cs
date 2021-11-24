@@ -298,6 +298,7 @@ public class AsynchronousSocketListener {
         try{
             int bytesRead = handler.EndReceive(ar);
             
+            
             if (bytesRead > 0) {
                 
                 // There  might be more data, so store the data received so far.
