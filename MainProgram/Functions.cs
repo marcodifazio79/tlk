@@ -127,17 +127,25 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {
-                ModemPreConfig Newmodem = new ModemPreConfig{
+               
+                if(DB.ModemPreConfig.Select(s=>s.IpAddress == ipAddress).Count()==0)
+                {
+                    ModemPreConfig Newmodem = new ModemPreConfig{
 
-                    IpAddress = ipAddress,
-                    Mid  = mid,
-                    Imei = imei,
-                    last_communication = null,//DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
-                    time_creation =null
-                };
+                        IpAddress = ipAddress,
+                        Mid  = mid,
+                        Imei = imei,
+                        last_communication = null,//DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                        time_creation =null
+                    };
+                    DB.ModemPreConfig.Add(Newmodem);
+                    DB.SaveChanges();
+                    
+                   // Machines machinesOriginePacchetto =DB.Machines.Select(s=>s.IpAddress == ipAddress);// DB.Machines.First( y=> y.IpAddress == ip_addr);
+                   
+                    //DB.Machines.Remove(machinesOriginePacchetto);
 
-                DB.ModemPreConfig.Add(Newmodem);
-                DB.SaveChanges();
+                }
                     
             }
              catch(Exception ex)
