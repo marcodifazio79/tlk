@@ -39,7 +39,7 @@ namespace Functions
                 {
                     //.Where(s=>s.TransferredData.Contains(ce))
                     //
-                    int db_rows= DB.Machines.Select(s=>s.IpAddress!=null ).Count();
+                    int count_rows= DB.Machines.Select(s=>s.IpAddress!=null ).Count();
                     {
                         mid="77770001_"+count_rows.ToString();
                     }
