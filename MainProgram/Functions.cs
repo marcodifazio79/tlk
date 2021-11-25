@@ -127,7 +127,7 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {
-                DB.Machines.Add( new Machines{
+                DB.ModemPreConfig.Add( new ModemPreConfig{
                     IpAddress = ipAddress,
                     Mid  = mid,
                     Imei = imei,
@@ -135,10 +135,12 @@ namespace Functions
                     time_creation =null
                     });
                 DB.SaveChanges();
+                DB.Dispose();
             }
             catch(Exception e)
             {
-                
+              DB.SaveChanges();
+              DB.Dispose();   
             }
         }
         public static void insertIntoMachinesTable(string ip_addr)
