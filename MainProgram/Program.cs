@@ -229,6 +229,8 @@ public class AsynchronousSocketListener {
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
                 //At this point content should look like = <data><codElettronico>9876543210</codElettronico><command>IsAlive</command></data>
+              
+
                 
                 int command_id = Functions.DatabaseFunctions.insertIntoRemoteCommand(  content, ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()  );
                 if(  command_id == -1   )
@@ -287,6 +289,7 @@ public class AsynchronousSocketListener {
     }
   
     public static async void ReadCallback(IAsyncResult ar) {
+       // listener_DBContext DB = new listener_DBContext ();
         //primo accesso dopo send data
         String content = String.Empty;  
   
@@ -303,17 +306,17 @@ public class AsynchronousSocketListener {
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
-                if (content.StartsWith("<MID=77770001-"))  /*&& !content.EndsWith("^") */  
-                {
-                    string[] splitCont=content.Split('>');
-                    string ip_address=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
-                    string tmpimei=splitCont[0].Replace("<MID=77770001-","");
-                    Int64 imei=Convert.ToInt64( tmpimei);
-                    Functions.DatabaseFunctions.InsertNewModemToConfig(ip_address,"77770001",imei);
-
-                    return;
-                }
-
+                // if (content.StartsWith("<MID=77770001-"))  /*&& !content.EndsWith("^") */  
+                // {
+                    // string[] splitCont=content.Split('>');
+                    // string ip_address=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
+                    // string tmpimei=splitCont[0].Replace("<MID=77770001-","");
+                    // Int64 imei=Convert.ToInt64( tmpimei);
+                    // Functions.DatabaseFunctions.InsertNewModemToConfig(ip_address,"77770001",imei);
+                    // return;
+                    
+                //}
+                
                 if (content=="<^>")   /*&& !content.EndsWith("^") */  
                 {
                     await Task.Run(() => Send (handler, "#PWD123456#,"+"WDR"));

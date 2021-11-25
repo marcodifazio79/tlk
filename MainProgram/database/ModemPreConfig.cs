@@ -5,7 +5,7 @@ namespace Functions.database
 {
     public partial class ModemPreConfig
     {
-       
+       public string IpAddressToChange { get; set; }
 
         public int Id { get; set; }
         public string IpAddress { get; set; }

@@ -32,11 +32,16 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext (); 
             try
             {
-                //   s = <MID=1234567890-865291049819286><VER=110>
-
-
+                
                 string mid = s.Substring(s.IndexOf("=")+1);
                 mid =mid.Substring(0,mid.IndexOf("-"));
+                if (mid=="77770001")
+                {
+                    int db_rows= DB.Machines.Select(s=>s.IpAddress!=null ).Count();
+                    {
+                        mid="77770001_"+db_rows.ToString();
+                    }
+                }
 
                 string imei = s.Substring(s.IndexOf("-")+1);
                 imei =imei.Substring(0,imei.IndexOf(">"));
@@ -633,7 +638,20 @@ namespace Functions
                     remCom = new RemoteCommand { 
                         Body = content,
                         Sender = ipSender,
-                        IdMacchina = DB.Machines.First(   y=> y.Mid == codElettronico    ).Id,
+                        IdMacchina = DB.Machines.First( y=> y.Mid == codElettronico    ).Id,
+                        Status = "Pending",
+                        ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                        SendedAt = null,
+                        AnsweredAt = null
+                    } ;
+                    DB.RemoteCommand.Add( remCom  );
+                }
+                if(DB.Machines.Any(y=> y.Mid == codElettronico))
+                {
+                    remCom = new RemoteCommand { 
+                        Body = content,
+                        Sender = ipSender,
+                        IdMacchina = DB.Machines.First( y=> y.Mid == codElettronico    ).Id,
                         Status = "Pending",
                         ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
                         SendedAt = null,
@@ -787,7 +805,7 @@ namespace Functions
         /// IsAlive command can be answered from us,
         /// PlayTheGame must be forwarded to modem
         /// </summary>
-        public static string[] FetchRemoteCommand(   int RemoteCommand_ID   )
+        public static string[] FetchRemoteCommand( int RemoteCommand_ID )
         {   
             //  return:
             //  [0] =  ComandoNonRiconosciuto / ComandoDaGirare / ComandoDaEseguire
