@@ -127,20 +127,26 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {
-                DB.ModemPreConfig.Add( new ModemPreConfig{
+                ModemPreConfig Newmodem = new ModemPreConfig{
+
                     IpAddress = ipAddress,
                     Mid  = mid,
                     Imei = imei,
-                    last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                    last_communication = null,//DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
                     time_creation =null
-                    });
+                };
+
+                DB.ModemPreConfig.Add(Newmodem);
                 DB.SaveChanges();
-                DB.Dispose();
+                    
             }
-            catch(Exception e)
+             catch(Exception ex)
             {
-              DB.SaveChanges();
-              DB.Dispose();   
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : InsertNewModemToConfig: " + ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : InsertNewModemToConfig InnerExc: " + ex.InnerException);
+            }
+            finally{
+                DB.DisposeAsync();
             }
         }
         public static void insertIntoMachinesTable(string ip_addr)

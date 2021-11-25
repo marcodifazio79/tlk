@@ -173,7 +173,7 @@ public class AsynchronousSocketListener {
                         ConnectedModems.Add(ip,handler);
                     }            
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connection established to modem : "+ ip_as_string+ " on internal port: " + (((IPEndPoint)handler.RemoteEndPoint).Port.ToString ()));
-                    Functions.DatabaseFunctions.insertIntoMachinesTable(   ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
+                    Functions.DatabaseFunctions.insertIntoMachinesTable( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
 
                     Functions.DatabaseFunctions.setModemOnline(ip);
                     
@@ -298,7 +298,6 @@ public class AsynchronousSocketListener {
         try{
             int bytesRead = handler.EndReceive(ar);
             
-            
             if (bytesRead > 0) {
                 
                 // There  might be more data, so store the data received so far.
@@ -308,9 +307,9 @@ public class AsynchronousSocketListener {
                 {
                     string[] splitCont=content.Split('>');
                     string ip_address=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
-                    string mid=splitCont[0].Replace("<MID=77770001-","");
-                    Int64 imei=Convert.ToInt64( splitCont[1]);
-                    Functions.DatabaseFunctions.InsertNewModemToConfig(ip_address,mid,imei);
+                    string tmpimei=splitCont[0].Replace("<MID=77770001-","");
+                    Int64 imei=Convert.ToInt64( tmpimei);
+                    Functions.DatabaseFunctions.InsertNewModemToConfig(ip_address,"77770001",imei);
 
                     return;
                 }
