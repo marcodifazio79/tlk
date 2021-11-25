@@ -37,9 +37,11 @@ namespace Functions
                 mid =mid.Substring(0,mid.IndexOf("-"));
                 if (mid=="77770001")
                 {
+                    //.Where(s=>s.TransferredData.Contains(ce))
+                    //
                     int db_rows= DB.Machines.Select(s=>s.IpAddress!=null ).Count();
                     {
-                        mid="77770001_"+db_rows.ToString();
+                        mid="77770001_"+count_rows.ToString();
                     }
                 }
 

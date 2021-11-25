@@ -306,16 +306,6 @@ public class AsynchronousSocketListener {
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
                 content = System.Text.RegularExpressions.Regex.Replace(state.sb.ToString(), @"\t|\n|\r", "");
-                // if (content.StartsWith("<MID=77770001-"))  /*&& !content.EndsWith("^") */  
-                // {
-                    // string[] splitCont=content.Split('>');
-                    // string ip_address=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
-                    // string tmpimei=splitCont[0].Replace("<MID=77770001-","");
-                    // Int64 imei=Convert.ToInt64( tmpimei);
-                    // Functions.DatabaseFunctions.InsertNewModemToConfig(ip_address,"77770001",imei);
-                    // return;
-                    
-                //}
                 
                 if (content=="<^>")   /*&& !content.EndsWith("^") */  
                 {
