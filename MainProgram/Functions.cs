@@ -86,7 +86,7 @@ namespace Functions
                             // {
                             //     MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
                             //     MachineToUpdate.MarkedBroken=true;
-                            //     //DB.Machines.Remove(MachineToUpdate);
+                            
                             // }
                         //}
                     }
