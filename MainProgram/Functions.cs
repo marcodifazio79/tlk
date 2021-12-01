@@ -81,7 +81,6 @@ namespace Functions
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DB.Machines.Remove(machinesOriginePacchetto);
-								Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : updateModemTableEntry: " + "MachineToUpdate != machinesOriginePacchetto");
                             // }
                             // else
                             // {
