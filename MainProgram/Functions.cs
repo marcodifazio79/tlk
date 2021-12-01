@@ -68,8 +68,8 @@ namespace Functions
                         
                         if(MachineToUpdate != machinesOriginePacchetto )
                         {
-                            // if(MachineToUpdate.MarkedBroken)
-                            // {
+                            if(MachineToUpdate.MarkedBroken)
+                            {
                                 MachineToUpdate.MarkedBroken = false;
                                 MachineToUpdate.IpAddress = ip_addr;
                                 MachineToUpdate.Imei =  Convert.ToInt64(imei);
@@ -81,13 +81,13 @@ namespace Functions
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DB.Machines.Remove(machinesOriginePacchetto);
-                            // }
-                            // else
-                            // {
-                            //     MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                            //     MachineToUpdate.MarkedBroken=true;
-                            //     //DB.Machines.Remove(MachineToUpdate);
-                            // }
+                            }
+                            else
+                            {
+                                MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                MachineToUpdate.MarkedBroken=true;
+                                 //DB.Machines.Remove(MachineToUpdate);
+                            }
                         }
                     }
                     else
@@ -217,138 +217,7 @@ namespace Functions
                 return bres;
             }
         }
-        // public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
-        // {
-        //     listener_DBContext DB = new listener_DBContext ();
-            
-        //     MachinesConnectionTrace MachineTraceToAdd = null;
-        //     try
-        //     {
-        //         //string[] splittransferred_data=transferred_data.Split(',');
 
-        //         if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
-        //         {
-        //              Machines m = DB.Machines.First( y => y.IpAddress == ip_addr ); 
-        //             // // se il campo 2 di transferred_data non è numerico e il campo 0 non indica una Instagram siamo in presenza di un concentratore
-        //             // // in questo caso anziche selezionarela macchina per ip la seleziono per CE
-        //             // if (!IsNumeric( splittransferred_data[2]) & !(splittransferred_data[0].Contains("<TPK=$I") ))
-        //             // {
-        //             //     //prima però deve verificare che il CE è gia stato caricato come macchina singola nella tabella Machine
-        //             //      if(DB.Machines.Any( y=> y.Mid == splittransferred_data[4] ))
-        //             //      {
-        //             //         m = DB.Machines.First( y => y.Mid == splittransferred_data[4]);
-        //             //      }
-        //             //      else
-        //             //      {
-        //             //         m = DB.Machines.First( y => y.IpAddress == ip_addr );     
-        //             //      }
-        //             // }    
-        //             // else
-        //             // {
-        //             //     m = DB.Machines.First( y => y.IpAddress == ip_addr );
-        //             // }
-    
-
-        //             if (transferred_data=="<^>" | transferred_data.StartsWith("TPK=$A5") | transferred_data.StartsWith("TPK=$A3") | transferred_data.StartsWith("TPK=$A1") | transferred_data.StartsWith("TPK=$A4") | transferred_data.StartsWith("TPK=$I0") | transferred_data.StartsWith("<TPK=DB") | transferred_data.StartsWith("<TPK=DB") ) 
-        //             {
-        //                 m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-        //             }
-        //             else
-        //             {
-        //                 MachineTraceToAdd = new MachinesConnectionTrace 
-        //                 {
-        //                     IpAddress = m.IpAddress,
-        //                     SendOrRecv = send_or_recv,
-        //                     TransferredData = transferred_data,
-        //                     IdMacchina = m.Id
-        //                 };
-
-        //                 // telemetria legge i dati per popolare le sue tabelline secondo telemetria_status.
-        //                 // telemetria_status recap: 0 = ignorami, 2 = leggimi, 1 = letto
-        //                 if(transferred_data.StartsWith("<TPK="))
-        //                     MachineTraceToAdd.telemetria_status = 2;
-
-        //                 DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
-        //                 // I need the MachineTraceToAdd ID which is generated by the db, i have to call  SaveChanges() to have it.
-        //                 DB.SaveChanges();
-        //                 Thread t = new Thread(()=> MachinePacketAnalyzer( m.Id, transferred_data , MachineTraceToAdd.Id ));
-        //                 t.Start();
-
-        //                 m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-        //             }
-
-        //         }
-        //         else
-        //         {
-                    
-        //             //int val_ipset=Convert.ToInt16(GetIPMode());
-        //             //// controllo modificato per permettere l'utilizzo di SIM non VODAFONE
-        //             // if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
-        //             if(ip_addr.StartsWith("10.10"))
-        //             {
-        //                 MachineTraceToAdd = new MachinesConnectionTrace 
-        //                 {
-        //                     IpAddress = ip_addr,
-        //                     SendOrRecv = send_or_recv,
-        //                     TransferredData = transferred_data
-        //                 };
-        //                 DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
-        //             }
-        //             else
-                                     
-        //             {
-        //                 //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
-        //                 //and i don't wont to add the backand to the modem list
-        //                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
-        //                 insertIntoMachinesTable(ip_addr);
-        //                 //at this point i can just call me again to pupolate ModemConnectionTrace
-        //                 insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
-        //             }
-        //             // else
-        //             // {
-        //             //     MachineTraceToAdd = new MachinesConnectionTrace 
-        //             //     {
-        //             //         IpAddress = ip_addr,
-        //             //         SendOrRecv = send_or_recv,
-        //             //         TransferredData = transferred_data
-        //             //     };
-        //             //     DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
-        //             // }
-        //         }
-        //         DB.SaveChanges();
-
-        //         //reload the web pages
-        //         if(MachineTraceToAdd.IdMacchina!= null)
-        //         {              
-        //             try{
-        //                 new Thread(()=>
-        //                     Functions.SignalRSender.AskToReloadMachConnTrace ((int)MachineTraceToAdd.IdMacchina  ) 
-        //                 ).Start();                        
-        //             }
-        //             catch(Exception exc){
-        //                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachConnTrace: "+exc.Message);
-        //             }
-        //             try{
-        //                 new Thread(()=>
-        //                     Functions.SignalRSender.AskToReloadMachinesTable ( ) 
-        //                 ).Start();                        
-        //             }
-        //             catch(Exception exc){
-        //                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " AskToReloadMachinesTable: "+exc.Message);
-        //             }
-        //         }
-        //     }
-        //     catch(Exception e)
-        //     {
-        //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
-        //         //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
-        //     }
-        //     finally
-        //     {
-        //         DB.DisposeAsync();
-        //     }
-        // }
-        
        public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             listener_DBContext DB = new listener_DBContext ();
