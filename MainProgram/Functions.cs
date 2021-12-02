@@ -54,7 +54,7 @@ namespace Functions
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-
+ip_addr="172.16.133.160";
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
                 {
                     Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
@@ -80,7 +80,7 @@ namespace Functions
 
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
-                                DB.Machines.Remove(machinesOriginePacchetto);
+                                //DB.Machines.Remove(machinesOriginePacchetto);
                             // }
                             // else
                             // {
