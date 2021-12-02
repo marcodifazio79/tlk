@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Custom;
+using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace Functions
 {    
@@ -22,6 +24,10 @@ namespace Functions
         public static string GetIPMode()
         {
             return ConfigurationManager.AppSetting["IPSet:IPFree"];
+        }
+        public static string GetConnectString()
+        {
+            return ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnection"];
         }
 //
         /// <summary>
@@ -54,10 +60,11 @@ namespace Functions
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-ip_addr="172.16.133.160";
-                if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) )
+                 
+                if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
-                    Machines machinesOriginePacchetto = DB.Machines.First( y=> y.IpAddress == ip_addr);
+
+                    Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del nuovo modem
                     if( DB.Machines.Any( y=> y.Mid == mid ) )
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
@@ -66,7 +73,7 @@ ip_addr="172.16.133.160";
                         if(MachineToUpdate.Version != version)
                             MachineToUpdate.Version = version; 
                         
-                        if(MachineToUpdate != machinesOriginePacchetto )
+                        if(MachineToUpdate != newModemPacket )
                         {
                             // if(MachineToUpdate.MarkedBroken)
                             // {
@@ -80,7 +87,7 @@ ip_addr="172.16.133.160";
 
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
-                                //DB.Machines.Remove(machinesOriginePacchetto);
+                                DeleteMachine(newModemPacket.Id.ToString());
                             // }
                             // else
                             // {
@@ -96,11 +103,11 @@ ip_addr="172.16.133.160";
                         // questa è in pratica la prima volta che si riceve il pacchetto 
                         // <MID=1234567890-865291049819286><VER=110> per questa macchina,
                         // è quindi una macchina nuova
-                        machinesOriginePacchetto.Imei =  Convert.ToInt64(imei);
-                        machinesOriginePacchetto.Mid = mid;
-                        machinesOriginePacchetto.IsOnline = true;
-                        machinesOriginePacchetto.Version = version;
-                        machinesOriginePacchetto.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        newModemPacket.Imei =  Convert.ToInt64(imei);
+                        newModemPacket.Mid = mid;
+                        newModemPacket.IsOnline = true;
+                        newModemPacket.Version = version;
+                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
                 }
 
@@ -125,8 +132,206 @@ ip_addr="172.16.133.160";
             }
             
         }
+          public static Boolean DeleteMachine(string id)
+        { 
+           
+            bool valreturn=false;
+            try
+            {
+                
+               if (DeleteLogTables(id))
+                    {
+                        if (DeleteRemoteCommand(id))
+                        {
+                            if (DeleteMachinesAttributesTables(id))
+                            {
+                                if (DeleteMachinesConnectionTrace(id))
+                                {
+                                    if (DeleteCashTransTables(id)) 
+                                    {
+                                        if (DeleteFromMachinestable(id))valreturn=true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                
 
-        /// <summary>
+               // DB.SaveChanges();
+
+                valreturn=true;
+
+                return valreturn;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : DeleteMachine: " + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : DeleteMachine: " + e.StackTrace);
+                return valreturn;
+            }
+            
+        }
+        private static bool DeleteLogTables(string id_machine) 
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            MySqlCommand newcmd;
+            string query;
+            try
+            {
+                if( DB.Log.Any( y=> y.IdMachine == Convert.ToInt32(id_machine)) )
+                {
+                    query = "Delete FROM Log   where ID_machine = " + id_machine;
+                    newcmd = new MySqlCommand(query, connection);
+                    newcmd.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("ERROR - DeleteLogTables: " + e.Message);
+                //connection.Close();
+                return false;
+            }
+        }
+        
+        private static bool DeleteRemoteCommand(string id_machine)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();;
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            MySqlCommand newcmd;
+            string query;
+            try
+            {
+                if( DB.RemoteCommand.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
+                {
+                    query = "Delete FROM RemoteCommand  where id_Macchina = " + id_machine;
+                    newcmd = new MySqlCommand(query, connection);
+                    newcmd.ExecuteNonQuery();
+                }
+                //connection.Close();
+                return true;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine("ERROR - DeleteRemoteCommand: " + e.Message);
+                //connection.Close();
+                return false;
+            }
+
+        }
+        private static bool DeleteMachinesConnectionTrace(string id_machine)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            MySqlCommand newcmd;
+            string query;
+            try
+            {
+                if( DB.MachinesConnectionTrace.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
+                {
+                    query = "Delete from MachinesConnectionTrace where id_Macchina = " + id_machine;
+                    newcmd = new MySqlCommand(query, connection);
+                    newcmd.ExecuteNonQuery();
+                }
+                //connection.Close();
+                return true;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine("ERROR - DeleteMachinesConnectionTrace: " + e.Message);
+                //connection.Close();
+                return false;
+            }
+            
+        }
+      
+        private static bool DeleteFromMachinestable(string id_machine)
+        {
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            MySqlCommand newcmd;
+            string query;
+            try
+            {
+                query = "Delete FROM Machines   where id = " + id_machine;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+
+                //connection.Close();
+                return true;
+            }
+            catch(MySqlException e)
+            {
+                Console.WriteLine("ERROR - DeleteFromMachinestable: " + e.Message);
+                connection.Close();
+                return false;
+            }
+        }
+        private static bool DeleteCashTransTables(string id_machine)
+        {
+             listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            MySqlCommand newcmd;
+            string query;
+            try
+            {
+                if( DB.CashTransaction.Any( y=> y.IdMachines == Convert.ToInt32(id_machine)) )
+                {
+                    query = "Delete FROM CashTransaction   where ID_Machines = " + id_machine;
+                    newcmd = new MySqlCommand(query, connection);
+                    newcmd.ExecuteNonQuery();
+                }
+                //connection.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR - DeleteCashTransTables: " + e.Message);
+                //connection.Close();
+                return false;
+            }
+        }
+        private static bool DeleteMachinesAttributesTables(string id_machine)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            MySqlCommand newcmd;
+            string query;
+            try
+            {
+                if( DB.MachinesAttributes.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
+                {
+                    query = "Delete FROM MachinesAttributes   where id_Macchina = " + id_machine;
+                    newcmd = new MySqlCommand(query, connection);
+                    newcmd.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR - DeleteMachinesAttributesTables: " + e.Message);
+                //connection.Close();
+                return false;
+            }
+        }/// <summary>
         /// 
         /// </summary>
         public static void InsertNewModemToConfig(string ipAddress, string mid,Int64 imei)
