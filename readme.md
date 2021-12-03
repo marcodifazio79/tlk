@@ -10,13 +10,12 @@ DB: MySql ver. 14.14
 L’ambiente di sviluppo e collaudo è disponibile su un server di staging con ip 10.10.10.72 clone del server di produzione
 L’ambiente di produzione è disponibile su un server con ip 10.10.10.71 (https:\\tlk.dedemapp.com)
 
-Per riprisinare i sofware su Ubuntu su un'altra Macchina
-    creare la lista dei software installati
-            dpkg --get-selections > installed-software.log
-
-            dpkg --set-selections < installed-software.log
-            dselect
-             "i" per installare i software
+Per riprisinare i sofware su Ubuntu su un'altra Macchina creare la lista dei software installati seguirel aprocedura
+    
+    dpkg --get-selections > installed-software.log  sul vecchio server
+    dpkg --set-selections < installed-software.log  sul nuovo server
+    dselect
+    "i" per installare i software
 
 
 
