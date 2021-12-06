@@ -68,8 +68,20 @@ namespace Functions
                     if( DB.Machines.Any( y=> y.Mid == mid ) )
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+
                         		 
                         // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
+                        
+                        if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
+                        {
+                            MachineToUpdate.Version = version;
+                            MachineToUpdate.IpAddress = ip_addr;
+                            MachineToUpdate.IsOnline = true;
+                            MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            DeleteMachine(newModemPacket.Id.ToString());
+                            goto nextstep;
+                        }
+
                         if(MachineToUpdate.Version != version)
                             MachineToUpdate.Version = version; 
                         
@@ -99,19 +111,43 @@ namespace Functions
                     }
                     else
                     {
-                        // se sono qui,
-                        // questa è in pratica la prima volta che si riceve il pacchetto 
-                        // <MID=1234567890-865291049819286><VER=110> per questa macchina,
-                        // è quindi una macchina nuova
-                        newModemPacket.Imei =  Convert.ToInt64(imei);
-                        newModemPacket.Mid = mid;
-                        newModemPacket.IsOnline = true;
-                        newModemPacket.Version = version;
-                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
+                        {
+                            if( DB.Machines.Any( y=> y.Mid == mid ) )
+                            {
+                                
+                                Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+
+                                var numMachine = DB.MachinesConnectionTrace.Where(p=>p.IdMacchina==MachineToUpdate.Id &&  p.TransferredData.Contains("><TYP=2>"));
+                                if(numMachine.Count()>0)
+                                {
+                                    MachineToUpdate.Version = version;
+                                    MachineToUpdate.IpAddress = ip_addr;
+                                    MachineToUpdate.IsOnline = true;
+                                    MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                // rimuovo il modem che si era presentato come nuovo, ma che in realtà cambia solo l'indirizzo IP perche non sta nella VPN Vodafone 
+                                    DeleteMachine(newModemPacket.Id.ToString());
+                                }
+                            }   
+                        } 
+                        else
+                        {
+                            // se sono qui,
+                            // questa è in pratica la prima volta che si riceve il pacchetto 
+                            // <MID=1234567890-865291049819286><VER=110> per questa macchina,
+                            // è quindi una macchina nuova
+
+
+                            newModemPacket.Imei =  Convert.ToInt64(imei);
+                            newModemPacket.Mid = mid;
+                            newModemPacket.IsOnline = true;
+                            newModemPacket.Version = version;
+                            newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            }
                     }
                 }
 
-                
+                nextstep:
                 DB.SaveChanges();
                
                 //reload web page
@@ -434,6 +470,7 @@ namespace Functions
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
+                   
                     MachineTraceToAdd = new MachinesConnectionTrace 
                     {
                         IpAddress = m.IpAddress,
@@ -453,6 +490,7 @@ namespace Functions
                     Thread t = new Thread(()=> MachinePacketAnalyzer( m.Id, transferred_data , MachineTraceToAdd.Id ));
                     t.Start();
                     m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    m.IsOnline=true;
 
                 }
                 else
