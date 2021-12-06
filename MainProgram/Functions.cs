@@ -75,8 +75,8 @@ namespace Functions
                         
                         if(MachineToUpdate != newModemPacket )
                         {
-                            // if(MachineToUpdate.MarkedBroken)
-                            // {
+                            if(MachineToUpdate.MarkedBroken)
+                            {
                                 MachineToUpdate.MarkedBroken = false;
                                 MachineToUpdate.IpAddress = ip_addr;
                                 MachineToUpdate.Imei =  Convert.ToInt64(imei);
@@ -88,7 +88,7 @@ namespace Functions
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DeleteMachine(newModemPacket.Id.ToString());
-                            // }
+                            }
                             // else
                             // {
                             //     MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
