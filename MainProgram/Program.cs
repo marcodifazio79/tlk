@@ -46,7 +46,8 @@ public class AsynchronousSocketListener {
         //Establish the local endpoint for the socket.  
         #if DEBUG
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //ipHostInfo.AddressList[0];
+            //IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //ipHostInfo.AddressList[0];
+            IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //ipHostInfo.AddressList[0];
         #else
             IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddressForConnections"].ToString()); 
         #endif
@@ -230,8 +231,7 @@ public class AsynchronousSocketListener {
                 
                 //At this point content should look like = <data><codElettronico>9876543210</codElettronico><command>IsAlive</command></data>
               
-
-                
+             
                 int command_id = Functions.DatabaseFunctions.insertIntoRemoteCommand(  content, ((IPEndPoint)handler.RemoteEndPoint).Address.ToString()  );
                 if(  command_id == -1   )
                     answerToBackend = "<Error>command-error codice elettronico non collegato a una macchina nel db</Error>";

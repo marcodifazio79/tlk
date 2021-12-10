@@ -78,7 +78,7 @@ namespace Functions
                             MachineToUpdate.IpAddress = ip_addr;
                             MachineToUpdate.IsOnline = true;
                             MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                            DeleteMachine(newModemPacket.Id.ToString());
+                            DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
                             goto nextstep;
                         }
 
@@ -99,7 +99,7 @@ namespace Functions
 
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
-                                DeleteMachine(newModemPacket.Id.ToString());
+                                DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
                             }
                             // else
                             // {
@@ -111,6 +111,11 @@ namespace Functions
                     }
                     else
                     {
+                            // se sono qui,
+                            // questa è in pratica la prima volta che si riceve il pacchetto 
+                            // <MID=1234567890-865291049819286><VER=110> per questa macchina,
+                            // è quindi una macchina nuova
+
                         if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
                         {
                             if( DB.Machines.Any( y=> y.Mid == mid ) )
@@ -126,16 +131,13 @@ namespace Functions
                                     MachineToUpdate.IsOnline = true;
                                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà cambia solo l'indirizzo IP perche non sta nella VPN Vodafone 
-                                    DeleteMachine(newModemPacket.Id.ToString());
+                                    DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
                                 }
                             }   
                         } 
                         else
                         {
-                            // se sono qui,
-                            // questa è in pratica la prima volta che si riceve il pacchetto 
-                            // <MID=1234567890-865291049819286><VER=110> per questa macchina,
-                            // è quindi una macchina nuova
+                            
 
 
                             newModemPacket.Imei =  Convert.ToInt64(imei);
@@ -168,29 +170,28 @@ namespace Functions
             }
             
         }
-          public static Boolean DeleteMachine(string id)
+        public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
         { 
            
-            bool valreturn=false;
+           bool valreturn = false;
             try
             {
-                
-               if (DeleteLogTables(id))
+                if (UpdateLogTables(idtodelete,idtoupdate))
+                {
+                    if (UpdateRemoteCommandTables (idtodelete, idtoupdate))
                     {
-                        if (DeleteRemoteCommand(id))
+                        if (DeleteMachinesAttributesTables(idtodelete))
                         {
-                            if (DeleteMachinesAttributesTables(id))
+                            if (UpdateCashTransactionTables(idtodelete, idtoupdate))
                             {
-                                if (DeleteMachinesConnectionTrace(id))
+                                if (UpdateMachinesConnectionTraceTables(idtodelete, idtoupdate))
                                 {
-                                    if (DeleteCashTransTables(id)) 
-                                    {
-                                        if (DeleteFromMachinestable(id))valreturn=true;
-                                    }
+                                    if (DeleteFromMachinestable(idtodelete)) valreturn = true;
                                 }
                             }
                         }
                     }
+                }
                 
 
                // DB.SaveChanges();
@@ -207,6 +208,91 @@ namespace Functions
             }
             
         }
+        private static bool UpdateLogTables(string id_machinetodelete, string idmachinetoupdate)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            try
+            {
+                MySqlCommand newcmd;
+                string query = "Update Log set ID_machine='" + idmachinetoupdate + "'  where  ID_machine  = " + id_machinetodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Error in UpdateLogTables: " + e.Message);
+                return false;
+            }
+        }
+        private static bool UpdateRemoteCommandTables(string id_machinetodelete, string idmachinetoupdate)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            try
+            {
+                MySqlCommand newcmd;
+                string query = "Update RemoteCommand set id_Macchina ='" + idmachinetoupdate + "'  where  id_Macchina  = " + id_machinetodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error in UpdateRemoteCommandTables: " + e.Message);
+                return false;
+            }
+        }
+        private static bool UpdateMachinesConnectionTraceTables(string id_machinetodelete, string idmachinetoupdate)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            try
+            {
+                MySqlCommand newcmd;
+                string query = "Update MachinesConnectionTrace set id_Macchina ='" + idmachinetoupdate + "'  where  id_Macchina  = " + id_machinetodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error in UpdateMachinesConnectionTraceTables: " + e.Message);
+                return false;
+            }
+        }
+        private static bool UpdateCashTransactionTables(string id_machinetodelete, string idmachinetoupdate)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+            try
+            {
+                MySqlCommand newcmd;
+                string query = "Update CashTransaction set ID_Machines ='" + idmachinetoupdate + "'  where  ID_Machines  = " + id_machinetodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error in UpdateCashTransactionTables: " + e.Message);
+                return false;
+            }
+        }
+     
         private static bool DeleteLogTables(string id_machine) 
         {
             listener_DBContext DB = new listener_DBContext ();
@@ -370,36 +456,99 @@ namespace Functions
         }/// <summary>
         /// 
         /// </summary>
-        public static void InsertNewModemToConfig(string ipAddress, string mid,Int64 imei)
+
+        private static void removeIDMachineForIstagram(string instmid)
         {
+            List<string> IdfromMachines = new List<string>();
+            List<string> id_toDelete = new List<string>();
+            
+            
+            string connectionString =GetConnectString();
+            MySqlConnection connection;
+            connection = new MySqlConnection(connectionString);
+            if (connection.State == ConnectionState.Closed) connection.Open();
+
+            
+            MySqlDataReader dataReader;
+            MySqlCommand cmd;
+
+            string id_machinesTab_To_update = "";
+
+            ///seleziono dalla tabella Machines l'id della macchina gia registrata con il mid in arrivo
+            string query = "select ID from Machines where mid = '" + instmid + "'";
+            cmd = new MySqlCommand(query, connection);
+            dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
+            {
+                id_machinesTab_To_update=dataReader["id"].ToString();
+            }
+            dataReader.Close();
+
+
+            // faccio una lista di tuute le instagram che stanno in fase di Recupero
+            query = "select id from Machines where mid like '%Recupero%' and ip_address not like '172.16&';";
+            
+            cmd = new MySqlCommand(query, connection);
+            dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
+            {
+                IdfromMachines.Add(dataReader["id"].ToString());
+                //query = "select id_Macchina from MachinesConnectionTrace where transferred_data like '%"+instmid+"%';";
+            }
+
+            foreach (string tmpid in IdfromMachines)
+            {
+                dataReader.Close();
+                //Selezione gli id_Macchina dalla tabella MachineConnectionTrace se nel campo transferred_data è presente il MID registrato nella tabella Machines 
+                query = "select id_Macchina from MachinesConnectionTrace where id_Macchina =" + tmpid + " and transferred_data like '%" + instmid + "%';";
+                cmd = new MySqlCommand(query, connection);
+                dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    id_toDelete.Add( dataReader["id_Macchina"].ToString());
+                }
+                dataReader.Close();
+            }
+            foreach (string tmpid in id_toDelete)
+            {
+
+                DeleteMachine(tmpid, id_machinesTab_To_update);
+            }
+
+}
+        public static void insertInstagrammIntoMachinesTable(string ip_addr,string instmid)
+        {
+            
             listener_DBContext DB = new listener_DBContext ();
             try
             {
-               
-                if(DB.ModemPreConfig.Select(s=>s.IpAddress == ipAddress).Count()==0)
-                {
-                    ModemPreConfig Newmodem = new ModemPreConfig{
 
-                        IpAddress = ipAddress,
-                        Mid  = mid,
-                        Imei = imei,
-                        last_communication = null,//DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
-                        time_creation =null
-                    };
-                    DB.ModemPreConfig.Add(Newmodem);
-                    DB.SaveChanges();
+                if(DB.Machines.Any( y=> y.Mid == instmid ) )
+                {
+                    Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
+                    MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     
-                   // Machines machinesOriginePacchetto =DB.Machines.Select(s=>s.IpAddress == ipAddress);// DB.Machines.First( y=> y.IpAddress == ip_addr);
-                   
-                    //DB.Machines.Remove(machinesOriginePacchetto);
+                    removeIDMachineForIstagram(instmid);
+
 
                 }
-                    
+                else
+                {
+                    DB.Machines.Add( new Machines{
+                        IpAddress = ip_addr,
+                        Mid  = instmid,
+                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
+                        Version = "",
+                        last_communication =DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                        time_creation =null
+                        });
+                }
+                DB.SaveChanges();
             }
-             catch(Exception ex)
+            catch(Exception ex)
             {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : InsertNewModemToConfig: " + ex.Message);
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : InsertNewModemToConfig InnerExc: " + ex.InnerException);
+                //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertInstagrammIntoMachinesTable: " + ex.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertInstagrammIntoMachinesTable InnerExc: " + ex.InnerException);
             }
             finally{
                 DB.DisposeAsync();
@@ -409,7 +558,7 @@ namespace Functions
         {
             listener_DBContext DB = new listener_DBContext ();
             try
-            {
+            {   
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -516,20 +665,39 @@ namespace Functions
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
-                        insertIntoMachinesTable(ip_addr);
+
+                        // se arriva una istagramm con questa stringa <MID=00022139><VER=105><TYP=2> 
+
+                        if (transferred_data.StartsWith("<MID="))
+                        {
+                            string[] cleanTData = transferred_data.Split('^');
+                            string[] splitTData = cleanTData[0].Split('>');
+                            if (splitTData.Length == 3)
+                            {
+                            insertIntoMachinesTable(ip_addr);
+                            }
+                            else
+                            {
+                                if (splitTData.Length == 4)
+                                {
+                                    string InstMid = splitTData[0].Substring(5, splitTData[0].Length - 5);
+                                    if (splitTData[2] == "<TYP=2")
+                                    {
+                                        insertInstagrammIntoMachinesTable(ip_addr,InstMid);
+                                    }
+                                }
+                            }
+
+
+                        }
+                        
+
+                         
+                        //insertIntoMachinesTable(ip_addr);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
                     }
-                    // else
-                    // {
-                    //     MachineTraceToAdd = new MachinesConnectionTrace 
-                    //     {
-                    //         IpAddress = ip_addr,
-                    //         SendOrRecv = send_or_recv,
-                    //         TransferredData = transferred_data
-                    //     };
-                    //     DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
-                    // }
+                   
                 }
                 DB.SaveChanges();
 
