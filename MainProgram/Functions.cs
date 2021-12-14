@@ -69,13 +69,17 @@ namespace Functions
 
                     if (newModemPacket.Mid.StartsWith("RecuperoInCorso"))
                     {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: Ricevuto pacchetto <MID inviato da modem con IP "+ip_addr+" in stato di Recupero");
-                        newModemPacket.Imei =  Convert.ToInt64(imei);
-                        newModemPacket.Mid = mid;
-                        newModemPacket.IsOnline = true;
-                        newModemPacket.Version = version;
-                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: Aggiornato IP "+ip_addr + " con Pacchetto MID "+s );
+                        string tmpstr=newModemPacket.Mid;
+                        if (tmpstr.Contains("<TYP=2>"))
+                        {
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: Ricevuto pacchetto <MID inviato da modem con IP "+ip_addr+" in stato di Recupero");
+                            newModemPacket.Imei =  Convert.ToInt64(imei);
+                            newModemPacket.Mid = mid;
+                            newModemPacket.IsOnline = true;
+                            newModemPacket.Version = version;
+                            newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: Aggiornato IP "+ip_addr + " con Pacchetto MID "+s );
+                        }
                     }
                     else
                     {
@@ -153,7 +157,7 @@ namespace Functions
         }
 
         /// <summary>
-public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
+            public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
         { 
            
            bool valreturn = false;
@@ -427,13 +431,16 @@ public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
                     
                     if (m.Mid.Contains("Recupero"))
                     {
-                        if (transferred_data.StartsWith("<MID="))
+                        if (transferred_data.Contains("<TYP=2>"))
                         {
                             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Ricevuto transferred_data con pacchetto  <MID relativo all'IP "+ ip_addr+" in stato di Recupero ");
                             string tmpstrdata=transferred_data.Replace("<", "");
                             string[] splitTrData= transferred_data.Split('>');
-                            m.Mid=splitTrData[0].Replace("MID=", "");
-                            m.Version=splitTrData[1].Replace("VER=", "");
+                            string strtmp=splitTrData[0].Replace("MID=", "");
+                            m.Mid=strtmp.Replace("<", "");
+                            strtmp=splitTrData[1].Replace("VER=", "");
+                            m.Version=strtmp.Replace("<", "");
+
                             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Aggiornati dati macchina con IP "+ ip_addr+" con pacchetto transferred_data " + transferred_data);
                         }
                     }
