@@ -69,8 +69,7 @@ namespace Functions
 
                     if (newModemPacket.Mid.StartsWith("RecuperoInCorso"))
                     {
-                        string tmpstr=newModemPacket.Mid;
-                        if (tmpstr.Contains("<TYP=2>"))
+                        if (newModemPacket.Mid.StartsWith("<MID="))
                         {
                             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: Ricevuto pacchetto <MID inviato da modem con IP "+ip_addr+" in stato di Recupero");
                             newModemPacket.Imei =  Convert.ToInt64(imei);
@@ -78,7 +77,7 @@ namespace Functions
                             newModemPacket.IsOnline = true;
                             newModemPacket.Version = version;
                             newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: Aggiornato IP "+ip_addr + " con Pacchetto MID "+s );
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: Aggiornato IP "+ip_addr + " con Pacchetto MID "+s );    
                         }
                     }
                     else
@@ -86,8 +85,6 @@ namespace Functions
                         if( DB.Machines.Any( y=> y.Mid == mid ) )//se il mid è gia presente nel db...
                         {
                             Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-
-
                                     
                             // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
                             if(MachineToUpdate.Version != version)
@@ -431,16 +428,26 @@ namespace Functions
                     
                     if (m.Mid.Contains("Recupero"))
                     {
-                        if (transferred_data.Contains("<TYP=2>"))
-                        {
-                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Ricevuto transferred_data con pacchetto  <MID relativo all'IP "+ ip_addr+" in stato di Recupero ");
-                            string tmpstrdata=transferred_data.Replace("<", "");
-                            string[] splitTrData= transferred_data.Split('>');
-                            string strtmp=splitTrData[0].Replace("MID=", "");
-                            m.Mid=strtmp.Replace("<", "");
-                            strtmp=splitTrData[1].Replace("VER=", "");
-                            m.Version=strtmp.Replace("<", "");
-
+                        if (transferred_data.StartsWith("<MID="))
+                        {   
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Ricevuto con pacchetto MID "+ transferred_data+ " relativo all'IP "+ ip_addr+" in stato di Recupero ");
+                            if (transferred_data.Contains("<TYP=2>"))
+                            {
+                                string tmpstrdata=transferred_data.Replace("<", "");
+                                string[] splitTrData= tmpstrdata.Split('>');
+                                m.Mid=splitTrData[0].Replace("MID=", "");
+                                m.Version=splitTrData[1].Replace("VER=", "");
+                            }
+                            else
+                            {
+                                string tmpstrdata=transferred_data.Replace("<", "");
+                                string[] splitTrData= tmpstrdata.Split('>');
+                                string strtmp=splitTrData[0].Replace("MID=", "");
+                                string[] newSplit= strtmp.Split('-');
+                                m.Mid=newSplit[0];
+                                m.Imei=Convert.ToInt64(newSplit[1]);
+                                m.Version=splitTrData[1].Replace("VER=", "");
+                            }
                             Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Aggiornati dati macchina con IP "+ ip_addr+" con pacchetto transferred_data " + transferred_data);
                         }
                     }
