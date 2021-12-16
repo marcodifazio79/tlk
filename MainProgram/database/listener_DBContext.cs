@@ -232,10 +232,13 @@ namespace Functions.database
                     .IsRequired()
                     .HasDefaultValueSql("'0'");
 
+                entity.Property(e => e.Sim_Serial)
+                    .HasColumnName("sim_serial")
+                    .HasColumnType("bigint(20)");
+
                 entity.Property(e => e.last_communication)
                     .HasColumnName("last_communication")
                     .HasColumnType("timestamp");
-                    
                 
                 entity.Property(e => e.time_creation)
                     .HasColumnName("time_creation")
