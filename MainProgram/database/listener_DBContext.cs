@@ -234,7 +234,7 @@ namespace Functions.database
 
                 entity.Property(e => e.Sim_Serial)
                     .HasColumnName("sim_serial")
-                    .HasColumnType("bigint(20)");
+                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.last_communication)
                     .HasColumnName("last_communication")
