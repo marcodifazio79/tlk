@@ -635,13 +635,13 @@ namespace Functions
                         Int64 SerialSIM=0;
                         MachineTraceToAdd.telemetria_status = 2;
                         //M1 campo 30
-                        if (transferred_data.StartsWith("<TPK=<TPK=$M1")) SerialSIM=Convert.ToInt64(splitTrData[30]);
+                        if (transferred_data.StartsWith("<TPK=$M1")) SerialSIM=Convert.ToInt64(splitTrData[30]);
                         //W5 campo 31
-                        if (transferred_data.StartsWith("<TPK=<TPK=$W5")) SerialSIM=Convert.ToInt64(splitTrData[31]);
+                        if (transferred_data.StartsWith("<TPK=W5")) SerialSIM=Convert.ToInt64(splitTrData[31]);
                         //M3 I2 campo 37
-                        if (transferred_data.StartsWith("<TPK=<TPK=$M3") | transferred_data.StartsWith("<TPK=<TPK=$M3")) SerialSIM=Convert.ToInt64(splitTrData[37]);
+                        if (transferred_data.StartsWith("<TPK=$M3") | transferred_data.StartsWith("<TPK=$I2")| transferred_data.StartsWith("<TPK=$I1")) SerialSIM=Convert.ToInt64(splitTrData[37]);
                         //M5 campo 45
-                        if (transferred_data.StartsWith("<TPK=<TPK=$M5")) SerialSIM=Convert.ToInt64(splitTrData[45]);
+                        if (transferred_data.StartsWith("<TPK=$M5")) SerialSIM=Convert.ToInt64(splitTrData[45]);
 
                         if (m.Sim_Serial==null | m.Sim_Serial!=SerialSIM)
                         {
