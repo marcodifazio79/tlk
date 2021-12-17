@@ -288,7 +288,9 @@ public class AsynchronousSocketListener {
         }
     }
   
-    public static async void ReadCallback(IAsyncResult ar) {
+    public static async void ReadCallback(IAsyncResult ar) 
+    {
+
        // listener_DBContext DB = new listener_DBContext ();
         //primo accesso dopo send data
         String content = String.Empty;  
@@ -301,7 +303,8 @@ public class AsynchronousSocketListener {
         try{
             int bytesRead = handler.EndReceive(ar);
             
-            if (bytesRead > 0) {
+            if (bytesRead > 0) 
+            {
                 
                 // There  might be more data, so store the data received so far.
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));  
@@ -318,20 +321,23 @@ public class AsynchronousSocketListener {
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                     
-                    if(content.Contains("<TYP=")){
+                    if(content.Contains("<MID"))
+                    {
+                        if(content.Contains("<TYP=2"))
+                        {
+                            //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem di una instagramm,
+                            //nell forma     <MID=1234567890><VER=105><TYP=2>
+                            string[] contentSplit= content.Split('>');
+                            string fakeImei= DateTime.Now.ToString("yyyyMMddHHmmssf");
+                            content=contentSplit[0]+"-" + fakeImei+">"+contentSplit[1]+">";
+                            Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
+                        }
+                        else
+                        {
                         //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
                         //nell forma     <MID=1234567890-865291049819286><VER=110>
-                        string[] contentSplit= content.Split('>');
-                        string fakeImei= DateTime.Now.ToString("yyyyMMddHHmmssf");
-                        content=contentSplit[0]+"-" + fakeImei+">"+contentSplit[1]+">";
-                        Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
-                    }
-
-
-                    if(content.Contains("<MID")){
-                        //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
-                        //nell forma     <MID=1234567890-865291049819286><VER=110>
-                        Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
+                            Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
+                        }
                     }
 
                     if(content.Contains("<VER=500>")) // variante per modem del cazzo che non vuole una risposta
@@ -370,13 +376,16 @@ public class AsynchronousSocketListener {
                     //t.Start();
                     await Task.Run(() => Send (handler, "#PWD123456#ROK,"+finalString.ToString() +","+date1));
                     
-                    try{
+                    try
+                    {
                         StateObject stateN = new StateObject();  
                         stateN.workSocket = ConnectedModems[((IPEndPoint)handler.RemoteEndPoint).Address];                        
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Listening again for data from :" + IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()));
                         Thread th = new Thread(()=> handler.BeginReceive( stateN.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadOtherCallback), stateN));
                         th.Start();
-                    }catch(Exception e){
+                    }
+                    catch(Exception e)
+                    {
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Something went wrong while reopening the connection " + e.Message);
                     }
                 }
@@ -389,7 +398,9 @@ public class AsynchronousSocketListener {
                 }    
             }
             else 
-                if(bytesRead == 0){
+            {
+               if(bytesRead == 0)
+                {
                     IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Connessione chiusa dal client");
                     //Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", "Connessione chiusa dal client" );
@@ -400,11 +411,14 @@ public class AsynchronousSocketListener {
                     handler.Dispose();
                     return;
                 }
+            }
         }
-        catch(System.Net.Sockets.SocketException a){
+        catch(System.Net.Sockets.SocketException a)
+        {
             Console.WriteLine(a.ToString()); 
         }
-        catch(Exception e){
+        catch(Exception e)
+        {
             Console.WriteLine(e.ToString());  
         }
     }

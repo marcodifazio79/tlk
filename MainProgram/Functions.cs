@@ -59,11 +59,12 @@ namespace Functions
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-                 
+ip_addr="109.114.49.38";                 
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
 
                     Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del nuovo modem
+
                     if( DB.Machines.Any( y=> y.Mid == mid ) )
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
@@ -117,6 +118,7 @@ namespace Functions
 
                         if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
                         {
+                            
                             if( DB.Machines.Any( y=> y.Mid == mid ) )
                             {
                                 Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
@@ -131,13 +133,20 @@ namespace Functions
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà cambia solo l'indirizzo IP perche non sta nella VPN Vodafone 
                                     DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
                                 }
-                            }   
+                            }
+                            if (newModemPacket.Mid.Contains("Recupero"))
+                            {
+                                newModemPacket.Imei =  Convert.ToInt64(imei);
+                                newModemPacket.Mid = mid;
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.Version = version;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            } 
+
                         } 
                         else
                         {
                             
-
-
                             newModemPacket.Imei =  Convert.ToInt64(imei);
                             newModemPacket.Mid = mid;
                             newModemPacket.IsOnline = true;
@@ -524,11 +533,10 @@ namespace Functions
                 if(DB.Machines.Any( y=> y.Mid == instmid ) )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
+                    MachineToUpdate.IpAddress=ip_addr;
                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    
+
                     removeIDMachineForIstagram(instmid);
-
-
                 }
                 else
                 {
@@ -558,7 +566,7 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {   
-
+ip_addr="109.114.49.38";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
@@ -616,6 +624,7 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
+                ip_addr="109.114.49.38";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
@@ -628,8 +637,7 @@ namespace Functions
                         IdMacchina = m.Id
                     };
 
-                    // telemetria legge i dati per popolare le sue tabelline secondo telemetria_status.
-                    // telemetria_status recap: 0 = ignorami, 2 = leggimi, 1 = letto
+                   
                     if(transferred_data.StartsWith("<TPK="))
                     {
                         MachineTraceToAdd.telemetria_status = 2;
@@ -697,30 +705,22 @@ namespace Functions
                         {
                             string[] cleanTData = transferred_data.Split('^');
                             string[] splitTData = cleanTData[0].Split('>');
-                            if (splitTData.Length == 3)
+                            
+                            if (transferred_data.Contains("TYP=2"))
                             {
-                            insertIntoMachinesTable(ip_addr);
+                                string InstMid = splitTData[0].Replace("<MID=","") ;
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: Provo ad inserire una instagramm");
+                                insertInstagrammIntoMachinesTable(ip_addr,InstMid);
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
+
                             }
                             else
                             {
-                                if (splitTData.Length == 4)
-                                {
-                                    string InstMid = splitTData[0].Substring(5, splitTData[0].Length - 5);
-                                    if (splitTData[2] == "<TYP=2")
-                                    {
-                                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: Provo ad inserire una instagramm");
-                                        insertInstagrammIntoMachinesTable(ip_addr,InstMid);
-                                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
-                                        
-                                    }
-                                }
+                                insertIntoMachinesTable(ip_addr);
                             }
-
 
                         }
                         
-
-                         
                         //insertIntoMachinesTable(ip_addr);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
