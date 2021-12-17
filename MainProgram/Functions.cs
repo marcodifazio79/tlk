@@ -59,7 +59,7 @@ namespace Functions
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-//ip_addr="109.114.49.38";                 
+ip_addr="172.16.176.108";                 
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
                     Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del nuovo modem
@@ -543,7 +543,7 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {   
-//ip_addr="109.114.49.38";
+ip_addr="172.16.176.108";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
@@ -601,7 +601,7 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
-                //ip_addr="109.114.49.38";
+ip_addr="172.16.176.108";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
@@ -619,12 +619,12 @@ namespace Functions
                     {
                         MachineTraceToAdd.telemetria_status = 2;
 
-                        if (m.sim_serial==null )
+                        if (m.sim_serial==null |  m.sim_serial=="0")
                         {
                             string[] splitTrData= transferred_data.Split(",");
                             string SerialSIM="";
                             
-                            Console.WriteLine("SerialSIM="+splitTrData[30]);
+                           
                             //M1 campo 30
                             if (transferred_data.StartsWith("<TPK=$M1")) SerialSIM=splitTrData[30];
                             //W5 campo 31
