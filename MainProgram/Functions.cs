@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Custom;
 using MySql.Data.MySqlClient;
 using System.Data;
+using ClearMachineTable;
 
 namespace Functions
 {    
@@ -59,7 +60,7 @@ namespace Functions
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-ip_addr="172.16.176.108";                 
+//ip_addr="172.16.176.108";                
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
                     Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del nuovo modem
@@ -86,7 +87,7 @@ ip_addr="172.16.176.108";
 
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
-                                DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
+                                DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
                             }
                             else
                             {
@@ -97,43 +98,49 @@ ip_addr="172.16.176.108";
                     }
                     else
                     {
-                        // se sono qui si è collegato un modem con un'IP non presente nella table Machines
+                        // se sono qui si è collegato un modem con un IP gia presente sul DB ma un MID non presente nella table Machines
+                        // aggiorno il modem esistente con il NUOVO MID
 
-                        if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
-                        {
-                            if( DB.Machines.Any( y=> y.Mid == mid))// in questo caso il mid è gia presente e devo aggiornare il vecchio modem con  l'IP e rimuovere il record delmodem che si è appena presentato
-                            {
-                                Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-                                    MachineToUpdate.Version = version;
-                                    MachineToUpdate.IpAddress = ip_addr;
-                                    MachineToUpdate.IsOnline = true;
-                                    MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                                // rimuovo il modem che si era presentato come nuovo, ma che in realtà cambia solo l'indirizzo IP perche non sta nella VPN Vodafone 
-                                    DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
-                                
-                            }
-                            if (newModemPacket.Mid.Contains("Recupero"))
-                            {
-                                newModemPacket.Imei =  Convert.ToInt64(imei);
-                                newModemPacket.Mid = mid;
-                                newModemPacket.IsOnline = true;
-                                newModemPacket.Version = version;
-                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                            } 
 
-                        } 
-                        else
-                        {
+                        //if (newModemPacket.Mid.Contains("Recupero"))
+                        //{
                             newModemPacket.Imei =  Convert.ToInt64(imei);
                             newModemPacket.Mid = mid;
                             newModemPacket.IsOnline = true;
                             newModemPacket.Version = version;
                             newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                            }
+                        //} 
                     }
                 }
+                else
+                {
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: questo caso dovrebbe essere impossibile ");
 
-                nextstep:
+                   // se sono qui si è collegato un modem con un IP  non presente nella table Machines
+                   // a questo punto verifico  se  il MID é presente nel DB
+                
+                    //if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
+                    //{
+                    // if( DB.Machines.Any( y=> y.Mid == mid))// in questo caso il mid è gia presente e devo aggiornare il vecchio modem con  l'IP e rimuovere il record delmodem che si è appena presentato
+                    // {
+                    //     Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+                    //         MachineToUpdate.Version = version;
+                    //         MachineToUpdate.IpAddress = ip_addr;
+                    //         MachineToUpdate.IsOnline = true;
+                    //         MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    //     // rimuovo il modem che si era presentato come nuovo, ma che in realtà cambia solo l'indirizzo IP perche non sta nella VPN Vodafone 
+                    //         DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
+                    // }
+                    // else// se non c'è neanche il mid 
+                    // {
+                    //     newModemPacket.Imei =  Convert.ToInt64(imei);
+                    //     newModemPacket.Mid = mid;
+                    //     newModemPacket.IsOnline = true;
+                    //     newModemPacket.Version = version;
+                    //     newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    // }
+                }     
+
                 DB.SaveChanges();
                
                 //reload web page
@@ -154,290 +161,8 @@ ip_addr="172.16.176.108";
             }
             
         }
-        public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
-        { 
-           
-           bool valreturn = false;
-            try
-            {
-                if (UpdateLogTables(idtodelete,idtoupdate))
-                {
-                    if (UpdateRemoteCommandTables (idtodelete, idtoupdate))
-                    {
-                        if (DeleteMachinesAttributesTables(idtodelete))
-                        {
-                            if (UpdateCashTransactionTables(idtodelete, idtoupdate))
-                            {
-                                if (UpdateMachinesConnectionTraceTables(idtodelete, idtoupdate))
-                                {
-                                    if (DeleteFromMachinestable(idtodelete)) valreturn = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                
 
-               // DB.SaveChanges();
-
-                valreturn=true;
-
-                return valreturn;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : DeleteMachine: " + e.Message);
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : DeleteMachine: " + e.StackTrace);
-                return valreturn;
-            }
-            
-        }
-        private static bool UpdateLogTables(string id_machinetodelete, string idmachinetoupdate)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update Log set ID_machine='" + idmachinetoupdate + "'  where  ID_machine  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Error in UpdateLogTables: " + e.Message);
-                return false;
-            }
-        }
-        private static bool UpdateRemoteCommandTables(string id_machinetodelete, string idmachinetoupdate)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update RemoteCommand set id_Macchina ='" + idmachinetoupdate + "'  where  id_Macchina  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error in UpdateRemoteCommandTables: " + e.Message);
-                return false;
-            }
-        }
-        private static bool UpdateMachinesConnectionTraceTables(string id_machinetodelete, string idmachinetoupdate)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update MachinesConnectionTrace set id_Macchina ='" + idmachinetoupdate + "'  where  id_Macchina  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error in UpdateMachinesConnectionTraceTables: " + e.Message);
-                return false;
-            }
-        }
-        private static bool UpdateCashTransactionTables(string id_machinetodelete, string idmachinetoupdate)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update CashTransaction set ID_Machines ='" + idmachinetoupdate + "'  where  ID_Machines  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error in UpdateCashTransactionTables: " + e.Message);
-                return false;
-            }
-        }
-     
-        private static bool DeleteLogTables(string id_machine) 
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.Log.Any( y=> y.IdMachine == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM Log   where ID_machine = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("ERROR - DeleteLogTables: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-        }
-        
-        private static bool DeleteRemoteCommand(string id_machine)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();;
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.RemoteCommand.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM RemoteCommand  where id_Macchina = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                //connection.Close();
-                return true;
-            }
-            catch (MySqlException e)
-            {
-                Console.WriteLine("ERROR - DeleteRemoteCommand: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-
-        }
-        private static bool DeleteMachinesConnectionTrace(string id_machine)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.MachinesConnectionTrace.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete from MachinesConnectionTrace where id_Macchina = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                //connection.Close();
-                return true;
-            }
-            catch (MySqlException e)
-            {
-                Console.WriteLine("ERROR - DeleteMachinesConnectionTrace: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-            
-        }
-      
-        private static bool DeleteFromMachinestable(string id_machine)
-        {
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                query = "Delete FROM Machines   where id = " + id_machine;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-
-                //connection.Close();
-                return true;
-            }
-            catch(MySqlException e)
-            {
-                Console.WriteLine("ERROR - DeleteFromMachinestable: " + e.Message);
-                connection.Close();
-                return false;
-            }
-        }
-        private static bool DeleteCashTransTables(string id_machine)
-        {
-             listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.CashTransaction.Any( y=> y.IdMachines == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM CashTransaction   where ID_Machines = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                //connection.Close();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR - DeleteCashTransTables: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-        }
-        private static bool DeleteMachinesAttributesTables(string id_machine)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.MachinesAttributes.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM MachinesAttributes   where id_Macchina = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR - DeleteMachinesAttributesTables: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-        }/// <summary>
+        /// <summary>
         /// 
         /// </summary>
 
@@ -496,7 +221,7 @@ ip_addr="172.16.176.108";
             foreach (string tmpid in id_toDelete)
             {
 
-                DeleteMachine(tmpid, id_machinesTab_To_update);
+                DatabaseClearTable.DeleteMachine(tmpid, id_machinesTab_To_update);
             }
 
 }
@@ -543,7 +268,7 @@ ip_addr="172.16.176.108";
             listener_DBContext DB = new listener_DBContext ();
             try
             {   
-ip_addr="172.16.176.108";
+//ip_addr="172.16.176.108";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
@@ -601,7 +326,7 @@ ip_addr="172.16.176.108";
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
-ip_addr="172.16.176.108";
+//ip_addr="172.16.176.108";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
