@@ -59,33 +59,20 @@ namespace Functions
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-ip_addr="109.114.49.38";                 
+//ip_addr="109.114.49.38";                 
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
-
                     Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del nuovo modem
 
-                    if( DB.Machines.Any( y=> y.Mid == mid ) )
+                    if( DB.Machines.Any( y=> y.Mid == mid ) )//se il MID è gia presente nel db...
                     {
                         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-
-                        		 
-                        // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
                         
-                        if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
-                        {
-                            MachineToUpdate.Version = version;
-                            MachineToUpdate.IpAddress = ip_addr;
-                            MachineToUpdate.IsOnline = true;
-                            MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                            DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
-                            goto nextstep;
-                        }
-
+                        // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
                         if(MachineToUpdate.Version != version)
                             MachineToUpdate.Version = version; 
                         
-                        if(MachineToUpdate != newModemPacket )
+                        if(MachineToUpdate != newModemPacket ) 
                         {
                             if(MachineToUpdate.MarkedBroken)
                             {
@@ -101,38 +88,29 @@ ip_addr="109.114.49.38";
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
                             }
-                            // else
-                            // {
-                            //     MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                            //     MachineToUpdate.MarkedBroken=true;
-                            //     //DB.Machines.Remove(MachineToUpdate);
-                            // }
+                            else
+                            {
+                                 MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                 MachineToUpdate.MarkedBroken=true;
+                            }
                         }
                     }
                     else
                     {
-                            // se sono qui,
-                            // questa è in pratica la prima volta che si riceve il pacchetto 
-                            // <MID=1234567890-865291049819286><VER=110> per questa macchina,
-                            // è quindi una macchina nuova
+                        // se sono qui si è collegato un modem con un'IP non presente nella table Machines
 
                         if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
                         {
-                            
-                            if( DB.Machines.Any( y=> y.Mid == mid ) )
+                            if( DB.Machines.Any( y=> y.Mid == mid))// in questo caso il mid è gia presente e devo aggiornare il vecchio modem con  l'IP e rimuovere il record delmodem che si è appena presentato
                             {
                                 Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-
-                                var numMachine = DB.MachinesConnectionTrace.Where(p=>p.IdMacchina==MachineToUpdate.Id &&  p.TransferredData.Contains("><TYP=2>"));
-                                if(numMachine.Count()>0)
-                                {
                                     MachineToUpdate.Version = version;
                                     MachineToUpdate.IpAddress = ip_addr;
                                     MachineToUpdate.IsOnline = true;
                                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà cambia solo l'indirizzo IP perche non sta nella VPN Vodafone 
                                     DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
-                                }
+                                
                             }
                             if (newModemPacket.Mid.Contains("Recupero"))
                             {
@@ -146,7 +124,6 @@ ip_addr="109.114.49.38";
                         } 
                         else
                         {
-                            
                             newModemPacket.Imei =  Convert.ToInt64(imei);
                             newModemPacket.Mid = mid;
                             newModemPacket.IsOnline = true;
@@ -566,7 +543,7 @@ ip_addr="109.114.49.38";
             listener_DBContext DB = new listener_DBContext ();
             try
             {   
-ip_addr="109.114.49.38";
+//ip_addr="109.114.49.38";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
@@ -624,7 +601,7 @@ ip_addr="109.114.49.38";
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
-                ip_addr="109.114.49.38";
+                //ip_addr="109.114.49.38";
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
