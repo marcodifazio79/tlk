@@ -538,7 +538,8 @@ namespace Functions
                         Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
                         Version = "",
                         last_communication =DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
-                        time_creation =null
+                        time_creation =null,
+                        sim_serial="0"
                         });
                 }
                 DB.SaveChanges();
@@ -571,7 +572,8 @@ namespace Functions
                         Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
                         Version = "",
                         last_communication =null,
-                        time_creation =null
+                        time_creation =null,
+                        sim_serial="0"
                         });
                 }
                 DB.SaveChanges();
@@ -630,21 +632,29 @@ namespace Functions
                     // telemetria_status recap: 0 = ignorami, 2 = leggimi, 1 = letto
                     if(transferred_data.StartsWith("<TPK="))
                     {
-                        string[] splitTrData= transferred_data.Split(",");
-                        string SerialSIM="";
                         MachineTraceToAdd.telemetria_status = 2;
-                        //M1 campo 30
-                        if (transferred_data.StartsWith("<TPK=$M1")) SerialSIM=splitTrData[30];
-                        //W5 campo 31
-                        if (transferred_data.StartsWith("<TPK=W5")) SerialSIM=splitTrData[31];
-                        //M3 I2 campo 37
-                        if (transferred_data.StartsWith("<TPK=$M3") | transferred_data.StartsWith("<TPK=$I2")| transferred_data.StartsWith("<TPK=$I1")) SerialSIM=splitTrData[37];
-                        //M5 campo 45
-                        if (transferred_data.StartsWith("<TPK=$M5")) SerialSIM=splitTrData[45];
 
-                        if (m.Sim_Serial==null | m.Sim_Serial!=SerialSIM)
+                        if (m.sim_serial==null )
                         {
-                            m.Sim_Serial=SerialSIM;
+                            string[] splitTrData= transferred_data.Split(",");
+                            string SerialSIM="";
+                            
+                            Console.WriteLine("SerialSIM="+splitTrData[30]);
+                            //M1 campo 30
+                            if (transferred_data.StartsWith("<TPK=$M1")) SerialSIM=splitTrData[30];
+                            //W5 campo 31
+                            if (transferred_data.StartsWith("<TPK=W5")) SerialSIM=splitTrData[31];
+                            //M3 I2 I1 campo 37
+                            if (transferred_data.StartsWith("<TPK=$M3")) SerialSIM=splitTrData[37];
+                            if (transferred_data.StartsWith("<TPK=$I2")) SerialSIM=splitTrData[37];
+                            if (transferred_data.StartsWith("<TPK=$I1")) SerialSIM=splitTrData[37];
+                            //M5 campo 45
+                            if (transferred_data.StartsWith("<TPK=$M5")) SerialSIM=splitTrData[45];
+
+                            if (m.sim_serial!=SerialSIM)
+                            {
+                                m.sim_serial=SerialSIM;
+                            }
                         }
                     }
 

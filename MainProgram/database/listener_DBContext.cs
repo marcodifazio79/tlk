@@ -232,7 +232,7 @@ namespace Functions.database
                     .IsRequired()
                     .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.Sim_Serial)
+                entity.Property(e => e.sim_serial)
                     .HasColumnName("sim_serial")
                     .HasColumnType("varchar(50)");
 

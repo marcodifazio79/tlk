@@ -22,7 +22,7 @@ namespace Functions.database
         public bool MarkedBroken { get; set; }
         public bool LogEnabled { get; set; }
 
-        public string Sim_Serial{ get; set; }
+        public string sim_serial{ get; set; }
         public DateTime? last_communication { get; set; }
         public DateTime? time_creation { get; set; }
 
