@@ -33,17 +33,6 @@ CREATE TABLE `MachinesConnectionTrace` (
   CONSTRAINT `MachinesConnectionTrace_ibfk_1` FOREIGN KEY (`id_Macchina`) REFERENCES `Machines` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=536872 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `ModemPreConfig` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ip_address` varchar(15) NOT NULL,
-  `imei` BIGINT DEFAULT NULL,
-  `mid` varchar(50) DEFAULT NULL,
-  `last_communication` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `time_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `index_imei` (`imei`),
-  UNIQUE KEY `index_ip_address` (`ip_address`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
  CREATE TABLE `Machines_InMemory` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

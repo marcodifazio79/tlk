@@ -60,7 +60,9 @@ namespace Functions
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
-//ip_addr="172.16.176.108";                
+#if DEBUG 
+   // ip_addr="151.37.61.181";                
+#endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
                     Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del nuovo modem
@@ -100,8 +102,6 @@ namespace Functions
                     {
                         // se sono qui si è collegato un modem con un IP gia presente sul DB ma un MID non presente nella table Machines
                         // aggiorno il modem esistente con il NUOVO MID
-
-
                         //if (newModemPacket.Mid.Contains("Recupero"))
                         //{
                             newModemPacket.Imei =  Convert.ToInt64(imei);
@@ -225,39 +225,31 @@ namespace Functions
             }
 
 }
-        public static void insertInstagrammIntoMachinesTable(string ip_addr,string instmid)
+        public static bool UpdateInstagrammIntoMachinesTable(string ip_addr,string instmid)
         {
             
             listener_DBContext DB = new listener_DBContext ();
             try
             {
-
                 if(DB.Machines.Any( y=> y.Mid == instmid ) )
                 {
-                    Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
+                    Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == instmid ) ;
                     MachineToUpdate.IpAddress=ip_addr;
                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-
-                    removeIDMachineForIstagram(instmid);
+                    DB.SaveChanges();    
+                    return true;
                 }
                 else
                 {
-                    DB.Machines.Add( new Machines{
-                        IpAddress = ip_addr,
-                        Mid  = instmid,
-                        Imei = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff")),
-                        Version = "",
-                        last_communication =DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
-                        time_creation =null,
-                        sim_serial="0"
-                        });
+                    return false;
                 }
-                DB.SaveChanges();
+
             }
             catch(Exception ex)
             {
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertInstagrammIntoMachinesTable: " + ex.Message);
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : insertInstagrammIntoMachinesTable InnerExc: " + ex.InnerException);
+                return false;
             }
             finally{
                 DB.DisposeAsync();
@@ -268,7 +260,9 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext ();
             try
             {   
-//ip_addr="172.16.176.108";
+#if DEBUG 
+   // ip_addr="151.37.61.181";                
+#endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
@@ -326,7 +320,9 @@ namespace Functions
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
-//ip_addr="172.16.176.108";
+#if DEBUG 
+   // ip_addr="151.37.61.181";                
+#endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
@@ -338,26 +334,27 @@ namespace Functions
                         TransferredData = transferred_data,
                         IdMacchina = m.Id
                     };
-
                    
                     if(transferred_data.StartsWith("<TPK="))
                     {
                         MachineTraceToAdd.telemetria_status = 2;
 
-                        if (m.sim_serial==null |  m.sim_serial=="0")
+                        string[] splitTrData= transferred_data.Split(",");
+                        if (m.sim_serial==null |  m.sim_serial=="0" |  m.sim_serial=="")
                         {
-                            string[] splitTrData= transferred_data.Split(",");
-                            string SerialSIM="";
-                            
                            
+                            string SerialSIM="";
                             //M1 campo 30
                             if (transferred_data.StartsWith("<TPK=$M1")) SerialSIM=splitTrData[30];
                             //W5 campo 31
                             if (transferred_data.StartsWith("<TPK=W5")) SerialSIM=splitTrData[31];
                             //M3 I2 I1 campo 37
                             if (transferred_data.StartsWith("<TPK=$M3")) SerialSIM=splitTrData[37];
-                            if (transferred_data.StartsWith("<TPK=$I2")) SerialSIM=splitTrData[37];
-                            if (transferred_data.StartsWith("<TPK=$I1")) SerialSIM=splitTrData[37];
+
+                            if (transferred_data.StartsWith("<TPK=$I2")) 
+                                if (splitTrData[43]!="")SerialSIM=splitTrData[43];
+                            if (transferred_data.StartsWith("<TPK=$I1")) 
+                                if (splitTrData[43]!="")SerialSIM=splitTrData[43];
                             //M5 campo 45
                             if (transferred_data.StartsWith("<TPK=$M5")) SerialSIM=splitTrData[45];
 
@@ -365,6 +362,25 @@ namespace Functions
                             {
                                 m.sim_serial=SerialSIM;
                             }
+                        }
+                        if (m.Mid.StartsWith("Recupero"))
+                        {
+                            if (transferred_data.StartsWith("<TPK=$M1")) m.Version=splitTrData[29];
+
+                            if (transferred_data.StartsWith("<TPK=$M3"))  m.Version=splitTrData[36];
+                            if (transferred_data.StartsWith("<TPK=$I2"))  m.Version=splitTrData[42];
+                            if (transferred_data.StartsWith("<TPK=$I1"))  m.Version=splitTrData[42];
+                            if (transferred_data.StartsWith("<TPK=$M5"))  m.Version=splitTrData[44];
+                            
+                            m.Mid=splitTrData[1];
+
+                            if (transferred_data.StartsWith("<TPK=W5"))
+                            { 
+                                m.Version=splitTrData[30];
+                                m.Mid=splitTrData[1];
+                            }
+                            
+
                         }
                     }
 
@@ -403,24 +419,25 @@ namespace Functions
 
                         // se arriva una istagramm con questa stringa <MID=00022139><VER=105><TYP=2> 
 
-                        if (transferred_data.StartsWith("<MID="))
+                        if (transferred_data.Contains("TYP=2"))
                         {
                             string[] cleanTData = transferred_data.Split('^');
                             string[] splitTData = cleanTData[0].Split('>');
                             
-                            if (transferred_data.Contains("TYP=2"))
-                            {
                                 string InstMid = splitTData[0].Replace("<MID=","") ;
                                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: Provo ad inserire una instagramm");
-                                insertInstagrammIntoMachinesTable(ip_addr,InstMid);
-                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
-
-                            }
-                            else
-                            {
-                                insertIntoMachinesTable(ip_addr);
-                            }
-
+                                if (UpdateInstagrammIntoMachinesTable(ip_addr,InstMid))
+                                {
+                                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
+                                }
+                                else
+                                {
+                                    insertIntoMachinesTable(ip_addr);
+                                }
+                        }
+                        else
+                        {
+                            insertIntoMachinesTable(ip_addr);
                         }
                         
                         //insertIntoMachinesTable(ip_addr);
@@ -988,6 +1005,7 @@ namespace Functions
         {
           try
           {
+
             listener_DBContext DB = new listener_DBContext (); 
             DB.Machines.Single( j=> j.IpAddress ==  ip.ToString()).IsOnline = true;
             DB.SaveChanges();
