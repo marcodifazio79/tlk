@@ -117,28 +117,7 @@ namespace Functions
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: questo caso dovrebbe essere impossibile ");
 
                    // se sono qui si è collegato un modem con un IP  non presente nella table Machines
-                   // a questo punto verifico  se  il MID é presente nel DB
                 
-                    //if(version=="105" | version=="106")// queste versioni indicano una instagram e l'ip varia ad ogni connessione
-                    //{
-                    // if( DB.Machines.Any( y=> y.Mid == mid))// in questo caso il mid è gia presente e devo aggiornare il vecchio modem con  l'IP e rimuovere il record delmodem che si è appena presentato
-                    // {
-                    //     Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-                    //         MachineToUpdate.Version = version;
-                    //         MachineToUpdate.IpAddress = ip_addr;
-                    //         MachineToUpdate.IsOnline = true;
-                    //         MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    //     // rimuovo il modem che si era presentato come nuovo, ma che in realtà cambia solo l'indirizzo IP perche non sta nella VPN Vodafone 
-                    //         DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
-                    // }
-                    // else// se non c'è neanche il mid 
-                    // {
-                    //     newModemPacket.Imei =  Convert.ToInt64(imei);
-                    //     newModemPacket.Mid = mid;
-                    //     newModemPacket.IsOnline = true;
-                    //     newModemPacket.Version = version;
-                    //     newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    // }
                 }     
 
                 DB.SaveChanges();
@@ -166,65 +145,6 @@ namespace Functions
         /// 
         /// </summary>
 
-        private static void removeIDMachineForIstagram(string instmid)
-        {
-            List<string> IdfromMachines = new List<string>();
-            List<string> id_toDelete = new List<string>();
-            
-            
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-
-            
-            MySqlDataReader dataReader;
-            MySqlCommand cmd;
-
-            string id_machinesTab_To_update = "";
-
-            ///seleziono dalla tabella Machines l'id della macchina gia registrata con il mid in arrivo
-            string query = "select ID from Machines where mid = '" + instmid + "'";
-            cmd = new MySqlCommand(query, connection);
-            dataReader = cmd.ExecuteReader();
-            while (dataReader.Read())
-            {
-                id_machinesTab_To_update=dataReader["id"].ToString();
-            }
-            dataReader.Close();
-
-
-            // faccio una lista di tuute le instagram che stanno in fase di Recupero
-            query = "select id from Machines where mid like '%Recupero%' and ip_address not like '172.16&';";
-            
-            cmd = new MySqlCommand(query, connection);
-            dataReader = cmd.ExecuteReader();
-            while (dataReader.Read())
-            {
-                IdfromMachines.Add(dataReader["id"].ToString());
-                //query = "select id_Macchina from MachinesConnectionTrace where transferred_data like '%"+instmid+"%';";
-            }
-
-            foreach (string tmpid in IdfromMachines)
-            {
-                dataReader.Close();
-                //Selezione gli id_Macchina dalla tabella MachineConnectionTrace se nel campo transferred_data è presente il MID registrato nella tabella Machines 
-                query = "select id_Macchina from MachinesConnectionTrace where id_Macchina =" + tmpid + " and transferred_data like '%" + instmid + "%';";
-                cmd = new MySqlCommand(query, connection);
-                dataReader = cmd.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    id_toDelete.Add( dataReader["id_Macchina"].ToString());
-                }
-                dataReader.Close();
-            }
-            foreach (string tmpid in id_toDelete)
-            {
-
-                DatabaseClearTable.DeleteMachine(tmpid, id_machinesTab_To_update);
-            }
-
-}
         public static bool UpdateInstagrammIntoMachinesTable(string ip_addr,string instmid)
         {
             
