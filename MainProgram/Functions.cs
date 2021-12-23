@@ -61,7 +61,7 @@ namespace Functions
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
- ip_addr="151.35.186.16";                
+// ip_addr="151.35.186.16";  
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
@@ -180,7 +180,7 @@ namespace Functions
             try
             {   
 #if DEBUG 
- ip_addr="151.35.186.16";                
+// ip_addr="151.35.186.16";  
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -240,7 +240,7 @@ namespace Functions
             try
             {
 #if DEBUG 
- ip_addr="151.35.186.16";                
+// ip_addr="151.35.186.16";  
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
@@ -310,11 +310,9 @@ namespace Functions
                     t.Start();
                     m.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     m.IsOnline=true;
-
                 }
                 else
                 {
-                    
                     //int val_ipset=Convert.ToInt16(GetIPMode());
                     //// controllo modificato per permettere l'utilizzo di SIM non VODAFONE
                     // if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
@@ -330,7 +328,6 @@ namespace Functions
                         DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
                     }
                     else
-                                     
                     {
                         //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
                         //and i don't wont to add the backand to the modem list
@@ -343,27 +340,25 @@ namespace Functions
                             string[] cleanTData = transferred_data.Split('^');
                             string[] splitTData = cleanTData[0].Split('>');
                             
-                                string InstMid = splitTData[0].Replace("<MID=","") ;
-                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: Provo ad inserire una instagramm");
-                                if (UpdateInstagrammIntoMachinesTable(ip_addr,InstMid))
-                                {
-                                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
-                                }
-                                else
-                                {
-                                    insertIntoMachinesTable(ip_addr);
-                                }
+                            string InstMid = splitTData[0].Replace("<MID=","") ;
+                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: Provo ad inserire una instagramm");
+                            if (UpdateInstagrammIntoMachinesTable(ip_addr,InstMid))
+                            {
+                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
+                            }
+                            else
+                            {
+                                insertIntoMachinesTable(ip_addr);
+                            }
                         }
                         else
                         {
                             insertIntoMachinesTable(ip_addr);
                         }
-                        
                         //insertIntoMachinesTable(ip_addr);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
                     }
-                   
                 }
                 DB.SaveChanges();
 
