@@ -111,6 +111,7 @@ namespace Functions
                                 newModemPacket.IsOnline = true;
                                 newModemPacket.Version = version;
                                 newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                
                             }
                             else
                             {
