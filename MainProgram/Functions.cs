@@ -89,11 +89,11 @@ namespace Functions
                                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
                                 DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
                             }
-                            else
-                            {
-                                 MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                                 MachineToUpdate.MarkedBroken=true;
-                            }
+                            // else
+                            // {
+                                //  MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                //  MachineToUpdate.MarkedBroken=true;
+                            //}
                         }
                     }
                     else
@@ -104,11 +104,20 @@ namespace Functions
                         // aggiorno il modem esistente con il NUOVO MID
                         //if (newModemPacket.Mid.Contains("Recupero"))
                         //{
-                            newModemPacket.Imei =  Convert.ToInt64(imei);
-                            newModemPacket.Mid = mid;
-                            newModemPacket.IsOnline = true;
-                            newModemPacket.Version = version;
-                            newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            if (version=="105" | version=="106")
+                            {
+                                newModemPacket.Imei =  Convert.ToInt64(imei);
+                                newModemPacket.Mid = mid;
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.Version = version;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            }
+                            else
+                            {
+                                newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                newModemPacket.MarkedBroken=true;
+                            }
+
                         //} 
                     }
                 }
