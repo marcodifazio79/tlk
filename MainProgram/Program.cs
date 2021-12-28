@@ -47,9 +47,10 @@ public class AsynchronousSocketListener {
         #if DEBUG
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
             IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //ipHostInfo.AddressList[0];
+            
             //IPAddress ipAddress = IPAddress.Parse("192.168.117.127"); //ipHostInfo.AddressList[0];
         #else
-            IPAddress ipAddress = IPAddress.Parse(Any);
+            IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
             //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddressForConnections"].ToString()); 
         #endif
 
