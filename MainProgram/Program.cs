@@ -141,7 +141,7 @@ public class AsynchronousSocketListener {
             
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
-                if (ip_as_string.StartsWith("10.10"))
+                if (ip_as_string==("10.10.10.37") | ip_as_string==("10.10.10.71") | ip_as_string==("95.61.6.94") | ip_as_string==("192.168.209.188") )
                 {
                     try{
                         handler.Shutdown(SocketShutdown.Both);
