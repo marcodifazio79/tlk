@@ -51,7 +51,8 @@ namespace Functions
                     }
                 }
 
-                string imei = s.Substring(s.IndexOf("-")+1);
+                string imei = s.Substring(s.IndexOf("-")+1
+                );
                 imei =imei.Substring(0,imei.IndexOf(">"));
                 
                 string version = s.Substring(s.IndexOf("VER=")+4);
@@ -72,7 +73,8 @@ namespace Functions
                        // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
                         if(MachineToUpdate.Version != version)
                             MachineToUpdate.Version = version; 
-                        
+                        if(MachineToUpdate.Imei!= Convert.ToInt64(imei))
+                            MachineToUpdate.Imei =  Convert.ToInt64(imei);
                         if(MachineToUpdate != newModemPacket ) 
                         {
                             if(MachineToUpdate.MarkedBroken)
@@ -105,8 +107,8 @@ namespace Functions
                         //if (newModemPacket.Mid.Contains("Recupero"))
                         //{
 
-                            if (version=="105" | version=="106"|newModemPacket.MarkedBroken | mid.StartsWith("77770001"))
-                            {
+                            // if (version=="105" | version=="106"|newModemPacket.MarkedBroken | mid.StartsWith("77770001"))
+                            // {
                                 newModemPacket.Imei =  Convert.ToInt64(imei);
                                 newModemPacket.Mid = mid;
                                 newModemPacket.IsOnline = true;
@@ -114,12 +116,7 @@ namespace Functions
                                 newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                                 newModemPacket.MarkedBroken=false;
                                 
-                            }
-                            else
-                            {
-                                newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                                newModemPacket.MarkedBroken=true;
-                            }
+                           
 
                         //} 
                     }
