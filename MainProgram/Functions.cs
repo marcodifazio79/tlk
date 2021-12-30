@@ -61,7 +61,7 @@ namespace Functions
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
-// ip_addr="151.35.186.16";  
+ip_addr="18.196.213.123"; 
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
@@ -104,13 +104,15 @@ namespace Functions
                         // aggiorno il modem esistente con il NUOVO MID
                         //if (newModemPacket.Mid.Contains("Recupero"))
                         //{
-                            if (version=="105" | version=="106")
+
+                            if (version=="105" | version=="106"|newModemPacket.MarkedBroken)
                             {
                                 newModemPacket.Imei =  Convert.ToInt64(imei);
                                 newModemPacket.Mid = mid;
                                 newModemPacket.IsOnline = true;
                                 newModemPacket.Version = version;
                                 newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                newModemPacket.MarkedBroken=false;
                                 
                             }
                             else
@@ -190,7 +192,7 @@ namespace Functions
             try
             {   
 #if DEBUG 
-// ip_addr="151.35.186.16";  
+ip_addr="18.196.213.123"; 
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -250,7 +252,7 @@ namespace Functions
             try
             {
 #if DEBUG 
-// ip_addr="151.35.186.16";  
+ip_addr="18.196.213.123"; 
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
