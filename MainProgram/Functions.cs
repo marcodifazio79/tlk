@@ -61,7 +61,7 @@ namespace Functions
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
-//ip_addr="18.196.213.123"; 
+//ip_addr="172.16.137.189";
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
@@ -105,7 +105,7 @@ namespace Functions
                         //if (newModemPacket.Mid.Contains("Recupero"))
                         //{
 
-                            if (version=="105" | version=="106"|newModemPacket.MarkedBroken)
+                            if (version=="105" | version=="106"|newModemPacket.MarkedBroken | mid.StartsWith("77770001"))
                             {
                                 newModemPacket.Imei =  Convert.ToInt64(imei);
                                 newModemPacket.Mid = mid;
@@ -192,7 +192,7 @@ namespace Functions
             try
             {   
 #if DEBUG 
-//ip_addr="18.196.213.123"; 
+//ip_addr="172.16.137.189";
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -252,7 +252,7 @@ namespace Functions
             try
             {
 #if DEBUG 
-//ip_addr="18.196.213.123"; 
+//ip_addr="172.16.137.189";
 #endif
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 255 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
