@@ -100,25 +100,56 @@ namespace Functions
                     }
                     else
                     {
-                        // se sono qui si è collegato un modem con un IP gia presente sul DB ma un MID non presente nella table Machines
-                        // questo può succedere se si usa un modem già caricato nel sistema su un nuovo kiddie, quindi con CE differente
-                        
-                        // aggiorno il modem esistente con il NUOVO MID
-                        //if (newModemPacket.Mid.Contains("Recupero"))
-                        //{
+                        if( DB.Machines.Any( y=> y.Mid == mid ) )//se il MID è gia presente nel db...
+                        {
+                            Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
 
-                            // if (version=="105" | version=="106"|newModemPacket.MarkedBroken | mid.StartsWith("77770001"))
-                            // {
-                                newModemPacket.Imei =  Convert.ToInt64(imei);
-                                newModemPacket.Mid = mid;
-                                newModemPacket.IsOnline = true;
-                                newModemPacket.Version = version;
-                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                                newModemPacket.MarkedBroken=false;
+                            if(MachineToUpdate.Version != version)
+                                MachineToUpdate.Version = version; 
+                            
+                            if (version=="105" | version=="106")// se è una instagramm aggiorno solo ip, imei e status
+                            {
+                                MachineToUpdate.IpAddress = ip_addr;
+                                if(!imei.StartsWith("202")) MachineToUpdate.Imei =  Convert.ToInt64(imei);
+                                MachineToUpdate.IsOnline = true;
+                                if(MachineToUpdate.MarkedBroken)
+                                { 
+                                    DatabaseClearTable.DeleteMachine(MachineToUpdate.Id.ToString(),newModemPacket.Id.ToString());// se il modem e broke  mantengo l'id dell'ultimo modem installato aggiorno le tablelle del db con questo id e cancello dal db il modem con l'id markedbroken
+                                }else{
+                                    DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());// il modem non è broken mantengo l'id del vecchio modem aggiorno le tablelle del db col vecchio id e cancello dal db il modem con l'id appena arrivato
+                                }
                                 
-                           
-
-                        //} 
+                            }
+                            else
+                            {
+                                if(MachineToUpdate.MarkedBroken)  // mantengo l'id dell'ultimo modem installato aggiorno le tablelle del db con questo id e cancello dal db il modem con l'id markedbroken
+                                {
+                                    newModemPacket.MarkedBroken = false;
+                                    newModemPacket.IpAddress = ip_addr;
+                                    newModemPacket.Imei =  Convert.ToInt64(imei);
+                                    newModemPacket.IsOnline = true;
+                                    newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                    // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
+                                    // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
+                                    DatabaseClearTable.DeleteMachine(MachineToUpdate.Id.ToString(),newModemPacket.Id.ToString());
+                                }
+                                else
+                                 {
+                                     newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                     //MachineToUpdate.MarkedBroken=true;
+                                }
+                            }                       
+                        }
+                        else
+                        {
+                            newModemPacket.Imei =  Convert.ToInt64(imei);
+                            newModemPacket.Mid = mid;
+                            newModemPacket.IsOnline = true;
+                            newModemPacket.Version = version;
+                            newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                            newModemPacket.MarkedBroken=false;
+                        }   
+ 
                     }
                 }
                 else
@@ -255,7 +286,8 @@ namespace Functions
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 257 - "+ ip_addr+ ", già presente nel db");
+                    string MIDValue="";
+                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 257 - "+ ip_addr+ ", già presente nel db");
 
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
                    
@@ -266,7 +298,7 @@ namespace Functions
                         TransferredData = transferred_data,
                         IdMacchina = m.Id
                     };
-                   
+
                     if(transferred_data.StartsWith("<TPK="))
                     {
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 273 ");                        
@@ -278,18 +310,41 @@ namespace Functions
                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 279 "); 
                             string SerialSIM="";
                             //M1 campo 30
-                            if (transferred_data.StartsWith("<TPK=$M1")) SerialSIM=splitTrData[30];
+                            if (transferred_data.StartsWith("<TPK=$M1")) 
+                            {
+                                SerialSIM=splitTrData[30];
+                                MIDValue=splitTrData[1];
+                            }
                             //W5 campo 31
-                            if (transferred_data.StartsWith("<TPK=W5")) SerialSIM=splitTrData[31];
+                            if (transferred_data.StartsWith("<TPK=W5")) 
+                            {
+                                SerialSIM=splitTrData[31];
+                                MIDValue=splitTrData[4];
+                            }
                             //M3 I2 I1 campo 37
-                            if (transferred_data.StartsWith("<TPK=$M3")) SerialSIM=splitTrData[37];
+                            if (transferred_data.StartsWith("<TPK=$M3"))
+                            {
+                                SerialSIM=splitTrData[37];
+                                MIDValue=splitTrData[1];
+                            }
+
 
                             if (transferred_data.StartsWith("<TPK=$I2")) 
+                            { 
                                 if (splitTrData[43]!="")SerialSIM=splitTrData[43];
+                                MIDValue=splitTrData[1];
+                            }
                             if (transferred_data.StartsWith("<TPK=$I1")) 
+                            { 
                                 if (splitTrData[43]!="")SerialSIM=splitTrData[43];
+                                MIDValue=splitTrData[1];
+                            }
                             //M5 campo 45
-                            if (transferred_data.StartsWith("<TPK=$M5")) SerialSIM=splitTrData[45];
+                            if (transferred_data.StartsWith("<TPK=$M5"))
+                            {   
+                                SerialSIM=splitTrData[45];
+                                MIDValue=splitTrData[1];
+                            }
 
                             if (m.sim_serial!=SerialSIM)
                             {
@@ -299,23 +354,56 @@ namespace Functions
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 300 "); 
                         
                     }
-                        
-                    if (m.Mid.StartsWith("Recupero"))
-                    {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 306 "); 
+                    else if (transferred_data.StartsWith("<MID"))
+                    { 
                         string[] cleanTData = transferred_data.Split('^');
                         string[] splitTData = cleanTData[0].Split('>');
                         
                         if (transferred_data.Contains("<TYP=2>"))
                         {
-                            m.Mid= splitTData[0].Replace("<MID=","") ;
-                            m.Version=splitTData[1].Replace("<VER=","") ;
+                            MIDValue = splitTData[0].Replace("<MID=","") ;
                         }
                         else
                         {
                             string[] tmsplit=splitTData[0].Split('-');
-                            m.Mid= tmsplit[0].Replace("<MID=","") ;
-                            m.Version=splitTData[1].Replace("<VER=","") ;
+                            MIDValue= tmsplit[0].Replace("<MID=","") ;
+                        }
+                    }
+
+                    if (m.Mid.StartsWith("Duplicato"))
+                    {
+                        if (MIDValue!="")
+                        {
+                            if(DB.Machines.Any( y=> y.Mid == MIDValue ))
+                            {
+                                Machines m_exist = DB.Machines.First( y => y.Mid == MIDValue );
+                                if (m_exist.MarkedBroken)
+                                {
+                                    m.Mid=MIDValue;
+                                    DatabaseClearTable.DeleteMachine(m_exist.Id.ToString(),m.Id.ToString());
+                                }
+                            }
+                        }
+
+                    }    
+                    if (m.Mid.StartsWith("Recupero"))
+                    {
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 306 "); 
+                        string[] cleanTData = transferred_data.Split('^');
+                        string[] splitTData = cleanTData[0].Split('>');
+                        if (transferred_data.Contains("<MID"))
+                        {
+                            if (transferred_data.Contains("<TYP=2>"))
+                            {
+                                m.Mid= splitTData[0].Replace("<MID=","") ;
+                                m.Version=splitTData[1].Replace("<VER=","") ;
+                            }
+                            else
+                            {
+                                string[] tmsplit=splitTData[0].Split('-');
+                                m.Mid= tmsplit[0].Replace("<MID=","") ;
+                                m.Version=splitTData[1].Replace("<VER=","") ;
+                            }
                         }
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 321 "); 
                     }
