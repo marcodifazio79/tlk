@@ -62,7 +62,7 @@ namespace Functions
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
-//ip_addr="172.16.137.189";
+ip_addr="172.16.0.5";
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
@@ -220,7 +220,7 @@ namespace Functions
             try
             {   
 #if DEBUG 
-//ip_addr="172.16.137.189";
+ip_addr="172.16.0.5";
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -280,13 +280,14 @@ namespace Functions
             try
             {
 #if DEBUG 
-//ip_addr="172.16.137.189";
+ip_addr="172.16.0.5";
 #endif
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 255 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     string MIDValue="";
+                    string imeiValue="";
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 257 - "+ ip_addr+ ", già presente nel db");
 
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
@@ -305,52 +306,53 @@ namespace Functions
                         MachineTraceToAdd.telemetria_status = 2;
 
                         string[] splitTrData= transferred_data.Split(",");
-                        if (m.sim_serial==null |  m.sim_serial=="0" |  m.sim_serial=="")
+
+                        if (transferred_data.StartsWith("<TPK=W5")) 
                         {
-                           Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 279 "); 
-                            string SerialSIM="";
-                            //M1 campo 30
-                            if (transferred_data.StartsWith("<TPK=$M1")) 
-                            {
-                                SerialSIM=splitTrData[30];
-                                MIDValue=splitTrData[1];
-                            }
-                            //W5 campo 31
-                            if (transferred_data.StartsWith("<TPK=W5")) 
-                            {
-                                SerialSIM=splitTrData[31];
-                                MIDValue=splitTrData[4];
-                            }
-                            //M3 I2 I1 campo 37
-                            if (transferred_data.StartsWith("<TPK=$M3"))
-                            {
-                                SerialSIM=splitTrData[37];
-                                MIDValue=splitTrData[1];
-                            }
-
-
-                            if (transferred_data.StartsWith("<TPK=$I2")) 
-                            { 
-                                if (splitTrData[43]!="")SerialSIM=splitTrData[43];
-                                MIDValue=splitTrData[1];
-                            }
-                            if (transferred_data.StartsWith("<TPK=$I1")) 
-                            { 
-                                if (splitTrData[43]!="")SerialSIM=splitTrData[43];
-                                MIDValue=splitTrData[1];
-                            }
-                            //M5 campo 45
-                            if (transferred_data.StartsWith("<TPK=$M5"))
-                            {   
-                                SerialSIM=splitTrData[45];
-                                MIDValue=splitTrData[1];
-                            }
-
-                            if (m.sim_serial!=SerialSIM)
-                            {
-                                m.sim_serial=SerialSIM;
-                            }
+                            MIDValue=splitTrData[4];
                         }
+                        else
+                        {
+                            MIDValue=splitTrData[1];
+                        }
+                        
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 279 "); 
+                        string SerialSIM="";
+                        
+                        if (transferred_data.StartsWith("<TPK=$M1")) 
+                        {
+                            SerialSIM=splitTrData[30];
+                            imeiValue=splitTrData[31];
+                        }
+                        if (transferred_data.StartsWith("<TPK=W5")) 
+                        { 
+                            SerialSIM=splitTrData[31];
+                            imeiValue=splitTrData[32];
+                        }
+
+                        if (transferred_data.StartsWith("<TPK=$M3"))
+                        {
+                            SerialSIM=splitTrData[37];
+                            imeiValue=splitTrData[38];
+                        }
+                        if (transferred_data.StartsWith("<TPK=$I2") | transferred_data.StartsWith("<TPK=$I1"))
+                        {
+                            if (splitTrData[43]!="")SerialSIM=splitTrData[43];
+                            if (splitTrData[44]!="")imeiValue=splitTrData[44];
+                        }   
+                            
+                        //M5 campo 45
+                        if (transferred_data.StartsWith("<TPK=$M5"))
+                        {
+                            SerialSIM=splitTrData[45];
+                            imeiValue=splitTrData[46];
+                        }
+
+                        if (m.sim_serial!=SerialSIM)
+                        {
+                            m.sim_serial=SerialSIM;
+                        }
+                    
                         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 300 "); 
                         
                     }
@@ -382,6 +384,12 @@ namespace Functions
                                     m.Mid=MIDValue;
                                     DatabaseClearTable.DeleteMachine(m_exist.Id.ToString(),m.Id.ToString());
                                 }
+                            }
+                            else
+                            {
+                                m.Mid=MIDValue;
+                                m.Imei=Convert.ToInt64(imeiValue);
+                                m.MarkedBroken=false;
                             }
                         }
 
