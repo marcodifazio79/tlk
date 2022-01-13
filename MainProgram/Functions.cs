@@ -66,98 +66,188 @@ namespace Functions
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
-                    Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del nuovo modem
-                    if( DB.Machines.Any( y=> y.Mid == mid ) )//se il MID è gia presente nel db...
+                    Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del  modem in base all'ip
+//nuovo################################################################
+                    if(newModemPacket.Mid==mid && newModemPacket.Imei==Convert.ToInt64(imei)) // se modem e CE sono gia associati all'ip
                     {
-                        Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-                       // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
-                        if(MachineToUpdate.Version != version)
-                            MachineToUpdate.Version = version; 
-                        if(MachineToUpdate.Imei!= Convert.ToInt64(imei))
-                            MachineToUpdate.Imei =  Convert.ToInt64(imei);
-                        if(MachineToUpdate != newModemPacket ) 
-                        {
-                            if(MachineToUpdate.MarkedBroken)
-                            {
-                                MachineToUpdate.MarkedBroken = false;
-                                MachineToUpdate.IpAddress = ip_addr;
-                                MachineToUpdate.Imei =  Convert.ToInt64(imei);
-                                MachineToUpdate.Mid = mid;
-                                MachineToUpdate.IsOnline = true;
-                                //MachineToUpdate.Version = version; lo aggiorno sopra
-                                MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-
-                                // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
-                                // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
-                                DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
-                            }
-                            // else
-                            // {
-                                //  MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                                //  MachineToUpdate.MarkedBroken=true;
-                            //}
-                        }
+                        //if(newModemPacket.Version != version)
+                        newModemPacket.Version = version; 
+                        newModemPacket.IsOnline = true;
+                        newModemPacket.MarkedBroken=false;
+                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
-                    else
+                    else if (newModemPacket.Mid!=mid)// se il modem e CE non  è già associato all'ip
                     {
-                        if( DB.Machines.Any( y=> y.Mid == mid ) )//se il MID è gia presente nel db...
+                        if (newModemPacket.Mid.StartsWith("Recupero")) //se il mid sul DB associato  all'ip inizia con Recupero  
                         {
-                            Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
-
-                            if(MachineToUpdate.Version != version)
-                                MachineToUpdate.Version = version; 
-                            
-                            if (version=="105" | version=="106")// se è una instagramm aggiorno solo ip, imei e status
-                            {
-                                MachineToUpdate.IpAddress = ip_addr;
-                                if(!imei.StartsWith("202")) MachineToUpdate.Imei =  Convert.ToInt64(imei);
-                                MachineToUpdate.IsOnline = true;
-                                if(MachineToUpdate.MarkedBroken)
-                                { 
-                                    DatabaseClearTable.DeleteMachine(MachineToUpdate.Id.ToString(),newModemPacket.Id.ToString());// se il modem e broke  mantengo l'id dell'ultimo modem installato aggiorno le tablelle del db con questo id e cancello dal db il modem con l'id markedbroken
-                                }else{
-                                    DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());// il modem non è broken mantengo l'id del vecchio modem aggiorno le tablelle del db col vecchio id e cancello dal db il modem con l'id appena arrivato
-                                }
-                                
-                            }
-                            else
-                            {
-                                if(MachineToUpdate.MarkedBroken)  // mantengo l'id dell'ultimo modem installato aggiorno le tablelle del db con questo id e cancello dal db il modem con l'id markedbroken
+                            //verifico che il MID che si è presentato è gia presente nel db.. 
+                            if( DB.Machines.Any( y=> y.Mid == mid ) )                            {
+                                if (DB.Machines.Any( y=> y.MarkedBroken==true ))//verifico che il modem è segnalato come da sostituire...
                                 {
-                                    newModemPacket.MarkedBroken = false;
-                                    newModemPacket.IpAddress = ip_addr;
-                                    newModemPacket.Imei =  Convert.ToInt64(imei);
-                                    newModemPacket.IsOnline = true;
-                                    newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                    Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );// carico i dati del modem da sostituire
+                                    //if(MachineToUpdate.Version != version)
+                                    MachineToUpdate.Version = version; 
+                                    MachineToUpdate.IpAddress=ip_addr;
+                                    //MachineToUpdate.Mid=mid; 
+                                    MachineToUpdate.Imei=Convert.ToInt64(imei);
+                                    MachineToUpdate.IsOnline = true;
+                                    MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                    MachineToUpdate.MarkedBroken=false;
                                     // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
                                     // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
-                                    DatabaseClearTable.DeleteMachine(MachineToUpdate.Id.ToString(),newModemPacket.Id.ToString());
+                                    ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString()); 
                                 }
-                                else
-                                 {
-                                     newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
-                                     //MachineToUpdate.MarkedBroken=true;
-                                }
-                            }                       
+                            }
+                            else 
+                            {
+                                //il MID che si è presentato non esiste sul db.
+                                // a questo punto è un modem nuovo e devo aggiornare i dati mdi,imei,version
+                                
+                                newModemPacket.Version = version; 
+                                newModemPacket.Mid=mid;
+                                newModemPacket.Imei=Convert.ToInt64(imei);
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.MarkedBroken=false;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+
+                            }
                         }
                         else
                         {
-                            newModemPacket.Imei =  Convert.ToInt64(imei);
-                            newModemPacket.Mid = mid;
-                            newModemPacket.IsOnline = true;
-                            newModemPacket.Version = version;
-                            newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                            newModemPacket.MarkedBroken=false;
-                        }   
- 
+                            Machines ModemAlreadyPresentPacket = DB.Machines.First( y=> y.Mid == mid);// seleziono i dati del modem gia installato   in base al mid
+                          
+                              if (ModemAlreadyPresentPacket.Version=="105" | ModemAlreadyPresentPacket.Version=="106")// se il mid del modem gia installato è di una Istagramm.....
+                              {
+                                    ModemAlreadyPresentPacket.Version = version;
+                                    ModemAlreadyPresentPacket.IpAddress=ip_addr;
+                                        
+                                    ModemAlreadyPresentPacket.IsOnline = true;
+                                    ModemAlreadyPresentPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                    ModemAlreadyPresentPacket.MarkedBroken=false;
+                                    // rimuovo il modem che si era presentato come nuovo, ma che in realtà ha solo cambiato IP 
+                                    ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),ModemAlreadyPresentPacket.Id.ToString()); 
+                              }
+                              else
+                              {
+                                   if (ModemAlreadyPresentPacket.Imei==Convert.ToInt64(imei)) //in questo caso anche l'imei che si presenta è uguale a quella registata sul db 
+                                   {
+                                        ModemAlreadyPresentPacket.Version = version;
+                                        ModemAlreadyPresentPacket.IpAddress=ip_addr;
+                                    
+                                        ModemAlreadyPresentPacket.IsOnline = true;
+                                        ModemAlreadyPresentPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                        ModemAlreadyPresentPacket.MarkedBroken=false;
+                                        // rimuovo il modem che si era presentato come nuovo, ma che in realtà ha solo cambiato IP 
+                                        ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),ModemAlreadyPresentPacket.Id.ToString()); 
+                                   }
+                                   else
+                                   {
+                                       newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                    //  MachineToUpdate.MarkedBroken=true;
+                                   }
+
+                              }
+                          
+                            
+                        }
                     }
                 }
-                else
-                {
-                    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: questo caso dovrebbe essere impossibile ");
-                   // se sono qui si è collegato un modem con un IP  non presente nella table Machines
+//fine nuovo################################################################
+
+//              old   ////////////////////////////////////////////////////
+//#########################################################################
+                //     if( DB.Machines.Any( y=> y.Mid == mid ) )//se il MID è gia presente nel db...
+                //     {
+                //         Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+                //        // indipendentemente dal resto, se la versione cambia (Es. eseguito update) devo aggiornare la versione
+                //         if(MachineToUpdate.Version != version)
+                //             MachineToUpdate.Version = version; 
+                //         if(MachineToUpdate.Imei!= Convert.ToInt64(imei))
+                //             MachineToUpdate.Imei =  Convert.ToInt64(imei);
+                //         if(MachineToUpdate != newModemPacket ) 
+                //         {
+                //             if(MachineToUpdate.MarkedBroken)
+                //             {
+                //                 MachineToUpdate.MarkedBroken = false;
+                //                 MachineToUpdate.IpAddress = ip_addr;
+                //                 MachineToUpdate.Imei =  Convert.ToInt64(imei);
+                //                 MachineToUpdate.Mid = mid;
+                //                 MachineToUpdate.IsOnline = true;
+                //                 //MachineToUpdate.Version = version; lo aggiorno sopra
+                //                 MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+
+                //                 // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
+                //                 // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
+                //                 DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());
+                //             }
+                //             // else
+                //             // {
+                //                 //  MachineToUpdate.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                //                 //  MachineToUpdate.MarkedBroken=true;
+                //             //}
+                //         }
+                //     }
+                //     else
+                //     {
+                //         if( DB.Machines.Any( y=> y.Mid == mid ) )//se il MID è gia presente nel db...
+                //         {
+                //             Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );
+
+                //             if(MachineToUpdate.Version != version)
+                //                 MachineToUpdate.Version = version; 
+                            
+                //             if (version=="105" | version=="106")// se è una instagramm aggiorno solo ip, imei e status
+                //             {
+                //                 MachineToUpdate.IpAddress = ip_addr;
+                //                 if(!imei.StartsWith("202")) MachineToUpdate.Imei =  Convert.ToInt64(imei);
+                //                 MachineToUpdate.IsOnline = true;
+                //                 if(MachineToUpdate.MarkedBroken)
+                //                 { 
+                //                     DatabaseClearTable.DeleteMachine(MachineToUpdate.Id.ToString(),newModemPacket.Id.ToString());// se il modem e broke  mantengo l'id dell'ultimo modem installato aggiorno le tablelle del db con questo id e cancello dal db il modem con l'id markedbroken
+                //                 }else{
+                //                     DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString());// il modem non è broken mantengo l'id del vecchio modem aggiorno le tablelle del db col vecchio id e cancello dal db il modem con l'id appena arrivato
+                //                 }
+                //             }
+                //             else
+                //             {
+                //                 if(MachineToUpdate.MarkedBroken)  // mantengo l'id dell'ultimo modem installato aggiorno le tablelle del db con questo id e cancello dal db il modem con l'id markedbroken
+                //                 {
+                //                     newModemPacket.MarkedBroken = false;
+                //                     newModemPacket.IpAddress = ip_addr;
+                //                     newModemPacket.Imei =  Convert.ToInt64(imei);
+                //                     newModemPacket.IsOnline = true;
+                //                     newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                //                     // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
+                //                     // "sostituto" (perché ha lo stesso mid di un modem "MarkedBroken")
+                //                     DatabaseClearTable.DeleteMachine(MachineToUpdate.Id.ToString(),newModemPacket.Id.ToString());
+                //                 }
+                //                 else
+                //                  {
+                //                      newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                //                      //MachineToUpdate.MarkedBroken=true;
+                //                 }
+                //             }                       
+                //         }
+                //         else
+                //         {
+                //             newModemPacket.Imei =  Convert.ToInt64(imei);
+                //             newModemPacket.Mid = mid;
+                //             newModemPacket.IsOnline = true;
+                //             newModemPacket.Version = version;
+                //             newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                //             newModemPacket.MarkedBroken=false;
+                //         }   
+ 
+                //     }
+                // }
+                // else
+                // {
+                //     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " updateModemTableEntry: questo caso dovrebbe essere impossibile ");
+                //    // se sono qui si è collegato un modem con un IP  non presente nella table Machines
                 
-                }     
+                // }     
+//          fine old   ////////////////////////////////////////////////////
+//#########################################################################
 
                 DB.SaveChanges();
                
@@ -394,27 +484,27 @@ namespace Functions
                         }
 
                     }    
-                    if (m.Mid.StartsWith("Recupero"))
-                    {
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 306 "); 
-                        string[] cleanTData = transferred_data.Split('^');
-                        string[] splitTData = cleanTData[0].Split('>');
-                        if (transferred_data.Contains("<MID"))
-                        {
-                            if (transferred_data.Contains("<TYP=2>"))
-                            {
-                                m.Mid= splitTData[0].Replace("<MID=","") ;
-                                m.Version=splitTData[1].Replace("<VER=","") ;
-                            }
-                            else
-                            {
-                                string[] tmsplit=splitTData[0].Split('-');
-                                m.Mid= tmsplit[0].Replace("<MID=","") ;
-                                m.Version=splitTData[1].Replace("<VER=","") ;
-                            }
-                        }
-                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 321 "); 
-                    }
+                    // if (m.Mid.StartsWith("Recupero"))
+                    // {
+                    //     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 306 "); 
+                    //     string[] cleanTData = transferred_data.Split('^');
+                    //     string[] splitTData = cleanTData[0].Split('>');
+                    //     if (transferred_data.Contains("<MID"))
+                    //     {
+                    //         if (transferred_data.Contains("<TYP=2>"))
+                    //         {
+                    //             m.Mid= splitTData[0].Replace("<MID=","") ;
+                    //             m.Version=splitTData[1].Replace("<VER=","") ;
+                    //         }
+                    //         else
+                    //         {
+                    //             string[] tmsplit=splitTData[0].Split('-');
+                    //             m.Mid= tmsplit[0].Replace("<MID=","") ;
+                    //             m.Version=splitTData[1].Replace("<VER=","") ;
+                    //         }
+                    //     }
+                    //     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 321 "); 
+                    // }
                     DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 324 "); 
                     // I need the MachineTraceToAdd ID which is generated by the db, i have to call  SaveChanges() to have it.
@@ -451,27 +541,27 @@ namespace Functions
 
                         // se arriva una istagramm con questa stringa <MID=00022139><VER=105><TYP=2> 
 
-                        if (transferred_data.Contains("TYP=2"))
-                        {
-                            string[] cleanTData = transferred_data.Split('^');
-                            string[] splitTData = cleanTData[0].Split('>');
+                        // if (transferred_data.Contains("TYP=2"))
+                        // {
+                        //     string[] cleanTData = transferred_data.Split('^');
+                        //     string[] splitTData = cleanTData[0].Split('>');
                             
-                            string InstMid = splitTData[0].Replace("<MID=","") ;
-                            Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: Provo ad inserire una instagramm");
-                            if (UpdateInstagrammIntoMachinesTable(ip_addr,InstMid))
-                            {
-                                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
-                            }
-                            else
-                            {
-                                insertIntoMachinesTable(ip_addr);
-                            }
-                        }
-                        else
-                        {
-                            insertIntoMachinesTable(ip_addr);
-                        }
-                        //insertIntoMachinesTable(ip_addr);
+                        //     string InstMid = splitTData[0].Replace("<MID=","") ;
+                        //     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: Provo ad inserire una instagramm");
+                        //     if (UpdateInstagrammIntoMachinesTable(ip_addr,InstMid))
+                        //     {
+                        //         Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  insertIntoMachinesConnectionTrace: inserita nuova instagramm");
+                        //     }
+                        //     else
+                        //     {
+                        //         insertIntoMachinesTable(ip_addr);
+                        //     }
+                        // }
+                        // else
+                        // {
+                        //     insertIntoMachinesTable(ip_addr);
+                        // }
+                        insertIntoMachinesTable(ip_addr);
                         //at this point i can just call me again to pupolate ModemConnectionTrace
                         insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
                     }

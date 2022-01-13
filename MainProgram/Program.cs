@@ -46,8 +46,8 @@ public class AsynchronousSocketListener {
         //Establish the local endpoint for the socket.  
         #if DEBUG
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //ipHostInfo.AddressList[0];
-            
+            IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //ipHostInfo.AddressList[0];
+            //IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //ipHostInfo.AddressList[0];
             //IPAddress ipAddress = IPAddress.Parse("192.168.117.127"); //ipHostInfo.AddressList[0];
         #else
             IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
@@ -142,7 +142,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
 #if DEBUG 
-ip_as_string="172.16.0.5";
+//ip_as_string="172.16.0.5";
 #endif
 
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
@@ -326,24 +326,21 @@ ip_as_string="172.16.0.5";
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                     //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
-                    
-                    if(content.Contains("<MID"))
+
+                    if(content.Contains("<TYP=2"))
                     {
-                        if(content.Contains("<TYP=2"))
-                        {
-                            //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem di una instagramm,
-                            //nell forma     <MID=1234567890><VER=105><TYP=2>
-                            string[] contentSplit= content.Split('>');
-                            string fakeImei= DateTime.Now.ToString("yyyyMMddHHmmssf");
-                            content=contentSplit[0]+"-" + fakeImei+">"+contentSplit[1]+">";
-                            Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
-                        }
-                        else
-                        {
-                        //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
-                        //nell forma     <MID=1234567890-865291049819286><VER=110>
-                            Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
-                        }
+                        //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem di una instagramm,
+                        //nell forma     <MID=1234567890><VER=105><TYP=2>
+                        string[] contentSplit= content.Split('>');
+                        string fakeImei= DateTime.Now.ToString("yyyyMMddHHmmssf");
+                        content=contentSplit[0]+"-" + fakeImei+">"+contentSplit[1]+">";
+                        Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
+                    }
+                    else
+                    {
+                    //a questo punto mi aspetto che questo sia il primo pacchetto che ricevo dal modem,
+                    //nell forma     <MID=1234567890-865291049819286><VER=110>
+                        Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
                     }
 
                     if(content.Contains("<VER=500>")) // variante per modem del cazzo che non vuole una risposta
