@@ -359,7 +359,7 @@ ip_addr="172.16.140.154";
                     // se l'ip è del server aggiungo i dati in MCT
                    
                     
-                    if (ip_addr.StartsWith("10.10")| ip_addr=="192.168.209.188")
+                    if (ip_addr.StartsWith("10.10")| ip_addr=="192.168.209.188" )//|  ip_addr=="127.0.0.1" )
                     {
                         MachineTraceToAdd = new MachinesConnectionTrace 
                         {
