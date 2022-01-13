@@ -62,7 +62,7 @@ namespace Functions
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
-//ip_addr="172.16.135.65";
+ip_addr="172.16.140.154";
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
@@ -78,7 +78,7 @@ namespace Functions
                     }
                     else if (newModemPacket.Mid!=mid)// se il modem e CE non  è già associato all'ip
                     {
-                        if (newModemPacket.Mid.StartsWith("Recupero")) //se il mid sul DB associato  all'ip inizia con Recupero  
+                        if (newModemPacket.Mid.StartsWith("Recupero") |newModemPacket.Mid.StartsWith("Duplicato") ) //se il mid sul DB associato  all'ip inizia con Recupero  
                         {
                             //verifico che il MID che si è presentato è gia presente nel db.. 
                             if( DB.Machines.Any( y=> y.Mid == mid ) )                            {
@@ -201,7 +201,7 @@ namespace Functions
             try
             {   
 #if DEBUG 
-//ip_addr="172.16.135.65";
+ip_addr="172.16.140.154";
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -261,7 +261,7 @@ namespace Functions
             try
             {
 #if DEBUG 
-//ip_addr="172.16.135.65";
+ip_addr="172.16.140.154";
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
