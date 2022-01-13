@@ -261,6 +261,7 @@ namespace Functions
                   //  Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 256 - "+ ip_addr+ ", già presente nel db");
 
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
+              
                     MachineTraceToAdd = new MachinesConnectionTrace 
                     {
                         IpAddress = m.IpAddress,
