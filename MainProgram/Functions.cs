@@ -62,7 +62,7 @@ namespace Functions
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
-ip_addr="172.16.140.154";
+//ip_addr="176.246.57.62";
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
@@ -99,9 +99,19 @@ ip_addr="172.16.140.154";
                                 }
                                 else
                                 {
-                                    if (newModemPacket.Version!="105" && newModemPacket.Version!="106")
+                                    if (version=="105" | version=="106")
                                     {
-                                        newModemPacket.Mid = "Duplicato! "+ newModemPacket.Imei.ToString();
+                                        Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );// carico i dati del modem da sostituire
+                                        MachineToUpdate.Version = version; 
+                                        MachineToUpdate.IpAddress=ip_addr;
+                                        //MachineToUpdate.Mid=mid; 
+                                        if( MachineToUpdate.Imei.ToString().StartsWith("20")) MachineToUpdate.Imei=Convert.ToInt64(imei);
+                                        MachineToUpdate.IsOnline = true;
+                                        MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                        MachineToUpdate.MarkedBroken=false;
+                                        // rimuovo il modem che si era presentato come nuovo, ma che in realtà era un 
+                                       
+                                        ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString()); 
                                     }
                                     else
                                     {
@@ -201,7 +211,7 @@ ip_addr="172.16.140.154";
             try
             {   
 #if DEBUG 
-ip_addr="172.16.140.154";
+//ip_addr="176.246.57.62";
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -261,7 +271,7 @@ ip_addr="172.16.140.154";
             try
             {
 #if DEBUG 
-ip_addr="172.16.140.154";
+//ip_addr="176.246.57.62";
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
