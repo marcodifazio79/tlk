@@ -41,19 +41,20 @@ namespace Functions
             {
                 string mid = s.Substring(s.IndexOf("=")+1);
                 mid =mid.Substring(0,mid.IndexOf("-"));
-                if (mid=="77770001")
-                {
-                    //.Where(s=>s.TransferredData.Contains(ce))
-                    //
-                    int count_rows= DB.Machines.Select(s=>s.IpAddress!=null ).Count();
-                    {
-                        mid="77770001_"+count_rows.ToString();
-                    }
-                }
-
-                string imei = s.Substring(s.IndexOf("-")+1
-                );
+                string imei = s.Substring(s.IndexOf("-")+1);
                 imei =imei.Substring(0,imei.IndexOf(">"));
+
+                if (mid=="77770001")mid="77770001_"+imei.ToString();
+                // {
+                //     //.Where(s=>s.TransferredData.Contains(ce))
+                //     //
+                //     int count_rows= DB.Machines.Select(s=>s.IpAddress!=null ).Count();
+                //     {
+                //         mid="77770001_"+imei.ToString();
+                //     }
+                // }
+
+               
                 
                 string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
@@ -62,7 +63,7 @@ namespace Functions
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
-ip_addr="172.16.64.20";
+ip_addr="172.16.142.47";
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
@@ -124,7 +125,13 @@ ip_addr="172.16.64.20";
                                 }
                                 else
                                 {
-                                    newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
+                                    newModemPacket.Version = version;
+                                    newModemPacket.IpAddress=ip_addr;
+                             
+                                    newModemPacket.IsOnline = true;
+                                    newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                    newModemPacket.MarkedBroken=false;
+                                    newModemPacket.Mid = "Duplicato! "+ imei;
                                 }
                             }
                             else
@@ -171,15 +178,22 @@ ip_addr="172.16.64.20";
                                 }
                                 else
                                 {
-                                    if (newModemPacket.Version!="105" && newModemPacket.Version!="106")
-                                    {
-                                        newModemPacket.Mid = "Duplicato! "+ newModemPacket.Imei.ToString();
-                                    }
-                                    else
+
+                                    if (imei=="" | imei.StartsWith("20")) 
                                     {
                                         newModemPacket.Mid = "Duplicato! "+ DateTime.Now.ToString("yyMMddHHmmssfff");
                                     }
-                                //  MachineToUpdate.MarkedBroken=true;
+                                    else
+                                    {
+                                        newModemPacket.Mid = "Duplicato! "+ imei;
+                                    }
+                                                                    newModemPacket.Version = version; 
+                                    newModemPacket.Mid=mid;
+                                    newModemPacket.Imei=Convert.ToInt64(imei);
+                                    newModemPacket.IsOnline = true;
+                                    newModemPacket.MarkedBroken=false;
+                                   
+                             
                                 }
 
                             }
@@ -219,7 +233,7 @@ ip_addr="172.16.64.20";
             try
             {   
 #if DEBUG 
-ip_addr="172.16.64.20";
+//ip_addr="172.16.142.47";
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -279,7 +293,7 @@ ip_addr="172.16.64.20";
             try
             {
 #if DEBUG 
-ip_addr="172.16.64.20";
+ip_addr="172.16.142.47";
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
