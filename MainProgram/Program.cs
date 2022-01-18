@@ -46,8 +46,9 @@ public class AsynchronousSocketListener {
         //Establish the local endpoint for the socket.  
         #if DEBUG
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = IPAddress.Parse("192.168.1.56"); //portatile 
+            //IPAddress ipAddress = IPAddress.Parse("192.168.1.56"); //portatile 
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //portatile
+            IPAddress ipAddress = IPAddress.Parse("192.168.43.213");
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //fisso lavoro
             //IPAddress ipAddress = IPAddress.Parse("192.168.117.127"); //ipHostInfo.AddressList[0];
         #else
