@@ -57,7 +57,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-//ip_addr="172.16.0.15";
+ip_addr="172.16.169.149";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -73,6 +73,16 @@ namespace Functions
                         newModemPacket.MarkedBroken=false;
                         newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
+                   else if(newModemPacket.Mid!=mid && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
+                    {
+                        //if(newModemPacket.Version != version)
+                        newModemPacket.Mid=mid; 
+                        newModemPacket.Version = version; 
+                        newModemPacket.IsOnline = true;
+                        newModemPacket.MarkedBroken=false;
+                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    }
+
                     else if (newModemPacket.Mid!=mid)// se il modem e CE non  è già associato all'ip
                     {
                         if (newModemPacket.Mid.StartsWith("Recupero") |newModemPacket.Mid.StartsWith("Duplicato") ) //se il mid sul DB associato  all'ip inizia con Recupero  
@@ -229,7 +239,7 @@ namespace Functions
             try
             {   
 #if DEBUG 
-////ip_addr="172.16.0.15";
+ip_addr="172.16.169.149";
 #endif
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
@@ -289,7 +299,7 @@ namespace Functions
             try
             {
 #if DEBUG 
-//ip_addr="172.16.0.15";
+ip_addr="172.16.169.149";
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
