@@ -58,7 +58,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-//ip_addr="172.16.169.149";
+//ip_addr="109.112.11.153";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -252,7 +252,7 @@ namespace Functions
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-//ip_addr="172.16.169.149";
+//ip_addr="109.112.11.153";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -304,7 +304,6 @@ namespace Functions
             }
         }
    
-        
        public static void insertIntoMachinesConnectionTrace(string ip_addr, string send_or_recv, string transferred_data)
         {
             listener_DBContext DB = new listener_DBContext ();
@@ -313,7 +312,7 @@ namespace Functions
             try
             {
 #if DEBUG 
-//ip_addr="172.16.169.149";
+//ip_addr="109.112.11.153";
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
@@ -380,13 +379,30 @@ namespace Functions
 
                             if (transferred_data.StartsWith("<TPK=$I2") | transferred_data.StartsWith("<TPK=$I1"))
                             {
-                                if (splitTrData[43]!="")SerialSIM=splitTrData[43];
-                                if (splitTrData[44]!="")imeiValue=splitTrData[44];
+                                if (splitTrData[43]!="")
+                                {
+                                    SerialSIM=splitTrData[43];
+                                }
+                                else
+                                {
+                                    SerialSIM="0";
+                                }       
+                                if (splitTrData[44]!="")
+                                {
+                                    imeiValue=splitTrData[44];
+                                }
+                                else
+                                {
+                                    imeiValue="0";
+                                }
+
                             }   
 
                             if (m.sim_serial!=SerialSIM) m.sim_serial=SerialSIM;
-                            
-                            if (m.Imei!=Convert.ToInt64(imeiValue)) m.Imei=Convert.ToInt64(imeiValue);
+                            if(imeiValue!="0")
+                            {
+                                if (m.Imei!=Convert.ToInt64(imeiValue)) m.Imei=Convert.ToInt64(imeiValue);
+                            }
                         }
                     //    Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 323 "); 
    

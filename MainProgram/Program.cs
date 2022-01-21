@@ -46,7 +46,7 @@ public class AsynchronousSocketListener {
         //Establish the local endpoint for the socket.  
         #if DEBUG
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = IPAddress.Parse("192.168.1.56"); //portatile 
+            IPAddress ipAddress = IPAddress.Parse("192.168.1.100"); //portatile 
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //portatile
             //IPAddress ipAddress = IPAddress.Parse("192.168.43.213");
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //fisso lavoro
@@ -144,7 +144,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
 #if DEBUG 
-ip_as_string="172.16.169.149";
+//ip_as_string="109.112.11.153";
 #endif
 
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
@@ -326,7 +326,6 @@ ip_as_string="172.16.169.149";
                 if (content.IndexOf("<VER=") > -1  /*&& !content.EndsWith("^") */  ) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
-                    //Functions.DatabaseFunctions.insertIntoDB(IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ()) + " send "+ content.Length.ToString() + " bytes, data : " + content);
                     Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
 
                     if(content.Contains("<TYP=2"))
