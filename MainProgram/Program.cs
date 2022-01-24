@@ -144,7 +144,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
 #if DEBUG 
-//ip_as_string="109.112.11.153";
+ip_as_string="172.16.176.166";
 #endif
 
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
@@ -323,6 +323,7 @@ public class AsynchronousSocketListener {
                     await Task.Run(() => Send (handler, "#PWD123456#,"+"WDR"));
                     return;
                 }
+                //if (content.StartsWith("<MID=TCC"))return;
                 if (content.IndexOf("<VER=") > -1  /*&& !content.EndsWith("^") */  ) 
                 {
                     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + " : Read {0} bytes from socket. Data : {1}",content.Length, content);

@@ -47,6 +47,7 @@ namespace Functions
 
                 if (mid=="77770001")mid="77770001_"+imei.ToString();
                 if (mid.StartsWith("5555555"))mid=mid+"_"+imei.ToString();
+                if (mid==("TCC"))mid=mid+"_"+imei.ToString();
                                
                      
                 
@@ -58,42 +59,127 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-//ip_addr="109.112.11.153";
+ip_addr="172.16.176.166";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
                 if( DB.Machines.Any( y=> y.IpAddress == ip_addr ) ) //se l'ip è gia presente nel db...
                 {
                     Machines newModemPacket = DB.Machines.First( y=> y.IpAddress == ip_addr);// seleziono i dati del  modem in base all'ip
-
-                    if(newModemPacket.Mid==mid && newModemPacket.Imei==Convert.ToInt64(imei)) // se modem e CE sono gia associati all'ip
+                    
+                    if(newModemPacket.Mid==mid && newModemPacket.Imei==Convert.ToInt64(imei)) // se modem e CE sono gia associati all'ip 
                     {
-                        //if(newModemPacket.Version != version)
+                        //DEVO AGGIORNARE SOLO LA VERSIONE perche potrebbe essere diversa
                         newModemPacket.Version = version; 
                         newModemPacket.IsOnline = true;
                         newModemPacket.MarkedBroken=false;
                         newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
-                    else if(newModemPacket.Mid.StartsWith("77770001_") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
+                    else if(newModemPacket.Mid.StartsWith("77770001_") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso  e imei gia associato all'ip
                     {
-                        //if(newModemPacket.Version != version)
-                        newModemPacket.Mid=mid; 
-                        newModemPacket.Version = version; 
-                        newModemPacket.IsOnline = true;
-                        newModemPacket.MarkedBroken=false;
-                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        if(DB.Machines.Any( y=> y.Mid == mid )) // verifico se il mid impostato per sostituire 77770001_xx è già presente nella tabella Machines
+                        {
+                            Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid); 
+                            if (MachineToUpdate.MarkedBroken) //se il mid impostato per sostituire 77770001_xx è già presente sul DB e lo status è broken 
+                            {                                 //aggiorno i parametri del vecchio modem e cancello il record del nuovo 
+                                MachineToUpdate.Mid=mid; 
+                                MachineToUpdate.Version = version; 
+                                MachineToUpdate.IpAddress=ip_addr;
+                                MachineToUpdate.Imei=Convert.ToInt64(imei);
+                                MachineToUpdate.IsOnline = true;
+                                MachineToUpdate.MarkedBroken=false;
+                                MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString()); 
+                            }
+                            else//se il mid impostato per sostituire 77770001_xx è già presente sul DB e lo status NON è broken 
+                            {                                 //imposto il nuovo modem come duplicato 
+                                newModemPacket.Version = version;
+                                newModemPacket.IpAddress=ip_addr;
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                newModemPacket.MarkedBroken=false;
+                                newModemPacket.Mid = "Duplicato! "+ imei;
+                            }
+                        }
+                        else//se il mid impostato per sostituire 77770001_xx NON è già presente sul DB è un CE nuovo e quindi
+                            {                                 //aggiorno i parametri del modem MID & VERSION
+                                newModemPacket.Mid=mid; 
+                                newModemPacket.Version = version; 
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.MarkedBroken=false;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        }
                     }
                     else if(newModemPacket.Mid.StartsWith("5555555") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
                     {
-                        //if(newModemPacket.Version != version)
-                        newModemPacket.Mid=mid; 
-                        newModemPacket.Version = version; 
-                        newModemPacket.IsOnline = true;
-                        newModemPacket.MarkedBroken=false;
-                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        if(DB.Machines.Any( y=> y.Mid == mid )) // verifico se il mid impostato per sostituire 5555555 è già presente nella tabella Machines
+                        {
+                            Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid); 
+                            if (MachineToUpdate.MarkedBroken) //se il mid impostato per sostituire 55555555 è già presente sul DB e lo status è broken 
+                            {                                 //aggiorno i parametri del vecchio modem e cancello il record del nuovo 
+                                MachineToUpdate.Mid=mid; 
+                                MachineToUpdate.Version = version; 
+                                MachineToUpdate.IpAddress=ip_addr;
+                                MachineToUpdate.Imei=Convert.ToInt64(imei);
+                                MachineToUpdate.IsOnline = true;
+                                MachineToUpdate.MarkedBroken=false;
+                                MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString()); 
+                            }
+                            else//se il mid impostato per sostituire 5555555 è già presente sul DB e lo status NON è broken 
+                            {                                 //imposto il nuovo modem come duplicato 
+                                newModemPacket.Version = version;
+                                newModemPacket.IpAddress=ip_addr;
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                newModemPacket.MarkedBroken=false;
+                                newModemPacket.Mid = "Duplicato! "+ imei;
+                            }
+                        }
+                        else//se il mid impostato per sostituire 5555555 NON è già presente sul DB è un CE nuovo e quindi
+                            {                                 //aggiorno i parametri del modem MID & VERSION
+                                newModemPacket.Mid=mid; 
+                                newModemPacket.Version = version; 
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.MarkedBroken=false;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        }
                     }
-
-
+                    else if(newModemPacket.Mid.StartsWith("TCC") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
+                    {
+                        if(DB.Machines.Any( y=> y.Mid == mid )) // verifico se il mid impostato per sostituire TCC_xx è già presente nella tabella Machines
+                        {
+                            Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid); 
+                            if (MachineToUpdate.MarkedBroken) //se il mid impostato per sostituire TCC_xx è già presente sul DB e lo status è broken 
+                            {                                 //aggiorno i parametri del vecchio modem e cancello il record del nuovo 
+                                MachineToUpdate.Mid=mid; 
+                                MachineToUpdate.Version = version; 
+                                MachineToUpdate.IpAddress=ip_addr;
+                                MachineToUpdate.Imei=Convert.ToInt64(imei);
+                                MachineToUpdate.IsOnline = true;
+                                MachineToUpdate.MarkedBroken=false;
+                                MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString()); 
+                            }
+                            else//se il mid impostato per sostituire TCC_xx è già presente sul DB e lo status NON è broken 
+                            {                                 //imposto il nuovo modem come duplicato 
+                                newModemPacket.Version = version;
+                                newModemPacket.IpAddress=ip_addr;
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                                newModemPacket.MarkedBroken=false;
+                                newModemPacket.Mid = "Duplicato! "+ imei;
+                            }
+                        }
+                        else//se il mid impostato per sostituire TCC_xx NON è già presente sul DB è un CE nuovo e quindi
+                            {                                 //aggiorno i parametri del modem MID & VERSION
+                                newModemPacket.Mid=mid; 
+                                newModemPacket.Version = version; 
+                                newModemPacket.IsOnline = true;
+                                newModemPacket.MarkedBroken=false;
+                                newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        }
+                    }
                     else if (newModemPacket.Mid!=mid)// se il modem e CE non  è già associato all'ip
                     {
                         if (newModemPacket.Mid.StartsWith("Recupero") |newModemPacket.Mid.StartsWith("Duplicato") ) //se il mid sul DB associato  all'ip inizia con Recupero  
@@ -144,7 +230,6 @@ namespace Functions
                                 {
                                     newModemPacket.Version = version;
                                     newModemPacket.IpAddress=ip_addr;
-                             
                                     newModemPacket.IsOnline = true;
                                     newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                                     newModemPacket.MarkedBroken=false;
@@ -252,7 +337,7 @@ namespace Functions
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-//ip_addr="109.112.11.153";
+ip_addr="172.16.176.166";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -312,7 +397,7 @@ namespace Functions
             try
             {
 #if DEBUG 
-//ip_addr="109.112.11.153";
+ip_addr="172.16.176.166";
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
