@@ -79,11 +79,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-<<<<<<< HEAD
 //ip_addr="172.16.169.149";
-=======
-ip_addr="172.16.176.166";
->>>>>>> c5427f94c3ff956a50bdbc6b7e01aadb47d6db80
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -99,11 +95,7 @@ ip_addr="172.16.176.166";
                         newModemPacket.MarkedBroken=false;
                         newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
-<<<<<<< HEAD
                     else if(newModemPacket.Mid.StartsWith("77770001_") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
-=======
-                    else if(newModemPacket.Mid.StartsWith("77770001_") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso  e imei gia associato all'ip
->>>>>>> c5427f94c3ff956a50bdbc6b7e01aadb47d6db80
                     {
                         if(DB.Machines.Any( y=> y.Mid == mid )) // verifico se il mid impostato per sostituire 77770001_xx è già presente nella tabella Machines
                         {
@@ -208,7 +200,6 @@ ip_addr="172.16.176.166";
                                 newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                         }
                     }
-<<<<<<< HEAD
                     else if(newModemPacket.Mid.StartsWith("5555555") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
                     {
                         //if(newModemPacket.Version != version)
@@ -220,8 +211,6 @@ ip_addr="172.16.176.166";
                     }
 
 
-=======
->>>>>>> c5427f94c3ff956a50bdbc6b7e01aadb47d6db80
                     else if (newModemPacket.Mid!=mid)// se il modem e CE non  è già associato all'ip
                     {
                         if (newModemPacket.Mid.StartsWith("Recupero") |newModemPacket.Mid.StartsWith("Duplicato") ) //se il mid sul DB associato  all'ip inizia con Recupero  
@@ -379,11 +368,7 @@ ip_addr="172.16.176.166";
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-<<<<<<< HEAD
 //ip_addr="172.16.169.149";
-=======
-ip_addr="172.16.176.166";
->>>>>>> c5427f94c3ff956a50bdbc6b7e01aadb47d6db80
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -443,11 +428,7 @@ ip_addr="172.16.176.166";
             try
             {
 #if DEBUG 
-<<<<<<< HEAD
 //ip_addr="172.16.169.149";
-=======
-ip_addr="172.16.176.166";
->>>>>>> c5427f94c3ff956a50bdbc6b7e01aadb47d6db80
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 
