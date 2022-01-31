@@ -13,7 +13,7 @@ namespace Functions.database
         }
 
         public tel_adminContext(DbContextOptions<tel_adminContext> options)
-            : base(options)
+        : base(options)
         {
         }
 
