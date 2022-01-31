@@ -26,9 +26,29 @@ namespace Functions
         {
             return ConfigurationManager.AppSetting["IPSet:IPFree"];
         }
+        public static string GetServerType()
+        {
+            return ConfigurationManager.AppSetting["ServerType:TypeMachine"];
+        }
         public static string GetConnectString()
         {
-            return ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnection"];
+            string infoserver= GetServerType();
+            string strinConn="";
+            switch(infoserver)
+            {
+                case "ITA_PROD":
+                    strinConn= ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnectionITA_PROD"];
+                break;
+                case "ITA_SVI":
+                    strinConn= ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnectionITA_SVI"];
+                break;
+                case "ESP":
+                    strinConn= ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnectionESP"];
+                break;
+
+            }
+            return strinConn;
+
         }
 //
         /// <summary>
@@ -39,6 +59,7 @@ namespace Functions
             listener_DBContext DB = new listener_DBContext (); 
             try
             {
+                if (ip_addr=="127.0.0.1")return;
                 string mid = s.Substring(s.IndexOf("=")+1);
                 mid =mid.Substring(0,mid.IndexOf("-"));
                 string imei = s.Substring(s.IndexOf("-")+1);
@@ -57,7 +78,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-ip_addr="172.16.169.149";
+//ip_addr="172.16.169.149";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -73,7 +94,7 @@ ip_addr="172.16.169.149";
                         newModemPacket.MarkedBroken=false;
                         newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
-                   else if(newModemPacket.Mid!=mid && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
+                    else if(newModemPacket.Mid.StartsWith("77770001_") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
                     {
                         //if(newModemPacket.Version != version)
                         newModemPacket.Mid=mid; 
@@ -82,6 +103,16 @@ ip_addr="172.16.169.149";
                         newModemPacket.MarkedBroken=false;
                         newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     }
+                    else if(newModemPacket.Mid.StartsWith("5555555") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
+                    {
+                        //if(newModemPacket.Version != version)
+                        newModemPacket.Mid=mid; 
+                        newModemPacket.Version = version; 
+                        newModemPacket.IsOnline = true;
+                        newModemPacket.MarkedBroken=false;
+                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    }
+
 
                     else if (newModemPacket.Mid!=mid)// se il modem e CE non  è già associato all'ip
                     {
@@ -235,12 +266,15 @@ ip_addr="172.16.169.149";
        
         public static void insertIntoMachinesTable(string ip_addr)
         {
+            
             listener_DBContext DB = new listener_DBContext ();
             try
             {   
+                 if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-ip_addr="172.16.169.149";
+//ip_addr="172.16.169.149";
 #endif
+
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
@@ -299,7 +333,7 @@ ip_addr="172.16.169.149";
             try
             {
 #if DEBUG 
-ip_addr="172.16.169.149";
+//ip_addr="172.16.169.149";
 #endif
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
 

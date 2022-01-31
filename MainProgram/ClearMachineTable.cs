@@ -25,9 +25,29 @@ namespace ClearMachineTable
         {
             return ConfigurationManager.AppSetting["IPSet:IPFree"];
         }
+        public static string GetServerType()
+        {
+            return ConfigurationManager.AppSetting["ServerType:TypeMachine"];
+        }
         public static string GetConnectString()
         {
-            return ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnection"];
+            string infoserver= GetServerType();
+            string strinConn="";
+            switch(infoserver)
+            {
+                case "ITA_PROD":
+                    strinConn= ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnectionITA_PROD"];
+                break;
+                case "ITA_SVI":
+                    strinConn= ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnectionITA_SVI"];
+                break;
+                case "ESP":
+                    strinConn= ConfigurationManager.AppSetting["ConnectionStrings:DefaultConnectionESP"];
+                break;
+
+            }
+            return strinConn;
+
         }
 
         public static Boolean DeleteMachine(string idtodelete,string idtoupdate)

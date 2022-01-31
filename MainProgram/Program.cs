@@ -607,10 +607,13 @@ ip_as_string="172.16.169.149";
 
             if(  
                 //check if the config file have necessary entries:
-                !string.IsNullOrEmpty(Configuration["LocalAddressForConnections"].ToString())    &
-                !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                    &
-                !string.IsNullOrEmpty(Configuration["Port:Backend"])                             &
-                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnection"])
+                !string.IsNullOrEmpty(Configuration["LocalAddressForConnections"].ToString())      &
+                !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                      &
+                !string.IsNullOrEmpty(Configuration["Port:Backend"])                               &
+                !string.IsNullOrEmpty(Configuration["ServerType:TypeMachine"])                     &
+                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_PROD"])&
+                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_SVI"]) &
+                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionESP"])
             ){
 
             // ...start Listening (for connection), it's hard to comment on this one.

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Custom;
 
 namespace Functions.database
 {
@@ -19,6 +20,10 @@ namespace Functions.database
         public virtual DbSet<SapCashDaemon> SapCashDaemon { get; set; }
         public virtual DbSet<SapCashProducts> SapCashProducts { get; set; }
         public static IConfiguration Configuration;
+        public static string GetServerType()
+        {
+            return ConfigurationManager.AppSetting["ServerType:TypeMachine"];
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             Configuration = new ConfigurationBuilder()
@@ -28,7 +33,20 @@ namespace Functions.database
                 .Build();
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DB_Casse"].ToString());
+                string infoserver= GetServerType();
+                switch(infoserver)
+                {
+                    case "ITA_PROD":
+                        optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DB_CasseITA_PROD"].ToString());
+                    break;
+                    case "ITA_SVI":
+                        optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DB_CasseITA_SVI"].ToString());
+                    break;
+                    case "ESP":
+                        optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DB_CasseESP"].ToString());
+                    break;
+                }
+                //optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DB_Casse"].ToString());
             }
         }
 

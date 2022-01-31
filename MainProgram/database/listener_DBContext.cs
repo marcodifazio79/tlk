@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Custom;
 
 namespace Functions.database
 {
@@ -35,6 +36,11 @@ namespace Functions.database
         public virtual DbSet<CashTransaction> CashTransaction { get; set; }
         public virtual DbSet<Log> Log { get; set; }
         public static IConfiguration Configuration;
+
+        public static string GetServerType()
+        {
+            return ConfigurationManager.AppSetting["ServerType:TypeMachine"];
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             Configuration = new ConfigurationBuilder()
@@ -45,7 +51,22 @@ namespace Functions.database
 
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnection"].ToString());
+
+                string infoserver= GetServerType();
+                switch(infoserver)
+                {
+                    case "ITA_PROD":
+                        optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnectionITA_PROD"].ToString());
+                    break;
+                    case "ITA_SVI":
+                        optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnectionITA_SVI"].ToString());
+                    break;
+                    case "ESP":
+                        optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnectionESP"].ToString());
+                    break;
+
+                }
+                //     optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnection"].ToString());
             }
         }
 
