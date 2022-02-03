@@ -45,11 +45,10 @@ public class AsynchronousSocketListener {
     public AsynchronousSocketListener() {  
     }  
     
-    public static string infoserver= GetServerType();
     public static void StartListening() {  
         //Establish the local endpoint for the socket.  
         #if DEBUG
-        Console.WriteLine(infoserver);
+        
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
             //IPAddress ipAddress = IPAddress.Parse("192.168.1.100"); //portatile 
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //portatile
@@ -59,7 +58,7 @@ public class AsynchronousSocketListener {
         #else
             //IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
 
-            //string infoserver= GetServerType();
+            string infoserver= GetServerType();
             string ip_add="";
             switch(infoserver)
             {
