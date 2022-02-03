@@ -71,7 +71,9 @@ public class AsynchronousSocketListener {
                 case "ESP":
                     ip_add= ConfigurationManager.AppSetting["LocalAddress:LocalAddressESP"];
                 break;
-                IPAddress ipAddress = IPAddress.Parse(ip_add); 
+            }
+            IPAddress ipAddress = IPAddress.Parse(ip_add); 
+
             //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddress"].ToString()); 
         #endif
 
