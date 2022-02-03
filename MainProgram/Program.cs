@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using System.Xml;
-
+using Custom;
 using Functions;
 
 //using System.Collections.Generic;
@@ -38,22 +38,42 @@ public class AsynchronousSocketListener {
     public static IConfiguration Configuration;
     
     public static Dictionary<IPAddress, Socket> ConnectedModems = new Dictionary<IPAddress, Socket>(); 
-
+    public static string GetServerType()
+    {
+        return ConfigurationManager.AppSetting["ServerType:TypeMachine"];
+    }
     public AsynchronousSocketListener() {  
     }  
-  
+    
+    public static string infoserver= GetServerType();
     public static void StartListening() {  
         //Establish the local endpoint for the socket.  
         #if DEBUG
+        Console.WriteLine(infoserver);
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-            IPAddress ipAddress = IPAddress.Parse("192.168.1.100"); //portatile 
+            //IPAddress ipAddress = IPAddress.Parse("192.168.1.100"); //portatile 
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //portatile
             //IPAddress ipAddress = IPAddress.Parse("192.168.43.213");
-            //IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //fisso lavoro
+            IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //fisso lavoro
             //IPAddress ipAddress = IPAddress.Parse("192.168.117.127"); //ipHostInfo.AddressList[0];
         #else
-            IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
-            //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddressForConnections"].ToString()); 
+            //IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
+
+            //string infoserver= GetServerType();
+            string ip_add="";
+            switch(infoserver)
+            {
+                case "ITA_PROD":
+                    ip_add= ConfigurationManager.AppSetting["LocalAddress:LocalAddressITA_PROD"];
+                break;
+                case "ITA_SVI":
+                    ip_add= ConfigurationManager.AppSetting["LocalAddress:LocalAddressITA_SVI"];
+                break;
+                case "ESP":
+                    ip_add= ConfigurationManager.AppSetting["LocalAddress:LocalAddressESP"];
+                break;
+                IPAddress ipAddress = IPAddress.Parse(ip_add); 
+            //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddress"].ToString()); 
         #endif
 
         
@@ -148,7 +168,7 @@ ip_as_string="172.16.176.166";
 #endif
 
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
-                                {
+                {
                     try{
                         handler.Shutdown(SocketShutdown.Both);
                     }catch{}
@@ -234,6 +254,13 @@ ip_as_string="172.16.176.166";
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
                 content = state.sb.ToString();
             
+if ( content.Contains("????")| content.Contains("95.61.6.94"))
+{
+        string tmp_ip=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
+        ClearMachineTable.DatabaseClearTable.DeleteMachineByIP(tmp_ip);
+        return;
+}
+ 
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
@@ -607,13 +634,16 @@ ip_as_string="172.16.176.166";
 
             if(  
                 //check if the config file have necessary entries:
-                !string.IsNullOrEmpty(Configuration["LocalAddressForConnections"].ToString())      &
+                //!string.IsNullOrEmpty(Configuration["LocalAddress"].ToString())      &
                 !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                      &
                 !string.IsNullOrEmpty(Configuration["Port:Backend"])                               &
                 !string.IsNullOrEmpty(Configuration["ServerType:TypeMachine"])                     &
                 !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_PROD"])&
                 !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_SVI"]) &
-                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionESP"])
+                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionESP"])     &
+                !string.IsNullOrEmpty(Configuration["LocalAddress:LocalAddressITA_PROD"])&
+                !string.IsNullOrEmpty(Configuration["LocalAddress:LocalAddressITA_SVI"]) &
+                !string.IsNullOrEmpty(Configuration["LocalAddress:LocalAddressESP"])
             ){
 
             // ...start Listening (for connection), it's hard to comment on this one.

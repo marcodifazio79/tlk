@@ -51,7 +51,6 @@ namespace Functions.database
 
             if (!optionsBuilder.IsConfigured)
             {
-
                 string infoserver= GetServerType();
                 switch(infoserver)
                 {
@@ -64,7 +63,6 @@ namespace Functions.database
                     case "ESP":
                         optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnectionESP"].ToString());
                     break;
-
                 }
                 //     optionsBuilder.UseMySQL(Configuration["ConnectionStrings:DefaultConnection"].ToString());
             }

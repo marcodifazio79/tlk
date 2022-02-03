@@ -97,11 +97,14 @@ per avere l'output su file e terminale
 
 mySQL db in use for test:
 
-CREATE DATABASE test_db;
-use test_db;
+CREATE DATABASE dbtest;
+use dbtest;
 CREATE TABLE packet (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, rawPacket VARCHAR(500), ipAddress VARCHAR(16), port VARCHAR(6));
-CREATE USER 'db_user'@'%' IDENTIFIED BY 'Qwerty.12';
-GRANT ALL PRIVILEGES ON test_db.* to 'db_user'@'%';
+CREATE USER 'testwriter'@'%' IDENTIFIED BY 'password';
+
+CREATE USER 'testwriter'@'dbtest' IDENTIFIED WITH mysql_native_password BY 'password';
+
+GRANT ALL PRIVILEGES ON dbtest.* to 'testwriter'@'%';
 
 
 

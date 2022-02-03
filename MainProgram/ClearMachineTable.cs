@@ -50,6 +50,18 @@ namespace ClearMachineTable
 
         }
 
+        public static void DeleteMachineByIP(string ip_addr)
+        {
+            listener_DBContext DB = new listener_DBContext ();
+            if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
+            {
+                Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
+
+                DeleteMachine(m.Id.ToString(),"");
+              }
+            DB.SaveChanges();
+            DB.DisposeAsync();
+        }
         public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
         { 
            
