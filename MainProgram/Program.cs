@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using System.Xml;
-using Custom;
+
 using Functions;
 
 //using System.Collections.Generic;
@@ -38,10 +38,6 @@ public class AsynchronousSocketListener {
     public static IConfiguration Configuration;
     
     public static Dictionary<IPAddress, Socket> ConnectedModems = new Dictionary<IPAddress, Socket>(); 
-    public static string GetServerType()
-    {
-        return ConfigurationManager.AppSetting["ServerType:TypeMachine"];
-    }
     public AsynchronousSocketListener() {  
     }  
     
@@ -49,34 +45,19 @@ public class AsynchronousSocketListener {
         //Establish the local endpoint for the socket.  
         #if DEBUG
         
+        
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
             //IPAddress ipAddress = IPAddress.Parse("192.168.1.100"); //portatile 
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //portatile
             //IPAddress ipAddress = IPAddress.Parse("192.168.43.213");
             IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //fisso lavoro
             //IPAddress ipAddress = IPAddress.Parse("192.168.117.127"); //ipHostInfo.AddressList[0];
+            
         #else
-            //IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
-
-            string infoserver= GetServerType();
-            string ip_add="";
-            switch(infoserver)
-            {
-                case "ITA_PROD":
-                    ip_add= ConfigurationManager.AppSetting["LocalAddress:LocalAddressITA_PROD"];
-                break;
-                case "ITA_SVI":
-                    ip_add= ConfigurationManager.AppSetting["LocalAddress:LocalAddressITA_SVI"];
-                break;
-                case "ESP":
-                    ip_add= ConfigurationManager.AppSetting["LocalAddress:LocalAddressESP"];
-                break;
-            }
-            IPAddress ipAddress = IPAddress.Parse(ip_add); 
+            IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
 
             //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddress"].ToString()); 
         #endif
-
         
         //endpoint per i modem
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress,Convert.ToInt32( Configuration["Port:Modem"]));
@@ -635,16 +616,13 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
 
             if(  
                 //check if the config file have necessary entries:
-                //!string.IsNullOrEmpty(Configuration["LocalAddress"].ToString())      &
+                !string.IsNullOrEmpty(Configuration["LocalAddress"].ToString())      &
                 !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                      &
                 !string.IsNullOrEmpty(Configuration["Port:Backend"])                               &
                 !string.IsNullOrEmpty(Configuration["ServerType:TypeMachine"])                     &
                 !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_PROD"])&
                 !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_SVI"]) &
-                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionESP"])     &
-                !string.IsNullOrEmpty(Configuration["LocalAddress:LocalAddressITA_PROD"])&
-                !string.IsNullOrEmpty(Configuration["LocalAddress:LocalAddressITA_SVI"]) &
-                !string.IsNullOrEmpty(Configuration["LocalAddress:LocalAddressESP"])
+                !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionESP"])     
             ){
 
             // ...start Listening (for connection), it's hard to comment on this one.
