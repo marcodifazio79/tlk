@@ -52,15 +52,24 @@ namespace ClearMachineTable
 
         public static void DeleteMachineByIP(string ip_addr)
         {
-            listener_DBContext DB = new listener_DBContext ();
-            if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
+            try
             {
-                Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
-
-                DeleteMachine(m.Id.ToString(),"");
-              }
-            DB.SaveChanges();
-            DB.DisposeAsync();
+                Console.WriteLine("Strat DeleteMachineByIP :"+ ip_addr);
+                listener_DBContext DB = new listener_DBContext ();
+                if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
+                {
+                    Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
+                    Console.WriteLine("DeleteMachineByIP :id Machines"+ m.Id.ToString());
+                    DeleteMachine(m.Id.ToString(),"");
+                    Console.WriteLine("DeleteMachineByIP :id Machines Delete OK");
+                }
+                DB.SaveChanges();
+                DB.DisposeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("DeleteMachineByIP :id Machines Delete Error");
+            }
         }
         public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
         { 

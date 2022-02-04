@@ -430,25 +430,12 @@ namespace Functions
 #if DEBUG 
 //ip_addr="172.16.169.149";
 #endif
-                //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 250 - "+ ip_addr+ ","+ send_or_recv+ "," + transferred_data);
-                if (ip_addr=="10.10.10.71" | ip_addr=="10.10.10.37"| ip_addr=="192.168.209.188"| ip_addr=="95.61.6.94" |  ip_addr=="127.0.0.1")//|  ip_addr=="127.0.0.1" )
-                {
-                    // MachineTraceToAdd = new MachinesConnectionTrace 
-                    // {
-                    //     IpAddress = ip_addr,
-                    //     SendOrRecv = send_or_recv,
-                    //     TransferredData = transferred_data
-                    // };
-                    // DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
-                    return;
-                }
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
                     string MIDValue="";
                     string imeiValue="";
-                  //  Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 256 - "+ ip_addr+ ", già presente nel db");
-
+                  
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
               
                     MachineTraceToAdd = new MachinesConnectionTrace 
@@ -458,7 +445,6 @@ namespace Functions
                         TransferredData = transferred_data,
                         IdMacchina = m.Id
                     };
-
 
                     if(transferred_data.StartsWith("<TPK="))
                     {
@@ -600,6 +586,7 @@ Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachi
             }
             catch(Exception e)
             {
+                
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
             }

@@ -44,8 +44,7 @@ public class AsynchronousSocketListener {
     public static void StartListening() {  
         //Establish the local endpoint for the socket.  
         #if DEBUG
-        
-        
+                
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
             //IPAddress ipAddress = IPAddress.Parse("192.168.1.100"); //portatile 
             //IPAddress ipAddress = IPAddress.Parse("192.168.17.210"); //portatile
@@ -77,7 +76,7 @@ public class AsynchronousSocketListener {
         Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
 
-
+        
         //Console.WriteLine("\nPress ENTER to continue...");  
         Console.Read();  
     }  
@@ -146,7 +145,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
 #if DEBUG 
-ip_as_string="172.16.176.166";
+//ip_as_string="172.16.176.166";
 #endif
 
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
@@ -239,6 +238,9 @@ ip_as_string="172.16.176.166";
 if ( content.Contains("????")| content.Contains("95.61.6.94"))
 {
         string tmp_ip=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
+        
+        Console.WriteLine("Conetnt Value for ip " +tmp_ip+" in  ReadCommandsCallback =" +content.ToString());
+        
         ClearMachineTable.DatabaseClearTable.DeleteMachineByIP(tmp_ip);
         return;
 }
