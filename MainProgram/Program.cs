@@ -422,6 +422,9 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
                     //Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ip.ToString() ,"RECV", "Connessione chiusa dal client" );
                     ConnectedModems.Remove(ip);
                     Functions.DatabaseFunctions.setModemOffline(ip);
+                    Thread th = new Thread(()=> ClearMachineTable.DatabaseClearTable.DeleteMachineByIP(ip.ToString()));
+                        th.Start();
+                    
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close(2); //wait 2 seconds before close
                     handler.Dispose();

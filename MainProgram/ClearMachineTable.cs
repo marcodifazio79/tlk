@@ -73,7 +73,6 @@ namespace ClearMachineTable
         }
         public static Boolean DeleteMachine(string idtodelete,string idtoupdate)
         { 
-           
            bool valreturn = false;
             try
             {
@@ -93,11 +92,6 @@ namespace ClearMachineTable
                         }
                     }
                 }
-                
-
-               // DB.SaveChanges();
-
-                valreturn=true;
 
                 return valreturn;
             }
