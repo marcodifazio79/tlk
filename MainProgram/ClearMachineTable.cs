@@ -76,22 +76,30 @@ namespace ClearMachineTable
            bool valreturn = false;
             try
             {
-                if (UpdateLogTables(idtodelete,idtoupdate))
-                {
-                    if (UpdateRemoteCommandTables (idtodelete, idtoupdate))
+                if (idtoupdate!="")
+                {    
+                    if (UpdateLogTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateLogTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
+                    if (UpdateRemoteCommandTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateRemoteCommandTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
+                    if (DeleteMachinesAttributesTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteMachinesAttributesTables  ID to Delete=" + idtodelete + " -OK");
+                    if (UpdateCashTransactionTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateCashTransactionTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
+                    if (UpdateMachinesConnectionTraceTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateMachinesConnectionTraceTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
+                    if (DeleteFromMachinestable(idtodelete))
                     {
-                        if (DeleteMachinesAttributesTables(idtodelete))
-                        {
-                            if (UpdateCashTransactionTables(idtodelete, idtoupdate))
-                            {
-                                if (UpdateMachinesConnectionTraceTables(idtodelete, idtoupdate))
-                                {
-                                    if (DeleteFromMachinestable(idtodelete)) valreturn = true;
-                                }
-                            }
-                        }
+                        Console.WriteLine("DeleteMachine:DeleteFromMachinestable ID to Delete=" + idtodelete + " -OK");
+                        valreturn = true;
                     }
                 }
+                else
+                {
+                    if (DeleteLogTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteLogTables ID to Delete=" + idtodelete + " -OK");
+                    if (DeleteRemoteCommand(idtodelete)) Console.WriteLine("DeleteMachine:DeleteRemoteCommand ID to Delete=" + idtodelete + " -OK");
+                    if (DeleteMachinesAttributesTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteMachinesAttributesTables  ID to Delete=" + idtodelete + " -OK");
+                    if (DeleteCashTransTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteCashTransTables ID to Delete=" + idtodelete + " -OK");
+                    if (DeleteMachinesConnectionTrace(idtodelete)) Console.WriteLine("DeleteMachine:DeleteMachinesConnectionTrace ID to Delete=" + idtodelete + " -OK");
+
+                }
+
+                valreturn=true;
 
                 return valreturn;
             }
