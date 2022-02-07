@@ -145,7 +145,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
 #if DEBUG 
-ip_as_string=" 172.16.151.154";
+ip_as_string="172.16.151.254";
 #endif
 
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
@@ -161,6 +161,8 @@ ip_as_string=" 172.16.151.154";
                     allDoneModem.Set();  
 
                     IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
+
+                    
                     if (ConnectedModems.ContainsKey(ip))
                     {
                         try{

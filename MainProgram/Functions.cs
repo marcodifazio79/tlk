@@ -79,7 +79,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-ip_addr=" 172.16.151.154";
+ip_addr="172.16.151.254";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -94,7 +94,19 @@ ip_addr=" 172.16.151.154";
                         newModemPacket.IsOnline = true;
                         newModemPacket.MarkedBroken=false;
                         newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    }
+                    }else if (newModemPacket.MarkedBroken) //se il mid impostato per sostituire 77770001_xx è già presente sul DB e lo status è broken 
+                    {       
+                                                  //aggiorno i parametri del vecchio modem e cancello il record del nuovo 
+                        newModemPacket.Mid=mid; 
+                        newModemPacket.Version = version; 
+                        newModemPacket.IpAddress=ip_addr;
+                        newModemPacket.Imei=Convert.ToInt64(imei);
+                        newModemPacket.IsOnline = true;
+                        newModemPacket.MarkedBroken=false;
+                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                        //ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString()); 
+                    } 
+
                     else if(newModemPacket.Mid.StartsWith("77770001_") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
                     {
                         if(DB.Machines.Any( y=> y.Mid == mid )) // verifico se il mid impostato per sostituire 77770001_xx è già presente nella tabella Machines
@@ -200,17 +212,7 @@ ip_addr=" 172.16.151.154";
                                 newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                         }
                     }
-                    else if(newModemPacket.Mid.StartsWith("5555555") && newModemPacket.Imei==Convert.ToInt64(imei)) // se CE diverso e imei gia associato all'ip
-                    {
-                        //if(newModemPacket.Version != version)
-                        newModemPacket.Mid=mid; 
-                        newModemPacket.Version = version; 
-                        newModemPacket.IsOnline = true;
-                        newModemPacket.MarkedBroken=false;
-                        newModemPacket.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    }
-
-
+                    
                     else if (newModemPacket.Mid!=mid)// se il modem e CE non  è già associato all'ip
                     {
                         if (newModemPacket.Mid.StartsWith("Recupero") |newModemPacket.Mid.StartsWith("Duplicato") ) //se il mid sul DB associato  all'ip inizia con Recupero  
@@ -368,7 +370,7 @@ ip_addr=" 172.16.151.154";
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-ip_addr=" 172.16.151.154";
+ip_addr="172.16.151.254";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -429,7 +431,7 @@ ip_addr=" 172.16.151.154";
             try
             {
 #if DEBUG 
-ip_addr=" 172.16.151.154";
+ip_addr="172.16.151.254";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
@@ -549,6 +551,7 @@ ip_addr=" 172.16.151.154";
                     //         IpAddress = ip_addr,
                     //         SendOrRecv = send_or_recv,
                     //         TransferredData = transferred_data
+                     //        last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
                     //     };
                     //     DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
                     // }
@@ -564,7 +567,7 @@ ip_addr=" 172.16.151.154";
                     // }
                 }
                 DB.SaveChanges();
-Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 383 "); 
+Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 567 "); 
                 //reload the web pages
                 if(MachineTraceToAdd.IdMacchina!= null)
                 {              
