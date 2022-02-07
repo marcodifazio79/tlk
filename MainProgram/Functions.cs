@@ -540,15 +540,15 @@ namespace Functions
                     // se l'ip è del server aggiungo i dati in MCT
                    
                     
-                    if (ip_addr=="10.10.10.71" |ip_addr=="10.10.10.37" | ip_addr=="192.168.209.188"| ip_addr=="95.61.6.94" |  ip_addr=="127.0.0.1")//|  ip_addr=="127.0.0.1" )
+                    if (ip_addr.StartsWith("10.10")| ip_addr=="192.168.209.188" )//|  ip_addr=="127.0.0.1" )
                     {
-                        // MachineTraceToAdd = new MachinesConnectionTrace 
-                        // {
-                        //     IpAddress = ip_addr,
-                        //     SendOrRecv = send_or_recv,
-                        //     TransferredData = transferred_data
-                        // };
-                        // DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
+                        MachineTraceToAdd = new MachinesConnectionTrace 
+                        {
+                            IpAddress = ip_addr,
+                            SendOrRecv = send_or_recv,
+                            TransferredData = transferred_data
+                        };
+                        DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
                     }
                     else
                     {

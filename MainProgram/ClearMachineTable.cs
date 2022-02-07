@@ -60,8 +60,8 @@ namespace ClearMachineTable
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
                     Console.WriteLine("DeleteMachineByIP :id Machines"+ m.Id.ToString());
-                    DeleteMachine(m.Id.ToString(),"");
-                    Console.WriteLine("DeleteMachineByIP :id Machines Delete OK");
+                    RemoveMachine(m.Id.ToString());
+                    Console.WriteLine("DeleteMachineByIP :id Machines "+ m.Id.ToString() +" Delete OK");
                 }
                 DB.SaveChanges();
                 DB.DisposeAsync();
@@ -77,29 +77,13 @@ namespace ClearMachineTable
             try
             {
                 if (idtoupdate!="")
-                {    
-                    if (UpdateLogTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateLogTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
-                    if (UpdateRemoteCommandTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateRemoteCommandTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
-                    if (DeleteMachinesAttributesTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteMachinesAttributesTables  ID to Delete=" + idtodelete + " -OK");
-                    if (UpdateCashTransactionTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateCashTransactionTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
-                    if (UpdateMachinesConnectionTraceTables(idtodelete, idtoupdate)) Console.WriteLine("DeleteMachine:UpdateMachinesConnectionTraceTables ID to Update=" + idtoupdate + ", ID to Delete=" + idtodelete + " -OK");
-                    if (DeleteFromMachinestable(idtodelete))
-                    {
-                        Console.WriteLine("DeleteMachine:DeleteFromMachinestable ID to Delete=" + idtodelete + " -OK");
-                        valreturn = true;
-                    }
+                {   
+                    if (UpdateMachines( idtodelete, idtoupdate)) valreturn=true;;
                 }
                 else
                 {
-                    if (DeleteLogTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteLogTables ID to Delete=" + idtodelete + " -OK");
-                    if (DeleteRemoteCommand(idtodelete)) Console.WriteLine("DeleteMachine:DeleteRemoteCommand ID to Delete=" + idtodelete + " -OK");
-                    if (DeleteMachinesAttributesTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteMachinesAttributesTables  ID to Delete=" + idtodelete + " -OK");
-                    if (DeleteCashTransTables(idtodelete)) Console.WriteLine("DeleteMachine:DeleteCashTransTables ID to Delete=" + idtodelete + " -OK");
-                    if (DeleteMachinesConnectionTrace(idtodelete)) Console.WriteLine("DeleteMachine:DeleteMachinesConnectionTrace ID to Delete=" + idtodelete + " -OK");
-
+                    if (RemoveMachine(idtodelete)) valreturn=true;
                 }
-
-                valreturn=true;
 
                 return valreturn;
             }
@@ -109,254 +93,98 @@ namespace ClearMachineTable
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : DeleteMachine: " + e.StackTrace);
                 return valreturn;
             }
-            
         }
-        private static bool UpdateLogTables(string id_machinetodelete, string idmachinetoupdate)
+        private static bool UpdateMachines( string IDMachinesTodelete,string IDMachinesToUpdate)
         {
-            listener_DBContext DB = new listener_DBContext ();
+             MySqlConnection connection;
             string connectionString =GetConnectString();
-            MySqlConnection connection;
             connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update Log set ID_machine='" + idmachinetoupdate + "'  where  ID_machine  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Error in UpdateLogTables: " + e.Message);
-                return false;
-            }
-        }
-        private static bool UpdateRemoteCommandTables(string id_machinetodelete, string idmachinetoupdate)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update RemoteCommand set id_Macchina ='" + idmachinetoupdate + "'  where  id_Macchina  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error in UpdateRemoteCommandTables: " + e.Message);
-                return false;
-            }
-        }
-        private static bool UpdateMachinesConnectionTraceTables(string id_machinetodelete, string idmachinetoupdate)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update MachinesConnectionTrace set id_Macchina ='" + idmachinetoupdate + "'  where  id_Macchina  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error in UpdateMachinesConnectionTraceTables: " + e.Message);
-                return false;
-            }
-        }
-        private static bool UpdateCashTransactionTables(string id_machinetodelete, string idmachinetoupdate)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            try
-            {
-                MySqlCommand newcmd;
-                string query = "Update CashTransaction set ID_Machines ='" + idmachinetoupdate + "'  where  ID_Machines  = " + id_machinetodelete;
-                newcmd = new MySqlCommand(query, connection);
-                newcmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error in UpdateCashTransactionTables: " + e.Message);
-                return false;
-            }
-        }
-     
-        private static bool DeleteLogTables(string id_machine) 
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
+                                             
             if (connection.State == ConnectionState.Closed) connection.Open();
             MySqlCommand newcmd;
             string query;
             try
             {
-                if( DB.Log.Any( y=> y.IdMachine == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM Log   where ID_machine = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
+                query = "Update Log set ID_machine='" + IDMachinesToUpdate + "'  where  ID_machine  = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+
+                query = "Update RemoteCommand set id_Macchina ='" + IDMachinesToUpdate + "'  where  id_Macchina  = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+
+                query = "Delete FROM MachinesAttributes   where id_Macchina = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+
+                query = "Update CashTransaction set ID_Machines ='" + IDMachinesToUpdate + "'  where  ID_Machines  = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+
+                query = "Update CashTransaction set ID_Machines ='" + IDMachinesToUpdate + "'  where  ID_Machines  = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+
+                query = "Delete FROM Machines   where id = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
                 return true;
             }
             catch(Exception e)
             {
                 Console.WriteLine("ERROR - DeleteLogTables: " + e.Message);
-                //connection.Close();
+                if (connection.State == ConnectionState.Open) connection.Close();
                 return false;
             }
         }
-        
-        private static bool DeleteRemoteCommand(string id_machine)
+        private static bool RemoveMachine( string IDMachinesTodelete)
         {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();;
             MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.RemoteCommand.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM RemoteCommand  where id_Macchina = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                //connection.Close();
-                return true;
-            }
-            catch (MySqlException e)
-            {
-                Console.WriteLine("ERROR - DeleteRemoteCommand: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-
-        }
-        private static bool DeleteMachinesConnectionTrace(string id_machine)
-        {
-            listener_DBContext DB = new listener_DBContext ();
             string connectionString =GetConnectString();
-            MySqlConnection connection;
             connection = new MySqlConnection(connectionString);
+                                             
             if (connection.State == ConnectionState.Closed) connection.Open();
             MySqlCommand newcmd;
             string query;
             try
             {
-                if( DB.MachinesConnectionTrace.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete from MachinesConnectionTrace where id_Macchina = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                //connection.Close();
-                return true;
-            }
-            catch (MySqlException e)
-            {
-                Console.WriteLine("ERROR - DeleteMachinesConnectionTrace: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-            
-        }
-      
-        private static bool DeleteFromMachinestable(string id_machine)
-        {
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                query = "Delete FROM Machines   where id = " + id_machine;
+                query = "Delete FROM Log   where ID_machine = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                
+                query = "Delete FROM RemoteCommand  where id_Macchina = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                
+                query = "Delete FROM MachinesAttributes   where id_Macchina = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                
+                query = "Delete FROM CashTransaction   where ID_Machines = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                
+                query = "Delete from MachinesConnectionTrace where id_Macchina = " + IDMachinesTodelete;
+                newcmd = new MySqlCommand(query, connection);
+                newcmd.ExecuteNonQuery();
+                
+                query = "Delete FROM Machines   where id = " + IDMachinesTodelete;
                 newcmd = new MySqlCommand(query, connection);
                 newcmd.ExecuteNonQuery();
 
-                //connection.Close();
-                return true;
-            }
-            catch(MySqlException e)
-            {
-                Console.WriteLine("ERROR - DeleteFromMachinestable: " + e.Message);
+                Console.WriteLine("Deleted Id Machines: " + IDMachinesTodelete);
                 connection.Close();
-                return false;
-            }
-        }
-        private static bool DeleteCashTransTables(string id_machine)
-        {
-             listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.CashTransaction.Any( y=> y.IdMachines == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM CashTransaction   where ID_Machines = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                //connection.Close();
                 return true;
+					
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                Console.WriteLine("ERROR - DeleteCashTransTables: " + e.Message);
-                //connection.Close();
+                Console.WriteLine("ERROR - DeleteLogTables: " + e.Message);
+                if (connection.State == ConnectionState.Open) connection.Close();
                 return false;
             }
         }
-        private static bool DeleteMachinesAttributesTables(string id_machine)
-        {
-            listener_DBContext DB = new listener_DBContext ();
-            string connectionString =GetConnectString();
-            MySqlConnection connection;
-            connection = new MySqlConnection(connectionString);
-            if (connection.State == ConnectionState.Closed) connection.Open();
-            MySqlCommand newcmd;
-            string query;
-            try
-            {
-                if( DB.MachinesAttributes.Any( y=> y.IdMacchina == Convert.ToInt32(id_machine)) )
-                {
-                    query = "Delete FROM MachinesAttributes   where id_Macchina = " + id_machine;
-                    newcmd = new MySqlCommand(query, connection);
-                    newcmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR - DeleteMachinesAttributesTables: " + e.Message);
-                //connection.Close();
-                return false;
-            }
-        }
+       
 
      }
 }
