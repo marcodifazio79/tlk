@@ -53,9 +53,9 @@ public class AsynchronousSocketListener {
             //IPAddress ipAddress = IPAddress.Parse("192.168.117.127"); //ipHostInfo.AddressList[0];
             
         #else
-            IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
+           IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
 
-            //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddress"].ToString()); 
+           //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddress"].ToString()); 
         #endif
         
         //endpoint per i modem
@@ -145,7 +145,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
             // 
 #if DEBUG 
-//ip_as_string="172.16.176.166";
+ip_as_string=" 172.16.151.154";
 #endif
 
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
@@ -537,13 +537,13 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
 
     public static void Send(Socket handler, String data) {  
         StateObject state = new StateObject();
-        IPAddress ip = IPAddress.Parse("127.0.0.1"); //a dummy value to initialize the variable.
+        IPAddress ip = IPAddress.Parse(((IPEndPoint)handler.RemoteEndPoint).Address.ToString());//IPAddress.Parse("127.0.0.1") //a dummy value to initialize the variable.
         int sock_port = 0;
         try{  
             //byte[] byteData = Encoding.ASCII.GetBytes(data);
             // Begin sending the data to the remote device.
-
-            ip = ((IPEndPoint)handler.RemoteEndPoint).Address; 
+            
+            ip = IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ());// ((IPEndPoint)handler.RemoteEndPoint).Address; 
             sock_port = ((IPEndPoint)handler.RemoteEndPoint).Port;
             state.workSocket = handler;
             state.sb = new StringBuilder(data, data.Length);
@@ -556,6 +556,7 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
             {
                 // the modem get stucked in "send mode" from time to time. If this happen, 
                 // trying to send to the modem cause a SocketException, i'll reset the connection if this occur
+                ip = ((IPEndPoint)handler.RemoteEndPoint).Address; 
                 ConnectedModems.Remove(ip);
                 Functions.DatabaseFunctions.setModemOffline(ip);
                 Console.WriteLine("Send error, closing "+ip.ToString()+":"+sock_port.ToString()); 

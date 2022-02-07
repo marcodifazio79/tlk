@@ -79,7 +79,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-//ip_addr="172.16.169.149";
+ip_addr=" 172.16.151.154";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -368,13 +368,14 @@ namespace Functions
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-//ip_addr="172.16.169.149";
+ip_addr=" 172.16.151.154";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
                 {
                     Machines MachineToUpdate = DB.Machines.First( y=> y.IpAddress == ip_addr ) ;
                     MachineToUpdate.last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
+                    MachineToUpdate.IsOnline=true;
                 }
                 else
                 {
@@ -428,7 +429,7 @@ namespace Functions
             try
             {
 #if DEBUG 
-//ip_addr="172.16.169.149";
+ip_addr=" 172.16.151.154";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
@@ -793,19 +794,19 @@ Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachi
                     } ;
                     DB.RemoteCommand.Add( remCom  );
                 }
-                if(DB.Machines.Any(y=> y.Mid == codElettronico))
-                {
-                    remCom = new RemoteCommand { 
-                        Body = content,
-                        Sender = ipSender,
-                        IdMacchina = DB.Machines.First( y=> y.Mid == codElettronico    ).Id,
-                        Status = "Pending",
-                        ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
-                        SendedAt = null,
-                        AnsweredAt = null
-                    } ;
-                    DB.RemoteCommand.Add( remCom  );
-                }
+                // if(DB.Machines.Any(y=> y.Mid == codElettronico))
+                // {
+                //     remCom = new RemoteCommand { 
+                //         Body = content,
+                //         Sender = ipSender,
+                //         IdMacchina = DB.Machines.First( y=> y.Mid == codElettronico    ).Id,
+                //         Status = "Pending",
+                //         ReceivedAt = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss")),
+                //         SendedAt = null,
+                //         AnsweredAt = null
+                //     } ;
+                //     DB.RemoteCommand.Add( remCom  );
+                // }
                 else
                 {
                     remCom = new RemoteCommand { 
