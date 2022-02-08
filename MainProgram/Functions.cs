@@ -435,7 +435,7 @@ ip_addr="172.16.151.254";
 #if DEBUG 
 ip_addr="172.16.151.254";
 #endif
-                AsynchronousSocketListener.aTimer.Stop();
+                if (AsynchronousSocketListener.GetTimeCheckStatus().ToUpper()=="TRUE")AsynchronousSocketListener.aTimer.Stop();
                 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr ))
                 {
@@ -571,7 +571,7 @@ ip_addr="172.16.151.254";
             }
             finally
             {
-                AsynchronousSocketListener.aTimer.Start();
+                if (AsynchronousSocketListener.GetTimeCheckStatus().ToUpper()=="TRUE")AsynchronousSocketListener.aTimer.Start();
                 DB.DisposeAsync();
             }
         }

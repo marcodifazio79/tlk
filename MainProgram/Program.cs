@@ -47,6 +47,11 @@ public class AsynchronousSocketListener {
     }  
     public static System.Timers.Timer aTimer;    
 
+
+    public static string GetTimeCheckStatus()
+    {
+        return ConfigurationManager.AppSetting["TimeForCheck:EnabledCheck"];
+    }
     public static int GetTimeCheck()
     {
         return Convert.ToInt16( ConfigurationManager.AppSetting["TimeForCheck:Time_in_sec"]);
@@ -85,10 +90,12 @@ public class AsynchronousSocketListener {
 
         Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
+// if (GetTimeCheckStatus)
+//         Thread timerchecker = new Thread(()=>SetTimer ());
+//         tCommands.Start();
 
-        
         //Console.WriteLine("\nPress ENTER to continue...");  
-        Console.Read();  
+       // Console.Read();  
     }  
     
     public static void StartListeningForModems(IPEndPoint localEndPoint, Socket listener){
@@ -153,11 +160,10 @@ public class AsynchronousSocketListener {
             // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
             
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
-            // 
+
 #if DEBUG 
 ip_as_string="172.16.151.254";
 #endif
-
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
                 {
                     try{
@@ -548,7 +554,7 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
 
     public static void Send(Socket handler, String data) {  
         StateObject state = new StateObject();
-        IPAddress ip = IPAddress.Parse(((IPEndPoint)handler.RemoteEndPoint).Address.ToString());//IPAddress.Parse("127.0.0.1") //a dummy value to initialize the variable.
+        IPAddress ip = IPAddress.Parse("127.0.0.1"); //a dummy value to initialize the variable.
         int sock_port = 0;
         try{  
             //byte[] byteData = Encoding.ASCII.GetBytes(data);
@@ -650,10 +656,13 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
             // stopWatch.Start();
             // Thread.Sleep(10000);
             // stopWatch.Stop();
-            SetTimer();
-            Console.WriteLine("The application started at {0:HH:mm:ss.fff}", DateTime.Now);
-            Console.ReadLine();
-
+            if (GetTimeCheckStatus().ToUpper()=="TRUE")
+            {
+                SetTimer();
+                Console.WriteLine("The application started at {0:HH:mm:ss.fff}", DateTime.Now);
+               
+            }
+             Console.ReadLine();
 
             }else{
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Parameters missing in appsettings.json file, startup cancelled.");  
