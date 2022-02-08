@@ -645,6 +645,10 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
             // ...start Listening (for connection), it's hard to comment on this one.
             StartListening(); 
             
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            Thread.Sleep(10000);
+            stopWatch.Stop();
 
             SetTimer();
             Console.WriteLine("The application started at {0:HH:mm:ss.fff}", DateTime.Now);
