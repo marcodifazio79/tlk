@@ -428,6 +428,7 @@ ip_addr="172.16.151.254";
         {
             listener_DBContext DB = new listener_DBContext ();
             
+            AsynchronousSocketListener.aTimer.Stop();
             MachinesConnectionTrace MachineTraceToAdd = null;
             try
             {
@@ -565,9 +566,11 @@ ip_addr="172.16.151.254";
                 
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.Message);
                 //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: "+e.InnerException);
+                
             }
             finally
             {
+                AsynchronousSocketListener.aTimer.Start();
                 DB.DisposeAsync();
             }
         }

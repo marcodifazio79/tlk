@@ -17,6 +17,8 @@ using Functions;
 
 //using System.Collections.Generic;
 // State object for reading client data asynchronously  
+
+
 public class StateObject {  
     // Client  socket.  
     public Socket workSocket = null;  
@@ -43,8 +45,7 @@ public class AsynchronousSocketListener {
     public static Dictionary<IPAddress, Socket> ConnectedModems = new Dictionary<IPAddress, Socket>(); 
     public AsynchronousSocketListener() {  
     }  
-    
-    private static System.Timers.Timer aTimer;
+    public static System.Timers.Timer aTimer;    
 
     public static int GetTimeCheck()
     {
@@ -645,11 +646,10 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
             // ...start Listening (for connection), it's hard to comment on this one.
             StartListening(); 
             
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            Thread.Sleep(10000);
-            stopWatch.Stop();
-
+            // Stopwatch stopWatch = new Stopwatch();
+            // stopWatch.Start();
+            // Thread.Sleep(10000);
+            // stopWatch.Stop();
             SetTimer();
             Console.WriteLine("The application started at {0:HH:mm:ss.fff}", DateTime.Now);
             Console.ReadLine();
@@ -667,7 +667,7 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
     private static void SetTimer()
     {
         // Create a timer with a two second interval.
-        int sec_to_check=GetTimeCheck()*1000;
+        int sec_to_check=120*1000;
         aTimer = new System.Timers.Timer(sec_to_check);
         // Hook up the Elapsed event for the timer. 
         aTimer.Elapsed += OnTimedEvent;
@@ -680,7 +680,10 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
         
         if  (Functions.DatabaseFunctions.StartCheckID_MCT()==0)
             {
+                int sec_to_check=GetTimeCheck()*1000;
+                aTimer = new System.Timers.Timer(sec_to_check);
                 aTimer.Start();
+                
             }
             else
             {
