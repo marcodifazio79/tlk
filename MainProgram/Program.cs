@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using System.Xml;
+
+using Custom;
+using System.Diagnostics;
+using System.Timers;
 
 using Functions;
 
@@ -41,6 +44,12 @@ public class AsynchronousSocketListener {
     public AsynchronousSocketListener() {  
     }  
     
+    private static System.Timers.Timer aTimer;
+
+    public static int GetTimeCheck()
+    {
+        return Convert.ToInt16( ConfigurationManager.AppSetting["TimeForCheck:Time_in_sec"]);
+    }
     public static void StartListening() {  
         //Establish the local endpoint for the socket.  
         #if DEBUG
@@ -161,7 +170,6 @@ ip_as_string="172.16.151.254";
                     allDoneModem.Set();  
 
                     IPAddress ip = ((IPEndPoint)handler.RemoteEndPoint).Address;
-
                     
                     if (ConnectedModems.ContainsKey(ip))
                     {
@@ -624,9 +632,10 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
 
             if(  
                 //check if the config file have necessary entries:
-                !string.IsNullOrEmpty(Configuration["LocalAddress"].ToString())      &
-                !string.IsNullOrEmpty(Configuration["Port:Modem"].ToString())                      &
-                !string.IsNullOrEmpty(Configuration["Port:Backend"])                               &
+                !string.IsNullOrEmpty(Configuration["LocalAddress"])                               &
+                !string.IsNullOrEmpty(Configuration["Port:Modem"])                                 &
+                !string.IsNullOrEmpty(Configuration["Port:Backend"])                               &  
+                !string.IsNullOrEmpty(Configuration["TimeForCheck:Time_in_sec"])                   &  
                 !string.IsNullOrEmpty(Configuration["ServerType:TypeMachine"])                     &
                 !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_PROD"])&
                 !string.IsNullOrEmpty(Configuration["ConnectionStrings:DefaultConnectionITA_SVI"]) &
@@ -635,6 +644,12 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
 
             // ...start Listening (for connection), it's hard to comment on this one.
             StartListening(); 
+            
+
+            SetTimer();
+            Console.WriteLine("The application started at {0:HH:mm:ss.fff}", DateTime.Now);
+            Console.ReadLine();
+
 
             }else{
                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss" ) + ": Parameters missing in appsettings.json file, startup cancelled.");  
@@ -645,4 +660,31 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
         }  
         return 0;
     }
+    private static void SetTimer()
+    {
+        // Create a timer with a two second interval.
+        int sec_to_check=GetTimeCheck()*1000;
+        aTimer = new System.Timers.Timer(sec_to_check);
+        // Hook up the Elapsed event for the timer. 
+        aTimer.Elapsed += OnTimedEvent;
+        aTimer.AutoReset = true;
+        aTimer.Enabled = true;
+    }
+    private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+    {
+        aTimer.Stop();
+        
+        if  (Functions.DatabaseFunctions.StartCheckID_MCT()==0)
+            {
+                aTimer.Start();
+            }
+            else
+            {
+                aTimer.Stop();
+                aTimer.Dispose();
+                System.Environment.Exit(0);  
+            }
+
+    }     
+
 }

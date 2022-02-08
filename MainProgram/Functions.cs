@@ -11,12 +11,13 @@ using Microsoft.Extensions.Configuration;
 using Custom;
 using MySql.Data.MySqlClient;
 using System.Data;
-using ClearMachineTable;
+
 
 namespace Functions
 {    
     public class DatabaseFunctions
     {   
+    
         public static IConfiguration Configuration;
         public DatabaseFunctions()
         {
@@ -532,42 +533,12 @@ ip_addr="172.16.151.254";
                     //Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 331 "); 
                     Thread t = new Thread(()=> MachinePacketAnalyzer( m.Id, transferred_data , MachineTraceToAdd.Id ));
                     t.Start();
-                    
-                    
+                                       
                 }
-                else
-                {
-                    // int val_ipset=Convert.ToInt16(GetIPMode());
-                    // // controllo modificato per permettere l'utilizzo di SIM non VODAFONE
-                    // if(ip_addr.StartsWith("172.16.")|val_ipset==1)//if(ip_addr.StartsWith("172.16."))
-                    // se l'ip è del server aggiungo i dati in MCT
-                   
-                    
-                    // if (ip_addr.StartsWith("10.10")| ip_addr=="192.168.209.188" )//|  ip_addr=="127.0.0.1" )
-                    // {
-
-                    //     MachineTraceToAdd = new MachinesConnectionTrace 
-                    //     {
-                    //         IpAddress = ip_addr,
-                    //         SendOrRecv = send_or_recv,
-                    //         TransferredData = transferred_data
-                     //        last_communication = DateTime.Parse( DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss"));
-                    //     };
-                    //     DB.MachinesConnectionTrace.Add(MachineTraceToAdd);
-                    // }
-                    // else
-                    // {
-                    //     //if the ip is in the 172.16 net, it's a modem, otherwise is the backend, 
-                    //     //and i don't wont to add the backand to the modem list
-                    //     Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Machines not listed: adding..");
-
-                    //     insertIntoMachinesTable(ip_addr);
-                    //     //at this point i can just call me again to pupolate ModemConnectionTrace
-                    //     insertIntoMachinesConnectionTrace( ip_addr, send_or_recv, transferred_data );
-                    // }
-                }
+                
                 DB.SaveChanges();
-Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 567 "); 
+                
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachinesConnectionTrace: Row 567 "); 
                 //reload the web pages
                 if(MachineTraceToAdd.IdMacchina!= null)
                 {              
@@ -1154,10 +1125,73 @@ Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " insertIntoMachi
             }
             catch(Exception e)
             {
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss IsConnected : ") + e.Message);
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "IsConnected : " + e.Message);
                 return false;
             }
         }
+        public static int StartCheckID_MCT() 
+        {  
+            try
+            {
+                int valRet=0;
+                string connectionString=GetConnectString();
+                MySqlConnection connection;
+                MySqlDataReader dataReader;
+                MySqlCommand cmd;
+                string query = "";
+                int k=0;
+                connection = new MySqlConnection(connectionString);
+                connection.Open();
+                query = "select id_Val from  CheckConnTrace";
+                cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                dataReader = cmd.ExecuteReader();
+                Int32 last_idCheckTable=0;
+                while (dataReader.Read())
+                {
+                    last_idCheckTable=Convert.ToInt32(dataReader["id_Val"].ToString());
+                }
+                dataReader.Close();
+
+                query = "select id from  MachinesConnectionTrace order by id desc limit 1";
+                cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                dataReader = cmd.ExecuteReader();
+                Int32 last_id_MCT=0;
+                while (dataReader.Read())
+                {
+                    last_id_MCT=Convert.ToInt32(dataReader["id"].ToString());
+                }
+                dataReader.Close();
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "StartCheckID_MCT : last_id_MCT = " +last_id_MCT.ToString()+" - last_idCheckTable ="+last_idCheckTable.ToString());
+                if (last_id_MCT==last_idCheckTable)
+                {
+                    valRet=1;
+                }
+                else
+                {
+                    if (last_idCheckTable==0)
+                    {
+                        query = "Insert into CheckConnTrace (id_Val, time_stamp) VALUE (" + last_id_MCT +",'" + DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss") + "');";
+                        cmd = new MySqlCommand(query, connection);
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        query = "Update  CheckConnTrace set id_Val =" + last_id_MCT +", time_stamp = '" + DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss") + "';";
+                        cmd = new MySqlCommand(query, connection);
+                        cmd.ExecuteNonQuery();
+                    }
+                    valRet=0;
+                }
+                return valRet;      
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "StartCheckID_MCT : " + e.Message);
+                return 1;
+            }
+        }  
 
         private class Logger
         {
