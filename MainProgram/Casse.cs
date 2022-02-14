@@ -140,7 +140,7 @@ namespace Casse
             tel_adminContext tel_adminDB = new tel_adminContext();
             try{
                 string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
-                if (CasType== "M1")
+                if (CasType== "M1"| CasType== "P1")
                 {
                     SapCashDaemon SapCashDaemon_toLoad   = new SapCashDaemon{
                         CodeMa = splittedCashPacket[1],
@@ -432,7 +432,7 @@ namespace Casse
             try{
                 string[] splittedCashPacket = theOnlyCashTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
                 string[] splittedCashPacket_previous = previousTransaction.IdMachinesConnectionTraceNavigation.TransferredData.Split(',');
-                if (CasType=="M1")  
+                if (CasType=="M1" | CasType== "P1")  
                 {
                     if(splittedCashPacket[24] == "")
                         splittedCashPacket[24] = "0";

@@ -66,10 +66,8 @@ public class AsynchronousSocketListener {
             //IPAddress ipAddress = IPAddress.Parse("192.168.43.213");
             IPAddress ipAddress = IPAddress.Parse("192.168.17.202"); //fisso lavoro
             //IPAddress ipAddress = IPAddress.Parse("192.168.117.127"); //ipHostInfo.AddressList[0];
-            
         #else
            IPAddress ipAddress = IPAddress.Parse("0.0.0.0");
-
            //IPAddress ipAddress = IPAddress.Parse(Configuration["LocalAddress"].ToString()); 
         #endif
         
@@ -82,20 +80,15 @@ public class AsynchronousSocketListener {
         // Create a TCP/IP socket for the modem 
         Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
   
-        Socket listenerForCommand = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
-  
+        Socket listenerForCommand = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );
+          
         // Bind the socket to the local endpoint and listen for incoming connections from modems.  
         Thread tModems = new Thread(()=>StartListeningForModems(localEndPoint, listener));
         tModems.Start();
 
         Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
-// if (GetTimeCheckStatus)
-//         Thread timerchecker = new Thread(()=>SetTimer ());
-//         tCommands.Start();
 
-        //Console.WriteLine("\nPress ENTER to continue...");  
-       // Console.Read();  
     }  
     
     public static void StartListeningForModems(IPEndPoint localEndPoint, Socket listener){
@@ -210,9 +203,9 @@ ip_as_string="172.16.151.254";
                     
                     //set the keep alive values for the socket
                     state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);
-                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //old value: 16
-                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10); 
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);//Numero di secondi di attesa di una connessione TCP per una risposta keep-alive prima di inviare un altro probe keep-alive.
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //Numero di probe keep-alive TCP che verranno inviati prima che la connessione venga terminata.
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 60); //Numero di secondi per cui una connessione TCP rimarrà attiva/inattiva prima dell'invio di probe keep-alive al computer remoto.
 
                     handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
                 }
@@ -254,15 +247,14 @@ ip_as_string="172.16.151.254";
             
 if ( content.Contains("????")| content.Contains("95.61.6.94"))
 {
-        string tmp_ip=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
-        
-        Console.WriteLine("Conetnt Value for ip " +tmp_ip+" in  ReadCommandsCallback =" +content.ToString());
-        
-        ClearMachineTable.DatabaseClearTable.DeleteMachineByIP(tmp_ip);
-        return;
+    string tmp_ip=((IPEndPoint)handler.RemoteEndPoint).Address.ToString();
+    
+    Console.WriteLine("Conetnt value for ip " +tmp_ip+" in  ReadCommandsCallback =" +content.ToString());
+    
+    ClearMachineTable.DatabaseClearTable.DeleteMachineByIP(tmp_ip);
+    return;
 }
- 
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
+                 Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + " : Read {0} bytes from socket. Data : {1}",content.Length, content);
                 Functions.DatabaseFunctions.insertIntoMachinesConnectionTrace( ((IPEndPoint)handler.RemoteEndPoint).Address.ToString() ,"RECV", content );
                 
                 //At this point content should look like = <data><codElettronico>9876543210</codElettronico><command>IsAlive</command></data>
@@ -441,7 +433,7 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
                     Functions.DatabaseFunctions.setModemOffline(ip);
                     Thread th = new Thread(()=> ClearMachineTable.DatabaseClearTable.DeleteMachineByIP(ip.ToString()));
                         th.Start();
-                    
+                   
                     handler.Shutdown(SocketShutdown.Both);  
                     handler.Close(2); //wait 2 seconds before close
                     handler.Dispose();

@@ -60,11 +60,15 @@ namespace ClearMachineTable
                 {
                     Machines m = DB.Machines.First( y => y.IpAddress == ip_addr );
                     Console.WriteLine("DeleteMachineByIP :id Machines"+ m.Id.ToString());
-                    RemoveMachine(m.Id.ToString());
-                    Console.WriteLine("DeleteMachineByIP :id Machines "+ m.Id.ToString() +" Delete OK");
+                    string idtoremove=m.Id.ToString();
+                    DB.DisposeAsync();
+
+                    if (RemoveMachine(idtoremove)) 
+                    {
+                        Console.WriteLine("DeleteMachineByIP :id Machines "+ m.Id.ToString() +" Delete OK");
+                    }
                 }
-                DB.SaveChanges();
-                DB.DisposeAsync();
+                
             }
             catch(Exception e)
             {
@@ -132,8 +136,9 @@ namespace ClearMachineTable
             }
             catch(Exception e)
             {
-                Console.WriteLine("ERROR - DeleteLogTables: " + e.Message);
+                Console.WriteLine("ERROR - UpdateMachines: " + e.Message);
                 if (connection.State == ConnectionState.Open) connection.Close();
+                Console.WriteLine("ERROR - RemoveMachine: connection.State= " +connection.State.ToString() );
                 return false;
             }
         }
@@ -148,7 +153,8 @@ namespace ClearMachineTable
             string query;
             try
             {
-                query = "Delete FROM Log   where ID_machine = " + IDMachinesTodelete;
+                
+                query = "Delete FROM Log where ID_machine = " + IDMachinesTodelete;
                 newcmd = new MySqlCommand(query, connection);
                 newcmd.ExecuteNonQuery();
                 
@@ -179,8 +185,9 @@ namespace ClearMachineTable
             }
             catch(Exception e)
             {
-                Console.WriteLine("ERROR - DeleteLogTables: " + e.Message);
+                Console.WriteLine("ERROR - RemoveMachine: " + e.Message);
                 if (connection.State == ConnectionState.Open) connection.Close();
+                Console.WriteLine("ERROR - RemoveMachine: connection.State= " +connection.State.ToString() );
                 return false;
             }
         }

@@ -472,7 +472,7 @@ ip_addr="172.16.151.254";
                         {    
                             string SerialSIM="";
                             
-                            if (transferred_data.StartsWith("<TPK=$M1")) 
+                            if (transferred_data.StartsWith("<TPK=$M1")|transferred_data.StartsWith("<TPK=$P1")) 
                             {
                                 SerialSIM=splitTrData[30];
                                 imeiValue=splitTrData[31];
@@ -1156,6 +1156,7 @@ ip_addr="172.16.151.254";
                     last_idCheckTable=Convert.ToInt32(dataReader["id_Val"].ToString());
                 }
                 dataReader.Close();
+        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  StartCheckID_MCT : last_idCheckTable ="+last_idCheckTable.ToString());
 
                 query = "select id from  MachinesConnectionTrace order by id desc limit 1";
                 cmd = new MySqlCommand(query, connection);
@@ -1167,7 +1168,7 @@ ip_addr="172.16.151.254";
                     last_id_MCT=Convert.ToInt32(dataReader["id"].ToString());
                 }
                 dataReader.Close();
-                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "StartCheckID_MCT : last_id_MCT = " +last_id_MCT.ToString()+" - last_idCheckTable ="+last_idCheckTable.ToString());
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  StartCheckID_MCT : last_id_MCT = " +last_id_MCT.ToString());
                 if (last_id_MCT==last_idCheckTable)
                 {
                     valRet=1;
@@ -1179,14 +1180,17 @@ ip_addr="172.16.151.254";
                         query = "Insert into CheckConnTrace (id_Val, time_stamp) VALUE (" + last_id_MCT +",'" + DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss") + "');";
                         cmd = new MySqlCommand(query, connection);
                         cmd.ExecuteNonQuery();
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  StartCheckID_MCT : inserito ultimo ID rilevato = " +last_id_MCT.ToString());
                     }
                     else
                     {
                         query = "Update  CheckConnTrace set id_Val =" + last_id_MCT +", time_stamp = '" + DateTime.Now.ToString("yyyy/MM/dd,HH:mm:ss") + "';";
                         cmd = new MySqlCommand(query, connection);
                         cmd.ExecuteNonQuery();
+                        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  StartCheckID_MCT : aggiornato ultimo ID rilevato = " +last_id_MCT.ToString());
                     }
                     valRet=0;
+                    
                 }
                 return valRet;      
             }
