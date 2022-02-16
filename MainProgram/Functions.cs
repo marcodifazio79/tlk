@@ -80,7 +80,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-ip_addr="172.16.151.254";
+ip_addr="172.16.176.228";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -371,7 +371,7 @@ ip_addr="172.16.151.254";
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-ip_addr="172.16.151.254";
+ip_addr="172.16.176.228";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -433,7 +433,7 @@ ip_addr="172.16.151.254";
             try
             {
 #if DEBUG 
-ip_addr="172.16.151.254";
+ip_addr="172.16.176.228";
 #endif
                 if (AsynchronousSocketListener.GetTimeCheckStatus().ToUpper()=="TRUE")AsynchronousSocketListener.aTimer.Stop();
                 
@@ -758,7 +758,12 @@ ip_addr="172.16.151.254";
                 String codElettronico = data.SelectSingleNode(@"/data/codElettronico").InnerText;
                 String command = data.SelectSingleNode(@"/data/command").InnerText;
                 RemoteCommand remCom = null;
+#if DEBUG 
 
+ipSender="172.16.176.228";
+//int p=Convert.ToInt16(ip_addr);
+
+#endif
                 if(DB.Machines.Any(y=> y.Mid == codElettronico))
                 {
                     remCom = new RemoteCommand { 
@@ -1156,7 +1161,7 @@ ip_addr="172.16.151.254";
                     last_idCheckTable=Convert.ToInt32(dataReader["id_Val"].ToString());
                 }
                 dataReader.Close();
-        Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  StartCheckID_MCT : last_idCheckTable ="+last_idCheckTable.ToString());
+                Console.WriteLine(DateTime.Now.ToString("yy/MM/dd,HH:mm:ss") + "  StartCheckID_MCT : last_idCheckTable ="+last_idCheckTable.ToString());
 
                 query = "select id from  MachinesConnectionTrace order by id desc limit 1";
                 cmd = new MySqlCommand(query, connection);

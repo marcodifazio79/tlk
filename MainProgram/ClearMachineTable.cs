@@ -191,7 +191,72 @@ namespace ClearMachineTable
                 return false;
             }
         }
-       
+       public static void ClearDB()
+        {
+
+            MySqlConnection connection;
+            MySqlDataReader dataReader;
+            MySqlCommand cmd;
+            Dictionary<string, string> IDMachinesToDelTemp = new Dictionary<string, string>();
+            Dictionary<string, string> RowMCTToDel = new Dictionary<string, string>();
+            List<string> IDMachinesTodelete = new List<string>();
+            List<string> TMPIDMachinesTodelete = new List<string>();
+
+            string query = "";
+         
+            string connectionString =GetConnectString();
+            connection = new MySqlConnection(connectionString);
+            connection.Open();
+            query = "select id from  Machines where mid like '77770001_%' or mid like '5555555%' or mid like 'TCC%' and IsOnline=0";
+            cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+//            cmd.CommandTimeout = 60;
+            dataReader = cmd.ExecuteReader();
+            int k = 0;
+            
+            while (dataReader.Read())
+            {
+                IDMachinesTodelete.Add(dataReader["id"].ToString());
+            }
+            dataReader.Close();
+            foreach (string id in IDMachinesTodelete)
+            {
+                DeleteMachine(id, "");
+            }
+
+            IDMachinesTodelete.Clear();
+
+            query = "select id from  Machines where mid like 'RecuperoInCorso%' and IsOnline=0";
+            cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+            //            cmd.CommandTimeout = 60;
+            dataReader = cmd.ExecuteReader();
+            k = 0;
+
+            while (dataReader.Read())
+            {
+                TMPIDMachinesTodelete.Add(dataReader["id"].ToString());
+            }
+            dataReader.Close();  
+
+            foreach (string id in TMPIDMachinesTodelete)
+            {
+                query = "select id_Macchina,transferred_data from  MachinesConnectionTrace where id like '" + id+"' limit 1;";
+                cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                dataReader = cmd.ExecuteReader();
+                k = 0;
+                if (dataReader.RecordsAffected==-1) IDMachinesTodelete.Add(id);
+
+                dataReader.Close();
+
+            }
+            foreach (string id in IDMachinesTodelete)
+            {
+                DeleteMachine(id, "");
+            }
+
+            }
 
      }
 }

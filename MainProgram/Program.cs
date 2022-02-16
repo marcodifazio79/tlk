@@ -81,13 +81,22 @@ public class AsynchronousSocketListener {
         Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );  
   
         Socket listenerForCommand = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );
-          
+#if DEBUG
+    Thread tClearDB = new Thread(()=>ClearMachineTable.DatabaseClearTable.ClearDB());
+        tClearDB.Start();
+#else
+        Thread tClearDB = new Thread(()=>ClearMachineTable.DatabaseClearTable.ClearDB());
+        tClearDB.Start();
+ #endif         
         // Bind the socket to the local endpoint and listen for incoming connections from modems.  
         Thread tModems = new Thread(()=>StartListeningForModems(localEndPoint, listener));
         tModems.Start();
 
         Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
+
+        
+
 
     }  
     
@@ -155,7 +164,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
 
 #if DEBUG 
-ip_as_string="172.16.151.254";
+ip_as_string="172.16.176.228";
 #endif
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
                 {
@@ -205,7 +214,7 @@ ip_as_string="172.16.151.254";
                     state.workSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                     state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 10);//Numero di secondi di attesa di una connessione TCP per una risposta keep-alive prima di inviare un altro probe keep-alive.
                     state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6); //Numero di probe keep-alive TCP che verranno inviati prima che la connessione venga terminata.
-                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 60); //Numero di secondi per cui una connessione TCP rimarrà attiva/inattiva prima dell'invio di probe keep-alive al computer remoto.
+                    state.workSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 100); //Numero di secondi per cui una connessione TCP rimarrà attiva/inattiva prima dell'invio di probe keep-alive al computer remoto.
 
                     handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);  
                 }
@@ -551,8 +560,9 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
         try{  
             //byte[] byteData = Encoding.ASCII.GetBytes(data);
             // Begin sending the data to the remote device.
-            
-            ip = IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ());// ((IPEndPoint)handler.RemoteEndPoint).Address; 
+ 
+            ip = IPAddress.Parse (((IPEndPoint)handler.RemoteEndPoint).Address.ToString ());
+           
             sock_port = ((IPEndPoint)handler.RemoteEndPoint).Port;
             state.workSocket = handler;
             state.sb = new StringBuilder(data, data.Length);

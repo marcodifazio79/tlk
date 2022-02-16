@@ -33,6 +33,10 @@ CREATE TABLE `MachinesConnectionTrace` (
   CONSTRAINT `MachinesConnectionTrace_ibfk_1` FOREIGN KEY (`id_Macchina`) REFERENCES `Machines` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=536872 DEFAULT CHARSET=latin1;
 
+CREATE TABLE `CheckConnTrace`(
+  `id_Val` int(20) DEFAULT NULL,
+  `time_stamp` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
  CREATE TABLE `Machines_InMemory` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

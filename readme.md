@@ -100,11 +100,12 @@ mySQL db in use for test:
 CREATE DATABASE dbtest;
 use dbtest;
 CREATE TABLE packet (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, rawPacket VARCHAR(500), ipAddress VARCHAR(16), port VARCHAR(6));
+
+Creare utente con plugin 'mysql_native_password'
+
+CREATE USER 'testwriter'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
 CREATE USER 'testwriter'@'%' IDENTIFIED BY 'password';
-
-CREATE USER 'testwriter'@'dbtest' IDENTIFIED WITH mysql_native_password BY 'password';
-
-GRANT ALL PRIVILEGES ON dbtest.* to 'testwriter'@'%';
+GRANT ALL PRIVILEGES ON databasename.* to 'testwriter'@'%';
 
 
 
