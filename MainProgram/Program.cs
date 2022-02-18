@@ -82,8 +82,7 @@ public class AsynchronousSocketListener {
   
         Socket listenerForCommand = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );
 #if DEBUG
-    Thread tClearDB = new Thread(()=>ClearMachineTable.DatabaseClearTable.ClearDB());
-        tClearDB.Start();
+
 #else
         Thread tClearDB = new Thread(()=>ClearMachineTable.DatabaseClearTable.ClearDB());
         tClearDB.Start();
@@ -94,8 +93,7 @@ public class AsynchronousSocketListener {
 
         Thread tCommands = new Thread(()=>StartListeningForCommands(commandsInputEndPoint, listenerForCommand));
         tCommands.Start();
-
-        
+     
 
 
     }  

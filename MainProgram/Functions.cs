@@ -761,7 +761,7 @@ ip_addr="172.16.176.228";
 #if DEBUG 
 
 ipSender="172.16.176.228";
-//int p=Convert.ToInt16(ip_addr);
+
 
 #endif
                 if(DB.Machines.Any(y=> y.Mid == codElettronico))
