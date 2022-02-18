@@ -70,8 +70,10 @@ namespace Functions
                 if (mid.StartsWith("5555555"))mid=mid+"_"+imei.ToString();
                 if (mid==("TCC"))mid=mid+"_"+imei.ToString();
                                
-                     
-                
+                bool isIstagram=false;
+
+                if (s.Contains(".INS"))isIstagram=true;
+
                 string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
                 
@@ -80,7 +82,7 @@ namespace Functions
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-ip_addr="172.16.176.228";
+ip_addr="176.244.4.206";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -246,7 +248,7 @@ ip_addr="172.16.176.228";
                                     ClearMachineTable.DatabaseClearTable.DeleteMachine(newModemPacket.Id.ToString(),MachineToUpdate.Id.ToString()); 
                                          
                                 }
-                                else if (version=="105" | version=="106")
+                                else if (isIstagram)
                                 {
                                     //Machines MachineToUpdate = DB.Machines.First( y=> y.Mid == mid );// carico i dati del modem da sostituire
                                     MachineToUpdate.Version = version; 
@@ -288,7 +290,7 @@ ip_addr="172.16.176.228";
                         {
                             Machines ModemAlreadyPresentPacket = DB.Machines.First( y=> y.Mid == mid);// seleziono i dati del modem gia installato   in base al mid
                           
-                            if (ModemAlreadyPresentPacket.Version=="105" | ModemAlreadyPresentPacket.Version=="106")// se il mid del modem gia installato è di una Istagramm.....
+                            if (ModemAlreadyPresentPacket.Version.Contains(".INS"))// se il mid del modem gia installato è di una Istagramm.....
                             {
                                 ModemAlreadyPresentPacket.Version = version;
                                 ModemAlreadyPresentPacket.IpAddress=ip_addr;
@@ -371,7 +373,7 @@ ip_addr="172.16.176.228";
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-ip_addr="172.16.176.228";
+ip_addr="176.244.4.206";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -433,7 +435,7 @@ ip_addr="172.16.176.228";
             try
             {
 #if DEBUG 
-ip_addr="172.16.176.228";
+ip_addr="176.244.4.206";
 #endif
                 if (AsynchronousSocketListener.GetTimeCheckStatus().ToUpper()=="TRUE")AsynchronousSocketListener.aTimer.Stop();
                 
@@ -760,7 +762,7 @@ ip_addr="172.16.176.228";
                 RemoteCommand remCom = null;
 #if DEBUG 
 
-ipSender="172.16.176.228";
+ipSender="176.244.4.206";
 
 
 #endif

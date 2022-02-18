@@ -162,7 +162,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
 
 #if DEBUG 
-ip_as_string="172.16.176.228";
+ip_as_string="176.244.4.206";
 #endif
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
                 {
@@ -362,7 +362,7 @@ if ( content.Contains("????")| content.Contains("95.61.6.94"))
                         //nell forma     <MID=1234567890><VER=105><TYP=2>
                         string[] contentSplit= content.Split('>');
                         string fakeImei= DateTime.Now.ToString("yyyyMMddHHmmssf");
-                        content=contentSplit[0]+"-" + fakeImei+">"+contentSplit[1]+">";
+                        content=contentSplit[0]+"-" + fakeImei+">"+contentSplit[1]+".INST>";
                         Functions.DatabaseFunctions.updateModemTableEntry(((IPEndPoint)handler.RemoteEndPoint).Address.ToString(), content);
                     }
                     else
