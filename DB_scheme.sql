@@ -38,6 +38,15 @@ CREATE TABLE `CheckConnTrace`(
   `time_stamp` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `VersionAndCassPacket`(
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `version` varchar(10) DEFAULT NULL,     
+ `casspacket` varchar(4) NOT NULL,
+ `machinetype` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
  CREATE TABLE `Machines_InMemory` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(15) NOT NULL,

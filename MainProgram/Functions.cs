@@ -72,17 +72,19 @@ namespace Functions
                                
                 bool isIstagram=false;
 
-                if (s.Contains(".INS"))isIstagram=true;
+                
 
                 string version = s.Substring(s.IndexOf("VER=")+4);
                 version = version.Substring(0,version.IndexOf(">"));
+                if (s.Contains(".INS"))
+                    isIstagram=true;
                 
                 // controllo se esiste un modem con il mid scritto nel pacchetto, e se
                 // il mid è collegato allo stesso Ip: in caso contrario potrebbe essere un modem 
                 // "sostituto" (partiamo del presupposto che i modem hanno ip statico..)
 #if DEBUG 
 
-ip_addr="176.244.4.206";
+ip_addr="176.242.21.246";
 //int p=Convert.ToInt16(ip_addr);
 
 #endif
@@ -373,7 +375,7 @@ ip_addr="176.244.4.206";
             {   
                  if (ip_addr=="127.0.0.1")return;
 #if DEBUG 
-ip_addr="176.244.4.206";
+ip_addr="176.242.21.246";
 #endif
 
                 if(DB.Machines.Any( y=> y.IpAddress == ip_addr )   )
@@ -435,7 +437,7 @@ ip_addr="176.244.4.206";
             try
             {
 #if DEBUG 
-ip_addr="176.244.4.206";
+ip_addr="176.242.21.246";
 #endif
                 if (AsynchronousSocketListener.GetTimeCheckStatus().ToUpper()=="TRUE")AsynchronousSocketListener.aTimer.Stop();
                 
@@ -762,7 +764,7 @@ ip_addr="176.244.4.206";
                 RemoteCommand remCom = null;
 #if DEBUG 
 
-ipSender="176.244.4.206";
+ipSender="176.242.21.246";
 
 
 #endif
@@ -1222,5 +1224,7 @@ ipSender="176.244.4.206";
             }
 
         }
+
+        
     }    
 }

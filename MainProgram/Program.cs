@@ -82,7 +82,8 @@ public class AsynchronousSocketListener {
   
         Socket listenerForCommand = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp );
 #if DEBUG
-
+        Thread tClearDB = new Thread(()=>ClearMachineTable.DatabaseClearTable.ClearDB());
+        tClearDB.Start();
 #else
         Thread tClearDB = new Thread(()=>ClearMachineTable.DatabaseClearTable.ClearDB());
         tClearDB.Start();
@@ -162,7 +163,7 @@ public class AsynchronousSocketListener {
             // if(ip_as_string.StartsWith("172.16.")|val_ipset==1)  //if(ip_as_string.StartsWith("172.16."))
 
 #if DEBUG 
-ip_as_string="176.244.4.206";
+ip_as_string="176.242.21.246";
 #endif
                 if (ip_as_string.StartsWith("10.10")| ip_as_string=="192.168.209.188")
                 {

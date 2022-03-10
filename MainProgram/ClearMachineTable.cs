@@ -197,10 +197,12 @@ namespace ClearMachineTable
             MySqlConnection connection;
             MySqlDataReader dataReader;
             MySqlCommand cmd;
-            Dictionary<string, string> IDMachinesToDelTemp = new Dictionary<string, string>();
+            //Dictionary<string, string> IDMachinesToDelTemp = new Dictionary<string, string>();
             Dictionary<string, string> RowMCTToDel = new Dictionary<string, string>();
             List<string> IDMachinesTodelete = new List<string>();
             List<string> TMPIDMachinesTodelete = new List<string>();
+            
+            Dictionary<string, string> TMPIDMachinesToUpdate = new Dictionary<string, string>();
 
             string query = "";
          
@@ -256,7 +258,102 @@ namespace ClearMachineTable
                 DeleteMachine(id, "");
             }
 
+            query = "select id from  Machines where mid like 'Duplicato%' and IsOnline=0";
+            cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+            //            cmd.CommandTimeout = 60;
+            dataReader = cmd.ExecuteReader();
+            k = 0;
+TMPIDMachinesTodelete.Clear();
+            while (dataReader.Read())
+            {
+                TMPIDMachinesTodelete.Add(dataReader["id"].ToString());
             }
+            dataReader.Close(); 
+
+            Dictionary<string, string> tmp_mid = new Dictionary<string, string>();
+            
+            foreach (string idtodel in TMPIDMachinesTodelete)
+            {
+tmp_mid.Clear();
+                query = "select transferred_data from  MachinesConnectionTrace where id_Macchina = "+idtodel+" and transferred_data like '<TPK=%' limit 1 ;";
+                cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                //            cmd.CommandTimeout = 60;
+                dataReader = cmd.ExecuteReader();
+                k = 0;
+                if (!dataReader.HasRows) DeleteMachine(idtodel,"");
+                while (dataReader.Read())
+                {
+                    string[] split_tdata=dataReader["transferred_data"].ToString().Split(",");
+
+                    if (split_tdata[0]=="<TPK=W5")
+                    {
+                        if (Functions.DatabaseFunctions.IsNumeric(split_tdata[4]))
+                        {
+                            if (split_tdata[4]=="77770001" | split_tdata[4].StartsWith("5555555"))
+                            {
+                                 DeleteMachine(idtodel,"");
+                            }
+                            else
+                            {
+                                tmp_mid.Add(split_tdata[4],idtodel);
+                            }
+                        }
+                        else
+                        {
+                            DeleteMachine(idtodel,"");
+                        }
+                    }
+                    else //"<TPK=$M1" | "<TPK=$P1" | "<TPK=$M3"  | "<TPK=$M5"  | "<TPK=$I1"  | "<TPK=$I2")
+                    {
+                        if (Functions.DatabaseFunctions.IsNumeric(split_tdata[1]))
+                        {
+                            if (split_tdata[1]=="77770001" | split_tdata[1].StartsWith("5555555"))
+                            {
+                                 DeleteMachine(idtodel,"");
+                            }
+                            else
+                            {
+                                tmp_mid.Add(split_tdata[1],idtodel);
+                            }
+                        }
+                        else
+                        {
+                            DeleteMachine(idtodel,"");
+                        }
+                    }
+                }
+                dataReader.Close(); 
+        
+    int Count=0;
+TMPIDMachinesToUpdate.Clear();
+                foreach ( string mid in tmp_mid.Keys)
+                {
+                    query = "select id from  Machines where mid ="+ mid + ";";
+                    cmd = new MySqlCommand(query, connection);
+                    cmd.ExecuteNonQuery();
+                    dataReader = cmd.ExecuteReader();
+                    k = 0;
+
+                    while (dataReader.Read())
+                    {
+                        TMPIDMachinesToUpdate.Add(dataReader["id"].ToString(),tmp_mid.Values.ElementAt(Count));
+                    }
+                    dataReader.Close(); 
+                    Count++;
+
+                }
+            Count=0;
+                foreach ( string updateid in TMPIDMachinesToUpdate.Keys)
+                {
+                    string deleteid=TMPIDMachinesToUpdate.Values.ElementAt(Count);
+                    DeleteMachine(deleteid,updateid);
+                    Count++;
+                }
+
+            }
+        }
 
      }
 }
